@@ -8,14 +8,14 @@ import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class PokerStops extends StatefulWidget {
-  const PokerStops({super.key});
+class PokerSponsers extends StatefulWidget {
+  const PokerSponsers({super.key});
 
   @override
-  State<PokerStops> createState() => _PokerStopsState();
+  State<PokerSponsers> createState() => _PokerSponsersState();
 }
 
-class _PokerStopsState extends State<PokerStops> {
+class _PokerSponsersState extends State<PokerSponsers> {
   bool shouldCheck = false;
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class _PokerStopsState extends State<PokerStops> {
                               children: [
                                 Image.asset("assets/icons/back.png",height: 4.5.h,),
                                 SizedBox(width: 2.w),
-                                text_widget("Poker Run Stops",
+                                text_widget("Sponsors",
                                 
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
@@ -65,33 +65,54 @@ class _PokerStopsState extends State<PokerStops> {
                               ],
                             ),
                             SizedBox(height: 2.5.h),
-                        ListView.builder(
+                     ListView.builder(
   itemCount: 5,
   shrinkWrap: true,
   physics: NeverScrollableScrollPhysics(),
   itemBuilder: (context, index) {
     int number = index + 1;
 
-    String suffix;
+ String suffix;
     if (number == 1) suffix = "st";
     else if (number == 2) suffix = "nd";
     else if (number == 3) suffix = "rd";
     else suffix = "th";
+    // Convert number → First, Second, Third, Fourth, Fifth
+    String word;
+    switch (number) {
+      case 1:
+        word = "First";
+        break;
+      case 2:
+        word = "Second";
+        break;
+      case 3:
+        word = "Third";
+        break;
+      case 4:
+        word = "Fourth";
+        break;
+      case 5:
+        word = "Fifth";
+        break;
+      default:
+        word = "$number";
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         text_widget(
-          "$number$suffix Stops",
+          "$number$suffix Sponsor",
           color: Color(0xff6C7278),
           fontSize: 15.sp,
           fontWeight: FontWeight.bold,
         ),
-        SizedBox(height: 0.5.h),
+        SizedBox(height: 0.8.h),
 
-        // Name Field
+        // First Text Field (Dynamic)
         textFieldWithPrefixSuffuxIconAndHintText(
-          "Name of $number$suffix Poker Run Stop",
+          "Name of $word Sponsor",
           fillColor: Colors.white,
           mainTxtColor: Colors.black,
           radius: 12,
@@ -100,11 +121,11 @@ class _PokerStopsState extends State<PokerStops> {
           hintColor: Color(0xff868686),
           pColor: MyColors.primary,
         ),
-        SizedBox(height: 1.3.h),
+        SizedBox(height: 1.2.h),
 
-        // Address Field
+        // Second Text Field (Static)
         textFieldWithPrefixSuffuxIconAndHintText(
-          "Select Address of $number$suffix Poker Run Stop",
+          "WWW.sponsorwebsite.com",
           fillColor: Colors.white,
           mainTxtColor: Colors.black,
           radius: 12,
@@ -119,6 +140,7 @@ class _PokerStopsState extends State<PokerStops> {
     );
   },
 ),
+
 
                             SizedBox(height: 2.5.h),
                            customButon(
