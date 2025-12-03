@@ -9,8 +9,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   cupertino_icons: ^1.0.8
   firebase_core:
+  remixicon:
+  responsive_sizer: 3.1.1
+  get:
+  google_fonts: ^4.0.0
+  dotted_border:
+  intl:
+  dropdown_button2: ^2.3.9
+  custom_check_box: ^0.0.4
 
 dev_dependencies:
   flutter_test:
@@ -19,3 +28,20 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/font/
+
+  fonts:
+    - family: Calibri
+      fonts:
+        - asset: assets/font/calibri-regular.ttf
+        - asset: assets/font/calibri-bold.ttf
+          weight: 700
+        - asset: assets/font/calibri-italic.ttf
+          style: italic
+        - asset: assets/font/calibri-bold-italic.ttf
+          weight: 700
+          style: italic
