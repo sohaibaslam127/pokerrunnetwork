@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/page/auth/splash_screen.dart';
 import 'package:pokerrunnetwork/page/home/affilate_page.dart';
 import 'package:pokerrunnetwork/page/home/affilate_page2.dart';
+import 'package:pokerrunnetwork/page/home/co_manager.dart';
 import 'package:pokerrunnetwork/page/home/completed_poker.dart';
 import 'package:pokerrunnetwork/page/home/create_poker.dart';
+import 'package:pokerrunnetwork/page/home/existing_pokers.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
 import 'package:pokerrunnetwork/page/home/golf_page.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
@@ -51,7 +53,7 @@ class MyApp extends StatelessWidget {
   
           ),
           defaultTransition: Transition.noTransition,
-          home: GolfPage(),
+          home: CoManagerPage(),
         );
       },
     );

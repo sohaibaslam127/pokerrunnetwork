@@ -51,7 +51,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
               ),
             ),
             title: text_widget(
-              "Scheduled  Poker Runs lIst",
+              "Existing Poker Runs List",
               fontSize: 19.6.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
@@ -92,11 +92,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
                             fontWeight: FontWeight.w400,
                             color: Colors.white.withOpacity(0.60),
                           ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            size: 18.sp,
-                            color: Colors.white.withOpacity(0.80),
-                          ),
+                          trailing: Image.asset("assets/icons/cop.png",height: 2.3.h,)
                         ),
                       ),
                     );
