@@ -33,7 +33,7 @@ class _AffilatePageState extends State<AffilatePage> {
                  
                   SizedBox(height: 1.h),
                   Center(
-                    child: Image.asset("assets/icons/logo.png", height: 32.h),
+                    child: Image.asset("assets/icons/logo.png", height: 24.h),
                   ),
                    SizedBox(height: 3.h),
               

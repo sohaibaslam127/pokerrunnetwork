@@ -98,7 +98,6 @@ class _PokerSponsersState extends State<PokerSponsers> {
       default:
         word = "$number";
     }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
