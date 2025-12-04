@@ -45,7 +45,7 @@ class _FaqPageState extends State<FaqPage> {
               child: Icon(RemixIcons.arrow_left_s_line,size: 24.sp,color:Colors.white.withOpacity(0.80),),),
           ),
           title: text_widget("FAQ’s & Videos",
-              fontSize: 19.6.sp,
+              fontSize: 16.6.sp,
               color: Colors.white.withOpacity(0.80),
           fontWeight: FontWeight.w600,
           ),

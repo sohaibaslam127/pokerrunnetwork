@@ -3,6 +3,10 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/page/auth/singup_page.dart';
+import 'package:pokerrunnetwork/page/home/affilate_page.dart';
+import 'package:pokerrunnetwork/page/home/affilate_page2.dart';
+import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
+import 'package:pokerrunnetwork/page/home/setting_page.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -61,6 +65,10 @@ class _HomePageState extends State<HomePage> {
                                 btnText: "Poker Run Network Affiliate",
                                 icon: "assets/icons/p1.png",
                                 onTap: (){
+                                  setState(() {
+                                    userType=1;
+                                  });
+                                  Get.to(AffilatePage2());
                                   // Get.to(() =>  );
                                 },
                               ),
@@ -73,31 +81,41 @@ class _HomePageState extends State<HomePage> {
                                 btnText: "Poker Run Co-Manager",
                                 icon: "assets/icons/p2.png",
                                 onTap: (){
+                                   setState(() {
+                                    userType=2;
+                                  });
+                                  Get.to(SchedulePoker());
+
                                   // Get.to(() =>  );
                                 },
                               ),
                            ),
                            SizedBox(height: 6.h),
                                     Center(
-                                      child: Container(
-                                        width: 37.w,
-                                        height: 4.7.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.20),
-                                          border: Border.all(
-                                          color: Colors.white.withOpacity(0.30),
-
+                                      child: onPress(
+                                        ontap: (){
+                                          Get.to(SettingPage());
+                                        },
+                                        child: Container(
+                                          width: 37.w,
+                                          height: 4.7.h,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.20),
+                                            border: Border.all(
+                                            color: Colors.white.withOpacity(0.30),
+                                        
+                                            ),
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Center(
-                                          child: text_widget("Setting & Profile",
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.sp,
+                                          child: Center(
+                                            child: text_widget("Setting & Profile",
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.sp,
+                                            ),
                                           ),
+                                        
                                         ),
-
                                       ),
                                     ),
                   

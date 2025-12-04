@@ -53,7 +53,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
             ),
             title: text_widget(
               "Co-manager List",
-              fontSize: 19.6.sp,
+              fontSize: 16.6.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -171,15 +171,12 @@ class _CoManagerPageState extends State<CoManagerPage> {
                 SizedBox(height: 25),
 textFieldWithPrefixSuffuxIconAndHintText(
                               "Enter email or username".tr,
-
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               radius: 12,
                               padd: 16,
-
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
-
                               pColor: MyColors.primary,
                             ),
                 SizedBox(height: 25),

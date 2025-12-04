@@ -4,6 +4,11 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/page/auth/singup_page.dart';
+import 'package:pokerrunnetwork/page/home/completed_poker.dart';
+import 'package:pokerrunnetwork/page/home/create_poker.dart';
+import 'package:pokerrunnetwork/page/home/existing_pokers.dart';
+import 'package:pokerrunnetwork/page/home/faq_page.dart';
+import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -51,24 +56,66 @@ class _AffilatePage2State extends State<AffilatePage2> {
                   SizedBox(height: 3.h),
                  Row(
                   children: [
-                    Expanded(child: Image.asset("assets/icons/p31.png",height: 16.h,)),
+                    Expanded(child: onPress(
+                      ontap: (){
+                        Get.to(CreatePoker());
+                      },
+                      child: Image.asset("assets/icons/p31.png",height: 18.h,))),
                     // SizedBox(width: 1.w),
-                    Expanded(child: Image.asset("assets/icons/p32.png",height: 16.h,)),
+                    Expanded(child: onPress(
+                      ontap: (){
+                        Get.to(SchedulePoker());
+                      },
+                      child: Image.asset("assets/icons/p32.png",height: 18.h,))),
 
                   ],
                  ),
                    SizedBox(height: 2.h),
                  Row(
                   children: [
-                    Expanded(child: Image.asset("assets/icons/p33.png",height: 16.h,)),
+                    Expanded(child: onPress(
+                      ontap: (){
+                        Get.to(CompletedPoker());
+                      },
+                      child: Image.asset("assets/icons/p33.png",height: 18.h,))),
                     // SizedBox(width: 1.w),
-                    Expanded(child: Image.asset("assets/icons/p34.png",height: 16.h,)),
+                    Expanded(child: onPress(
+                      ontap: (){
+                        Get.to(ExistingPokers());
+                      },
+                      child: Image.asset("assets/icons/p34.png",height: 18.h,))),
 
                   ],
                  ),
-                   SizedBox(height: 2.5.h),
+                   SizedBox(height: 3.5.h),
                 
-                
+                 Center(
+                                      child: onPress(
+                                        ontap: (){
+                                          Get.to(FaqPage());
+                                        },
+                                        child: Container(
+                                          width: 37.w,
+                                          height: 4.7.h,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withOpacity(0.20),
+                                            border: Border.all(
+                                            color: Colors.white.withOpacity(0.30),
+                                        
+                                            ),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Center(
+                                            child: text_widget("Video’s and FAQ’s",
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.sp,
+                                            ),
+                                          ),
+                                        
+                                        ),
+                                      ),
+                                    ),
                 ],
               ),
             ),

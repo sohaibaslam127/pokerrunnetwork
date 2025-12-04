@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/page/auth/singup_page.dart';
+import 'package:pokerrunnetwork/page/home/affilate_page.dart';
+import 'package:pokerrunnetwork/page/home/affilate_page2.dart';
+import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -112,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                               btnText: "Sign In",
                               icon: "assets/icons/p1.png",
                               onTap: (){
+                                Get.to(HomePage());
                                 // Get.to(() =>  );
                               },
                             ),

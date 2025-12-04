@@ -52,7 +52,7 @@ class _CompletedPokerState extends State<CompletedPoker> {
             ),
             title: text_widget(
               "Completed Poker Runs List",
-              fontSize: 19.6.sp,
+              fontSize: 16.6.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),

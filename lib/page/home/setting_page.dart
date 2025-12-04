@@ -42,10 +42,10 @@ class _SettingPageState extends State<SettingPage> {
               ontap: (){
                 Get.back();
               },
-              child: Icon(RemixIcons.arrow_left_s_line,size: 24.sp,color:Colors.white.withOpacity(0.80),),),
+              child: Icon(RemixIcons.arrow_left_s_line,size: 22.sp,color:Colors.white.withOpacity(0.80),),),
           ),
           title: text_widget("Setting",
-              fontSize: 19.6.sp,
+              fontSize: 16.6.sp,
               color: Colors.white.withOpacity(0.80),
           fontWeight: FontWeight.w600,
           ),

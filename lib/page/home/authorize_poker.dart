@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class ExistingPokers extends StatefulWidget {
-  const ExistingPokers({super.key});
+class AuthorizePoker extends StatefulWidget {
+  const AuthorizePoker({super.key});
 
   @override
-  State<ExistingPokers> createState() => _ExistingPokersState();
+  State<AuthorizePoker> createState() => _AuthorizePokerState();
 }
 
-class _ExistingPokersState extends State<ExistingPokers> {
+class _AuthorizePokerState extends State<AuthorizePoker> {
   bool faq = false;
   List<bool> faqs = [false, false, false, false, false];
   bool status4 = false;
@@ -51,12 +52,13 @@ class _ExistingPokersState extends State<ExistingPokers> {
               ),
             ),
             title: text_widget(
-              "Existing Poker Runs List",
+              "Authorize poker run Participants",
               fontSize: 16.6.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
+            
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -86,18 +88,50 @@ class _ExistingPokersState extends State<ExistingPokers> {
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
-                          subtitle: text_widget(
-                            "5 November 9:30 AM",
-                            fontSize: 14.7.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white.withOpacity(0.60),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              text_widget(
+                                "Mickey",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white.withOpacity(0.60),
+                              ),
+                                text_widget(
+                                "Note: co-rider  with change card option included",
+                                fontSize: 13.5.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white.withOpacity(0.60),
+                              ),
+                            ],
                           ),
-                          trailing: onPress(
-                            ontap: (){
-                              showDeleteAccountPopup1(context);
-
-                            },
-                            child: Image.asset("assets/icons/cop.png",height: 2.3.h,))
+                          trailing:
+                          index%2==0?Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12,vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Color(0xff34C759),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: text_widget(
+                             "Paid",
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ) :
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12,vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Color(0xffF78952),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: text_widget(
+                              "Not Paid \$50",
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ) 
                         ),
                       ),
                     );
@@ -110,7 +144,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
       ],
     );
   }
-  void showDeleteAccountPopup1(BuildContext context) {
+   void showDeleteAccountPopup(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: true, // Close on tap outside
@@ -131,19 +165,36 @@ class _ExistingPokersState extends State<ExistingPokers> {
               
                 SizedBox(height: 15),
 
-                Text(
-                  "Are you sure you want to Copy that poker run?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  
-                  ),
+                Row(
+                  children: [
+                    Image.asset("assets/icons/back.png",height: 4.h,),
+                    SizedBox(width: 3.w),
+                    Text(
+                      "Add new Co-Manager",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      
+                      ),
+                    ),
+                  ],
                 ),
 
                 
-                SizedBox(height: 10),
+                SizedBox(height: 25),
+textFieldWithPrefixSuffuxIconAndHintText(
+                              "Enter email or username".tr,
+                              fillColor: Colors.white,
+                              mainTxtColor: Colors.black,
+                              radius: 12,
+                              padd: 16,
+                              bColor: Color(0xffEDF1F3),
+                              hintColor: Color(0xff868686),
+                              pColor: MyColors.primary,
+                            ),
+                SizedBox(height: 25),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,20 +203,12 @@ class _ExistingPokersState extends State<ExistingPokers> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: Image.asset("assets/icons/no.png",height: 5.h,) 
+                        child: Image.asset("assets/icons/addc1.png",height: 10.h,)
                       ),
                     ),
 
                     // Delete Button
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          // your delete logic here
-                        },
-                        child:  Image.asset("assets/icons/copy.png",height: 9.5.h,)
-                      ),
-                    ),
+                  
                   ],
                 )
               ],
@@ -176,4 +219,5 @@ class _ExistingPokersState extends State<ExistingPokers> {
     },
   );
 }
+
 }

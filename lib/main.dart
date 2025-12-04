@@ -5,16 +5,19 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/page/auth/splash_screen.dart';
 import 'package:pokerrunnetwork/page/home/affilate_page.dart';
 import 'package:pokerrunnetwork/page/home/affilate_page2.dart';
+import 'package:pokerrunnetwork/page/home/authorize_poker.dart';
 import 'package:pokerrunnetwork/page/home/co_manager.dart';
 import 'package:pokerrunnetwork/page/home/completed_poker.dart';
 import 'package:pokerrunnetwork/page/home/create_poker.dart';
 import 'package:pokerrunnetwork/page/home/existing_pokers.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
 import 'package:pokerrunnetwork/page/home/golf_page.dart';
+import 'package:pokerrunnetwork/page/home/golf_page2.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/page/home/poker_Sponsers.dart';
 import 'package:pokerrunnetwork/page/home/poker_Stops.dart';
 import 'package:pokerrunnetwork/page/home/poker_route.dart';
+import 'package:pokerrunnetwork/page/home/progress_poker.dart';
 import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
 import 'package:pokerrunnetwork/page/home/setting_page.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -53,7 +56,7 @@ class MyApp extends StatelessWidget {
   
           ),
           defaultTransition: Transition.noTransition,
-          home: CoManagerPage(),
+          home: SplashScreen(),
         );
       },
     );

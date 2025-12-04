@@ -52,7 +52,7 @@ class _SchedulePokerState extends State<SchedulePoker> {
             ),
             title: text_widget(
               "Scheduled  Poker Runs lIst",
-              fontSize: 19.6.sp,
+              fontSize: 16.6.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -66,36 +66,41 @@ class _SchedulePokerState extends State<SchedulePoker> {
                 children: [
                   SizedBox(height: 2.h),
                   ...List.generate(4, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.18),
-                          border: Border.all(
-                            color: const Color(
-                              0xffFFFFFF,
-                            ).withOpacity(0.30), // ✅ border color
-                            width: 1.2,
+                    return onPress(
+                      ontap: (){
+                      
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 18.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.18),
+                            border: Border.all(
+                              color: const Color(
+                                0xffFFFFFF,
+                              ).withOpacity(0.30), // ✅ border color
+                              width: 1.2,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          title: text_widget(
-                            "Jhonson",
-                            fontSize: 16.5.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                          subtitle: text_widget(
-                            "5 November 9:30 AM",
-                            fontSize: 14.7.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white.withOpacity(0.60),
-                          ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            size: 18.sp,
-                            color: Colors.white.withOpacity(0.80),
+                          child: ListTile(
+                            title: text_widget(
+                              "Jhonson",
+                              fontSize: 16.5.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            subtitle: text_widget(
+                              "5 November 9:30 AM",
+                              fontSize: 14.7.sp,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white.withOpacity(0.60),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios_outlined,
+                              size: 18.sp,
+                              color: Colors.white.withOpacity(0.80),
+                            ),
                           ),
                         ),
                       ),
