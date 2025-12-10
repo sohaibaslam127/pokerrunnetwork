@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/page/auth/singup_page.dart';
-import 'package:pokerrunnetwork/page/home/affilate_page.dart';
-import 'package:pokerrunnetwork/page/home/affilate_page2.dart';
+import 'package:pokerrunnetwork/page/home/co_manager_menu.dart';
+import 'package:pokerrunnetwork/page/home/affilate_menu.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
@@ -56,13 +56,13 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 3.h),
                   Center(
                     child: Container(
-                      width: 92.w,
+                      width: 88.w,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(14.0),
+                        padding: const EdgeInsets.all(20.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -94,13 +94,13 @@ class _LoginPageState extends State<LoginPage> {
                               pColor: MyColors.primary,
                               isSuffix: true,
                             ),
-                            SizedBox(height: 2.5.h),
+                            SizedBox(height: 1.5.h),
                             Row(
                               children: [
                                 Spacer(),
                                 text_widget(
                                   "Forgot Password?",
-                                  fontSize: 13.sp,
+                                  fontSize: 15.sp,
                                   fontWeight: FontWeight.w700,
                                   color: MyColors.primary1,
                                 ),
@@ -141,6 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                                      ),
                                     
                            
+                  SizedBox(height: 2.h),
 
                           ],
                         ),

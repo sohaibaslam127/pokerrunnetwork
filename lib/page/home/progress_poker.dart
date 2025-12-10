@@ -53,7 +53,7 @@ class _ProgressPokerState extends State<ProgressPoker> {
             ),
             title: text_widget(
               "Progress Poker Run Participants",
-              fontSize: 16.6.sp,
+              fontSize: 17.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -106,7 +106,7 @@ class _ProgressPokerState extends State<ProgressPoker> {
                             ),
                             child: text_widget(
                              "Finished",
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -119,7 +119,7 @@ class _ProgressPokerState extends State<ProgressPoker> {
                             ),
                             child: text_widget(
                               "Current Stop: 6",
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -158,7 +158,7 @@ class _ProgressPokerState extends State<ProgressPoker> {
           color: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(20),
+             padding: EdgeInsets.symmetric(horizontal:20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -171,10 +171,14 @@ class _ProgressPokerState extends State<ProgressPoker> {
 
                 Row(
                   children: [
-                    Image.asset("assets/icons/back.png",height: 4.h,),
+                  onPress(
+                                  ontap: (){
+                                    Get.back();
+                                  },
+                                  child: Image.asset("assets/icons/back.png",height: 3.6.h,)),
                     SizedBox(width: 3.w),
                     Text(
-                      "Add new Co-Manager",
+                      "Add New Co-Manager",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,

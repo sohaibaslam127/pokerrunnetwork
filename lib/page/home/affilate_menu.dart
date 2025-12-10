@@ -14,14 +14,14 @@ import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class AffilatePage2 extends StatefulWidget {
-  const AffilatePage2({super.key});
+class AffilateMenuPage extends StatefulWidget {
+  const AffilateMenuPage({super.key});
 
   @override
-  State<AffilatePage2> createState() => _AffilatePage2State();
+  State<AffilateMenuPage> createState() => _AffilateMenuPageState();
 }
 
-class _AffilatePage2State extends State<AffilatePage2> {
+class _AffilateMenuPageState extends State<AffilateMenuPage> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -35,7 +35,11 @@ class _AffilatePage2State extends State<AffilatePage2> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                 
+                 onPress(
+                    ontap: (){
+                      Get.back();
+                    },
+                    child: Image.asset("assets/icons/bb.png",height: 3.h,)),
                   SizedBox(height: 1.h),
                   Center(
                     child: Image.asset("assets/icons/logo.png", height: 24.h),
@@ -64,7 +68,7 @@ class _AffilatePage2State extends State<AffilatePage2> {
                     // SizedBox(width: 1.w),
                     Expanded(child: onPress(
                       ontap: (){
-                        Get.to(SchedulePoker());
+                        Get.to(SchedulePoker(isCoManager: false,));
                       },
                       child: Image.asset("assets/icons/p32.png",height: 18.h,))),
 

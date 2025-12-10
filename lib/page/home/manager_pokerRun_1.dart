@@ -13,14 +13,14 @@ import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class GolfPage extends StatefulWidget {
-  const GolfPage({super.key});
+class ManagerPokerRun1 extends StatefulWidget {
+  const ManagerPokerRun1({super.key});
 
   @override
-  State<GolfPage> createState() => _GolfPageState();
+  State<ManagerPokerRun1> createState() => _ManagerPokerRun1State();
 }
 
-class _GolfPageState extends State<GolfPage> {
+class _ManagerPokerRun1State extends State<ManagerPokerRun1> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -35,12 +35,16 @@ class _GolfPageState extends State<GolfPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   
+                   onPress(
+                    ontap: (){
+                      Get.back();
+                    },
+                    child: Image.asset("assets/icons/bb.png",height: 3.h,)),
                     SizedBox(height: 1.h),
                     Center(
                       child: Image.asset("assets/icons/logo.png", height: 24.h),
                     ),
-                     SizedBox(height: 3.h),
+                     SizedBox(height: 2.h),
                 
                     Center(
                       child: text_widget(
@@ -53,7 +57,7 @@ class _GolfPageState extends State<GolfPage> {
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(height: 3.h),
+                    SizedBox(height: 2.h),
                    Row(
                     children: [
                       Expanded(child: Image.asset("assets/icons/g1.png",height: 16.h,)),
@@ -126,7 +130,7 @@ class _GolfPageState extends State<GolfPage> {
           color: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(20),
+           padding: EdgeInsets.symmetric(horizontal:20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -138,7 +142,7 @@ class _GolfPageState extends State<GolfPage> {
                 SizedBox(height: 15),
 
                 Text(
-                  "Are you sure your poker run is completed & you are ready to publish the results?",
+                "Are You Sure Your Poker Run Is Completed & You Are Ready To Publish The Results?",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
@@ -193,7 +197,7 @@ class _GolfPageState extends State<GolfPage> {
           color: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(20),
+             padding: EdgeInsets.symmetric(horizontal:20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -205,7 +209,7 @@ class _GolfPageState extends State<GolfPage> {
                 SizedBox(height: 15),
 
                 Text(
-                  "Are you sure you want to Delete that poker run?",
+                  "Are You Sure You Want To Delete That Poker Run?",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,

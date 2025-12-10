@@ -52,7 +52,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
             ),
             title: text_widget(
               "Existing Poker Runs List",
-              fontSize: 16.6.sp,
+              fontSize: 17.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -120,7 +120,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
           color: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(20),
+           padding: EdgeInsets.symmetric(horizontal:20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -132,7 +132,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
                 SizedBox(height: 15),
 
                 Text(
-                  "Are you sure you want to Copy that poker run?",
+                  "Are You Sure You Want To Copy That Poker Run?",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,

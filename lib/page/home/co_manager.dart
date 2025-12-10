@@ -53,7 +53,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
             ),
             title: text_widget(
               "Co-manager List",
-              fontSize: 16.6.sp,
+              fontSize: 17.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -139,7 +139,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
           color: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(20),
+ padding: EdgeInsets.symmetric(horizontal:20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -152,10 +152,14 @@ class _CoManagerPageState extends State<CoManagerPage> {
 
                 Row(
                   children: [
-                    Image.asset("assets/icons/back.png",height: 4.h,),
+                   onPress(
+                                  ontap: (){
+                                    Get.back();
+                                  },
+                                  child: Image.asset("assets/icons/back.png",height: 3.6.h,)),
                     SizedBox(width: 3.w),
                     Text(
-                      "Add new Co-Manager",
+                      "Add New Co-Manager",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,

@@ -37,6 +37,8 @@ class _SingupPageState extends State<SingupPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 1.h),
+
                   Center(
                     child: Image.asset("assets/icons/logo.png", height: 10.h),
                   ),
@@ -44,7 +46,7 @@ class _SingupPageState extends State<SingupPage> {
                  
                   Center(
                     child: Container(
-                      width: 92.w,
+                      width: 88.w,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
@@ -132,7 +134,7 @@ class _SingupPageState extends State<SingupPage> {
                               padd: 16,
 
                               bColor: Color(0xffEDF1F3),
-                              hintColor: Color(0xffACB5BB),
+                                        hintColor: Color(0xff868686),
 
                               pColor: MyColors.primary,
                               isSuffix: true,
@@ -147,7 +149,7 @@ class _SingupPageState extends State<SingupPage> {
                               padd: 16,
 
                               bColor: Color(0xffEDF1F3),
-                              hintColor: Color(0xffACB5BB),
+                                         hintColor: Color(0xff868686),
 
                               pColor: MyColors.primary,
                               isSuffix: true,
@@ -192,7 +194,7 @@ Row(
 
   ],
 ),
-                            SizedBox(height: 2.5.h),
+                            SizedBox(height: 2.h),
                            customButon(
                               isIcon: false,
                               btnText: "Sign Up",
@@ -201,7 +203,7 @@ Row(
                                 // Get.to(() =>  );
                               },
                             ),
-                            SizedBox(height: 3.h),
+                            SizedBox(height: 2.h),
                                      Center(
                                        child: onPress(
                                          ontap: (){
@@ -229,6 +231,8 @@ Row(
                       ),
                     ),
                   ),
+                                    SizedBox(height: 12.h),
+
                 ],
               ),
             ),

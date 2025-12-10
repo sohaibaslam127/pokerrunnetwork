@@ -52,8 +52,8 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
               ),
             ),
             title: text_widget(
-              "Authorize poker run Participants",
-              fontSize: 16.6.sp,
+              "Authorize Poker Run Participants",
+              fontSize: 17.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -66,10 +66,10 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 2.h),
+                  SizedBox(height: 3.5.h),
                   ...List.generate(4, (index) {
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
+                      padding: const EdgeInsets.only(bottom: 16.0),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.18),
@@ -99,7 +99,7 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
                               ),
                                 text_widget(
                                 "Note: co-rider  with change card option included",
-                                fontSize: 13.5.sp,
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.white.withOpacity(0.60),
                               ),
@@ -114,7 +114,7 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
                             ),
                             child: text_widget(
                              "Paid",
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -127,7 +127,7 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
                             ),
                             child: text_widget(
                               "Not Paid \$50",
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -154,7 +154,7 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
           color: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.symmetric(horizontal:20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -167,10 +167,14 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
 
                 Row(
                   children: [
-                    Image.asset("assets/icons/back.png",height: 4.h,),
+                    onPress(
+                                  ontap: (){
+                                    Get.back();
+                                  },
+                                  child: Image.asset("assets/icons/back.png",height: 3.6.h,)),
                     SizedBox(width: 3.w),
                     Text(
-                      "Add new Co-Manager",
+                      "Add New Co-Manager",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,

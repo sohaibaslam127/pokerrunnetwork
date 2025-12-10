@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/page/home/co_manager_menu.dart';
+import 'package:pokerrunnetwork/page/home/manager_pokerRun_1.dart';
+import 'package:pokerrunnetwork/page/home/manager_poker_2.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SchedulePoker extends StatefulWidget {
-  const SchedulePoker({super.key});
+  final bool isCoManager;
+  const SchedulePoker({super.key,required this.isCoManager});
 
   @override
   State<SchedulePoker> createState() => _SchedulePokerState();
@@ -52,7 +56,7 @@ class _SchedulePokerState extends State<SchedulePoker> {
             ),
             title: text_widget(
               "Scheduled  Poker Runs lIst",
-              fontSize: 16.6.sp,
+              fontSize: 17.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -68,7 +72,7 @@ class _SchedulePokerState extends State<SchedulePoker> {
                   ...List.generate(4, (index) {
                     return onPress(
                       ontap: (){
-                      
+                        widget.isCoManager ? Get.to(CoManagerMenu()) : Get.to(ManagerPokerRun1());
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 18.0),

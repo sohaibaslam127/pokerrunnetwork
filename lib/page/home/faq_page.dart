@@ -45,7 +45,7 @@ class _FaqPageState extends State<FaqPage> {
               child: Icon(RemixIcons.arrow_left_s_line,size: 24.sp,color:Colors.white.withOpacity(0.80),),),
           ),
           title: text_widget("FAQ’s & Videos",
-              fontSize: 16.6.sp,
+              fontSize: 17.sp,
               color: Colors.white.withOpacity(0.80),
           fontWeight: FontWeight.w600,
           ),
@@ -81,12 +81,12 @@ class _FaqPageState extends State<FaqPage> {
     ),
   ),
 ),
-SizedBox(height: 3.h),
+SizedBox(height: 1.h),
 faq == true ?Column(
   children: [
     ...List.generate(4, (index){
       return Padding(
-        padding: const EdgeInsets.all(18.0),
+        padding: const EdgeInsets.symmetric(horizontal:18.0,vertical: 10),
         child: Container(
           child: Row(
             children: [
@@ -97,14 +97,14 @@ faq == true ?Column(
                 children: [
                   text_widget("Prepare for your first skateboard jump",
                   color: Colors.white,
-                  fontSize: 17.sp,
+                  fontSize: 16.8.sp,
                   fontWeight: FontWeight.w600,
                   ),
-                  SizedBox(height: 1.h,),
+                  SizedBox(height: 0.2.h,),
                   text_widget("Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
                   color: Colors.white.withOpacity(0.70),
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 14.5.sp,
+                  fontWeight: FontWeight.w500,
                   ),
                 ],
               ))
@@ -141,6 +141,7 @@ faq == true ?Column(
                             collapsedShape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
+                            
                             childrenPadding: const EdgeInsets.symmetric(
                               horizontal: 14,
                             ),

@@ -67,12 +67,12 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
         controller: controller,
         style: TextStyle(
           color: mainTxtColor ?? Colors.black54,
-          fontSize: 15.sp,
+          fontSize: 16.sp,
         ),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(
-            fontSize: 13.7.sp,
+            fontSize: 15.5.sp,
             fontWeight: FontWeight.w400,
             color: hintColor ?? Colors.black54,
           ),
@@ -123,27 +123,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
                   ),
                 )
               : const SizedBox(),
-          prefixIconConstraints: BoxConstraints(
-            minWidth: isPrefix ? 13.w : 5.w,
-          ),
-          prefixIcon: isPrefix
-              ? Transform.flip(
-                  flipX: false,
-                  child: onPress(
-                    ontap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Image.asset(
-                        prefixIcon,
-                        height: prefixIcon == "assets/icons/mail.png"
-                            ? 1.8.h
-                            : 2.1.h,
-                        color: pColor ?? Colors.black,
-                      ),
-                    ),
-                  ),
-                )
-              : const SizedBox(),
+       
           filled: true,
           fillColor: fillColor ?? Color(0xffF7F7F7),
           enabledBorder: OutlineInputBorder(

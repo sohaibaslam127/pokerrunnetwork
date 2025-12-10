@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/page/home/manager_pokerRun_1.dart';
+import 'package:pokerrunnetwork/page/home/manager_poker_2.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
@@ -52,7 +54,7 @@ class _CompletedPokerState extends State<CompletedPoker> {
             ),
             title: text_widget(
               "Completed Poker Runs List",
-              fontSize: 16.6.sp,
+              fontSize: 17.sp,
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -66,85 +68,90 @@ class _CompletedPokerState extends State<CompletedPoker> {
                 children: [
                   SizedBox(height: 2.h),
                   ...List.generate(4, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.18),
-                          border: Border.all(
-                            color: const Color(
-                              0xffFFFFFF,
-                            ).withOpacity(0.30), // ✅ border color
-                            width: 1.2,
+                    return onPress(
+                      ontap: (){
+                        Get.to(ManagerPokerRun2());
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 18.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.18),
+                            border: Border.all(
+                              color: const Color(
+                                0xffFFFFFF,
+                              ).withOpacity(0.30), // ✅ border color
+                              width: 1.2,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          title: text_widget(
-                            "Jhonson",
-                            fontSize: 16.5.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                          subtitle: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              text_widget(
-                                "5 November 9:30 AM",
-                                fontSize: 14.7.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white.withOpacity(0.60),
-                              ),
-                              SizedBox(height: 0.5.h),
-                              Row(
-                                children: [
-                                  text_widget(
-                                    "Winner:",
-                                    fontSize: 14.7.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(width: 1.3.w),
-                                  text_widget(
-                                    "5 November 9:30 AM",
-                                    fontSize: 14.7.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white.withOpacity(0.60),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          trailing: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Spacer(),
-                              Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                size: 2.h,
-                                color: Colors.white.withOpacity(0.80),
-                              ),
-                              Spacer(),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  text_widget(
-                                    "Rank:",
-                                    fontSize: 14.7.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(width: 1.3.w),
-                                  text_widget(
-                                    "Stright",
-                                    fontSize: 14.7.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white.withOpacity(0.60),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          child: ListTile(
+                            title: text_widget(
+                              "Jhonson",
+                              fontSize: 16.5.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            subtitle: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                text_widget(
+                                  "5 November 9:30 AM",
+                                  fontSize: 14.7.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white.withOpacity(0.60),
+                                ),
+                                SizedBox(height: 0.5.h),
+                                Row(
+                                  children: [
+                                    text_widget(
+                                      "Winner:",
+                                      fontSize: 14.7.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 1.3.w),
+                                    text_widget(
+                                      "5 November 9:30 AM",
+                                      fontSize: 14.7.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white.withOpacity(0.60),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            trailing: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Spacer(),
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  size: 2.h,
+                                  color: Colors.white.withOpacity(0.80),
+                                ),
+                                Spacer(),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    text_widget(
+                                      "Rank:",
+                                      fontSize: 14.7.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 1.3.w),
+                                    text_widget(
+                                      "Stright",
+                                      fontSize: 14.7.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white.withOpacity(0.60),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

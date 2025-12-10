@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -23,7 +24,7 @@ class _PokerSponsersState extends State<PokerSponsers> {
       children: [
         Positioned.fill(
           child: Image.asset(
-            "assets/icons/bg.jpg",
+            "assets/icons/bbg.jpg",
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -42,20 +43,24 @@ class _PokerSponsersState extends State<PokerSponsers> {
                  
                   Center(
                     child: Container(
-                      width: 92.w,
+                      width: 88.w,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(14.0),
+                        padding: const EdgeInsets.all(18.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                Image.asset("assets/icons/back.png",height: 4.5.h,),
-                                SizedBox(width: 2.w),
+                               onPress(
+                                  ontap: (){
+                                    Get.back();
+                                  },
+                                  child: Image.asset("assets/icons/back.png",height: 3.6.h,)),
+                                SizedBox(width: 3.w),
                                 text_widget("Sponsors",
                                 
                                 fontSize: 20.sp,
@@ -144,9 +149,10 @@ class _PokerSponsersState extends State<PokerSponsers> {
                             SizedBox(height: 2.5.h),
                            customButon(
                               isIcon: false,
-                              btnText: "Continue",
+                              btnText: "Create Poker Run",
                               icon: "assets/icons/p1.png",
                               onTap: (){
+                                Get.to(HomePage());
                                 // Get.to(() =>  );
                               },
                             ),

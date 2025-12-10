@@ -45,7 +45,7 @@ class _SettingPageState extends State<SettingPage> {
               child: Icon(RemixIcons.arrow_left_s_line,size: 22.sp,color:Colors.white.withOpacity(0.80),),),
           ),
           title: text_widget("Setting",
-              fontSize: 16.6.sp,
+              fontSize: 17.sp,
               color: Colors.white.withOpacity(0.80),
           fontWeight: FontWeight.w600,
           ),
