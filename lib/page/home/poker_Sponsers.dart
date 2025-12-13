@@ -38,9 +38,8 @@ class _PokerSponsersState extends State<PokerSponsers> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-             
                   SizedBox(height: 3.h),
-                 
+
                   Center(
                     child: Container(
                       width: 88.w,
@@ -55,111 +54,116 @@ class _PokerSponsersState extends State<PokerSponsers> {
                           children: [
                             Row(
                               children: [
-                               onPress(
-                                  ontap: (){
+                                onPress(
+                                  ontap: () {
                                     Get.back();
                                   },
-                                  child: Image.asset("assets/icons/back.png",height: 3.6.h,)),
-                                SizedBox(width: 3.w),
-                                text_widget("Sponsors",
-                                
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.bold,
+                                  child: Image.asset(
+                                    "assets/icons/back.png",
+                                    height: 3.6.h,
+                                  ),
                                 ),
-                               
+                                SizedBox(width: 3.w),
+                                text_widget(
+                                  "Sponsors",
+
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ],
                             ),
                             SizedBox(height: 2.5.h),
-                     ListView.builder(
-  itemCount: 5,
-  shrinkWrap: true,
-  physics: NeverScrollableScrollPhysics(),
-  itemBuilder: (context, index) {
-    int number = index + 1;
+                            ListView.builder(
+                              itemCount: 5,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                int number = index + 1;
 
- String suffix;
-    if (number == 1) suffix = "st";
-    else if (number == 2) suffix = "nd";
-    else if (number == 3) suffix = "rd";
-    else suffix = "th";
-    // Convert number → First, Second, Third, Fourth, Fifth
-    String word;
-    switch (number) {
-      case 1:
-        word = "First";
-        break;
-      case 2:
-        word = "Second";
-        break;
-      case 3:
-        word = "Third";
-        break;
-      case 4:
-        word = "Fourth";
-        break;
-      case 5:
-        word = "Fifth";
-        break;
-      default:
-        word = "$number";
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        text_widget(
-          "$number$suffix Sponsor",
-          color: Color(0xff6C7278),
-          fontSize: 15.sp,
-          fontWeight: FontWeight.bold,
-        ),
-        SizedBox(height: 0.8.h),
+                                String suffix;
+                                if (number == 1)
+                                  suffix = "st";
+                                else if (number == 2)
+                                  suffix = "nd";
+                                else if (number == 3)
+                                  suffix = "rd";
+                                else
+                                  suffix = "th";
+                                // Convert number → First, Second, Third, Fourth, Fifth
+                                String word;
+                                switch (number) {
+                                  case 1:
+                                    word = "First";
+                                    break;
+                                  case 2:
+                                    word = "Second";
+                                    break;
+                                  case 3:
+                                    word = "Third";
+                                    break;
+                                  case 4:
+                                    word = "Fourth";
+                                    break;
+                                  case 5:
+                                    word = "Fifth";
+                                    break;
+                                  default:
+                                    word = "$number";
+                                }
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    text_widget(
+                                      "$number$suffix Sponsor",
+                                      color: Color(0xff6C7278),
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    SizedBox(height: 0.8.h),
 
-        // First Text Field (Dynamic)
-        textFieldWithPrefixSuffuxIconAndHintText(
-          "Name of $word Sponsor",
-          fillColor: Colors.white,
-          mainTxtColor: Colors.black,
-          radius: 12,
-          padd: 16,
-          bColor: Color(0xffEDF1F3),
-          hintColor: Color(0xff868686),
-          pColor: MyColors.primary,
-        ),
-        SizedBox(height: 1.2.h),
+                                    // First Text Field (Dynamic)
+                                    textFieldWithPrefixSuffuxIconAndHintText(
+                                      "Name of $word Sponsor",
+                                      fillColor: Colors.white,
+                                      mainTxtColor: Colors.black,
+                                      radius: 12,
 
-        // Second Text Field (Static)
-        textFieldWithPrefixSuffuxIconAndHintText(
-          "WWW.sponsorwebsite.com",
-          fillColor: Colors.white,
-          mainTxtColor: Colors.black,
-          radius: 12,
-          padd: 16,
-          bColor: Color(0xffEDF1F3),
-          hintColor: Color(0xff868686),
-          pColor: MyColors.primary,
-        ),
+                                      bColor: Color(0xffEDF1F3),
+                                      hintColor: Color(0xff868686),
+                                      pColor: MyColors.primary,
+                                    ),
+                                    SizedBox(height: 1.2.h),
 
-        SizedBox(height: 2.h),
-      ],
-    );
-  },
-),
+                                    // Second Text Field (Static)
+                                    textFieldWithPrefixSuffuxIconAndHintText(
+                                      "WWW.sponsorwebsite.com",
+                                      fillColor: Colors.white,
+                                      mainTxtColor: Colors.black,
+                                      radius: 12,
 
+                                      bColor: Color(0xffEDF1F3),
+                                      hintColor: Color(0xff868686),
+                                      pColor: MyColors.primary,
+                                    ),
+
+                                    SizedBox(height: 2.h),
+                                  ],
+                                );
+                              },
+                            ),
 
                             SizedBox(height: 2.5.h),
-                           customButon(
+                            customButon(
                               isIcon: false,
                               btnText: "Create Poker Run",
                               icon: "assets/icons/p1.png",
-                              onTap: (){
+                              onTap: () {
                                 Get.to(HomePage());
                                 // Get.to(() =>  );
                               },
                             ),
-                            
-                                    SizedBox(height: 2.h),
-                           
 
+                            SizedBox(height: 2.h),
                           ],
                         ),
                       ),

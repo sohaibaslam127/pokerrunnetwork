@@ -31,9 +31,9 @@ class _ExistingPokersState extends State<ExistingPokers> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.white.withOpacity(0.08),
-            surfaceTintColor: Colors.white.withOpacity(0.08),
-            backgroundColor: Colors.white.withOpacity(0.08),
+            foregroundColor: Colors.white.withValues(alpha: 0.08),
+            surfaceTintColor: Colors.white.withValues(alpha: 0.08),
+            backgroundColor: Colors.white.withValues(alpha: 0.08),
 
             elevation: 0,
             leadingWidth: 14.w,
@@ -46,14 +46,14 @@ class _ExistingPokersState extends State<ExistingPokers> {
                 child: Icon(
                   RemixIcons.arrow_left_s_line,
                   size: 24.sp,
-                  color: Colors.white.withOpacity(0.80),
+                  color: Colors.white.withValues(alpha: 0.80),
                 ),
               ),
             ),
             title: text_widget(
               "Existing Poker Runs List",
               fontSize: 17.sp,
-              color: Colors.white.withOpacity(0.80),
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -70,11 +70,11 @@ class _ExistingPokersState extends State<ExistingPokers> {
                       padding: const EdgeInsets.only(bottom: 18.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.18),
+                          color: Colors.white.withValues(alpha: 0.18),
                           border: Border.all(
                             color: const Color(
                               0xffFFFFFF,
-                            ).withOpacity(0.30), // ✅ border color
+                            ).withValues(alpha: 0.30), // ✅ border color
                             width: 1.2,
                           ),
                           borderRadius: BorderRadius.circular(12),
@@ -90,14 +90,17 @@ class _ExistingPokersState extends State<ExistingPokers> {
                             "5 November 9:30 AM",
                             fontSize: 14.7.sp,
                             fontWeight: FontWeight.w400,
-                            color: Colors.white.withOpacity(0.60),
+                            color: Colors.white.withValues(alpha: 0.60),
                           ),
                           trailing: onPress(
-                            ontap: (){
+                            ontap: () {
                               showDeleteAccountPopup1(context);
-
                             },
-                            child: Image.asset("assets/icons/cop.png",height: 2.3.h,))
+                            child: Image.asset(
+                              "assets/icons/cop.png",
+                              height: 2.3.h,
+                            ),
+                          ),
                         ),
                       ),
                     );
@@ -110,70 +113,74 @@ class _ExistingPokersState extends State<ExistingPokers> {
       ],
     );
   }
+
   void showDeleteAccountPopup1(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: true, // Close on tap outside
-    builder: (context) {
-      return Center(
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-           padding: EdgeInsets.symmetric(horizontal:20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-              
-                SizedBox(height: 15),
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Close on tap outside
+      builder: (context) {
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 15),
 
-                Text(
-                  "Are You Sure You Want To Copy That Poker Run?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  
+                  Text(
+                    "Are You Sure You Want To Copy That Poker Run?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
-                ),
 
-                
-                SizedBox(height: 10),
+                  SizedBox(height: 10),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // Cancel Button
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Image.asset("assets/icons/no.png",height: 5.h,) 
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Cancel Button
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Image.asset(
+                            "assets/icons/no.png",
+                            height: 5.h,
+                          ),
+                        ),
                       ),
-                    ),
 
-                    // Delete Button
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          // your delete logic here
-                        },
-                        child:  Image.asset("assets/icons/copy.png",height: 9.5.h,)
+                      // Delete Button
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                            // your delete logic here
+                          },
+                          child: Image.asset(
+                            "assets/icons/copy.png",
+                            height: 9.5.h,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 }

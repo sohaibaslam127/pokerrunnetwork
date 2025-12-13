@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:157383110136:android:8028686b475bdb2e637a0d",
+        "mobilesdk_app_id": "1:157383110136:android:da530fe01a4e2693637a0d",
         "android_client_info": {
-          "package_name": "com.techbolic.pokerrun"
+          "package_name": "com.techbolic.pokernetwork"
         }
       },
       "oauth_client": [
@@ -44,9 +44,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:157383110136:android:ddd5a103a6fae43d637a0d",
+        "mobilesdk_app_id": "1:157383110136:android:8028686b475bdb2e637a0d",
         "android_client_info": {
-          "package_name": "com.techbolic.pokerrunnetwork"
+          "package_name": "com.techbolic.pokerrun"
         }
       },
       "oauth_client": [

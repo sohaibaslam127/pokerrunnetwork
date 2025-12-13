@@ -38,89 +38,87 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               Spacer(),
-            
+                Spacer(),
+
                 Center(
                   child: text_widget(
                     "Welcome To The\nPoker Run Network.",
                     textAlign: TextAlign.center,
-            
+
                     fontSize: 25.sp,
                     height: 1.1,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                               Spacer(),
+                Spacer(),
 
                 Center(
                   child: Image.asset("assets/icons/logo.png", height: 26.h),
                 ),
-                              Spacer(),
+                Spacer(),
 
-                         Padding(
-                           padding: const EdgeInsets.symmetric(horizontal:8.0),
-                           child: customButon(
-                              isIcon: true,
-                              btnText: "Poker Run Network Affiliate",
-                              icon: "assets/icons/p1.png",
-                              onTap: (){
-                                setState(() {
-                                  userType=1;
-                                });
-                                Get.to(AffilateMenuPage());
-                                // Get.to(() =>  );
-                              },
-                            ),
-                         ),
-                          SizedBox(height: 1.h),
-                         Padding(
-                           padding: const EdgeInsets.symmetric(horizontal:8.0),
-                           child: customButon(
-                              isIcon: true,
-                              btnText: "Poker Run Co-Manager",
-                              icon: "assets/icons/p2.png",
-                              onTap: (){
-                                 setState(() {
-                                  userType=2;
-                                });
-                                Get.to(SchedulePoker(isCoManager: true,));
-            
-                                // Get.to(() =>  );
-                              },
-                            ),
-                         ),
-                             Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: customButon(
+                    isIcon: true,
+                    btnText: "Poker Run Network Affiliate",
+                    icon: "assets/icons/p1.png",
+                    onTap: () {
+                      setState(() {
+                        // userType = 1;
+                      });
+                      Get.to(AffilateMenuPage());
+                      // Get.to(() =>  );
+                    },
+                  ),
+                ),
+                SizedBox(height: 1.h),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: customButon(
+                    isIcon: true,
+                    btnText: "Poker Run Co-Manager",
+                    icon: "assets/icons/p2.png",
+                    onTap: () {
+                      setState(() {
+                        // userType = 2;
+                      });
+                      Get.to(SchedulePoker(isCoManager: true));
 
-                                  Center(
-                                    child: onPress(
-                                      ontap: (){
-                                        Get.to(SettingPage());
-                                      },
-                                      child: Container(
-                                        width: 37.w,
-                                        height: 4.7.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.20),
-                                          border: Border.all(
-                                          color: Colors.white.withOpacity(0.30),
-                                      
-                                          ),
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Center(
-                                          child: text_widget("Setting & Profile",
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.sp,
-                                          ),
-                                        ),
-                                      
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 2.5.h),
-                
+                      // Get.to(() =>  );
+                    },
+                  ),
+                ),
+                Spacer(),
+
+                Center(
+                  child: onPress(
+                    ontap: () {
+                      Get.to(SettingPage());
+                    },
+                    child: Container(
+                      width: 37.w,
+                      height: 4.7.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.20),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.30),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: text_widget(
+                          "Setting & Profile",
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 2.5.h),
               ],
             ),
           ),

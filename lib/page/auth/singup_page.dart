@@ -1,12 +1,18 @@
 import 'package:custom_check_box/custom_check_box.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/page/home/home_page.dart';
+import 'package:pokerrunnetwork/services/authServices.dart';
+import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SingupPage extends StatefulWidget {
   const SingupPage({super.key});
@@ -17,6 +23,65 @@ class SingupPage extends StatefulWidget {
 
 class _SingupPageState extends State<SingupPage> {
   bool shouldCheck = false;
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    fullNameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> signUp() async {
+    if (userNameController.text.isEmpty) {
+      toast("Info", "Username is required");
+    } else if (fullNameController.text.isEmpty) {
+      toast("Info", "Full name is required");
+    } else if (phoneController.text.isEmpty) {
+      toast("Info", "Phone number is required");
+    } else if (emailController.text.isEmpty) {
+      toast("Info", "Email is required");
+    } else if (passwordController.text.isEmpty) {
+      toast("Info", "Password is required");
+    } else if (passwordController.text.length < 6) {
+      toast("Info", "Select a strong password is required");
+    } else if (confirmPasswordController.text !=
+        confirmPasswordController.text) {
+      toast("Info", "Passwords must match");
+    } else if (!shouldCheck) {
+      toast("Info", "You must need to accept Term and Conditions");
+    } else {
+      bool roadUnique = await FirestoreServices.I.isRoadNameUnique(
+        userNameController.text.trim().toLowerCase(),
+      );
+      if (!roadUnique) {
+        toast(
+          "Road name taken",
+          "This Road Name/User Name is already in use. Suggestion like: ${userNameController.text}01",
+        );
+        return;
+      }
+      AuthServices.I
+          .emailSignUp(emailController.text, passwordController.text)
+          .then((result) {
+            if (result.isEmpty) {
+              Get.offAll(() => const HomePage());
+            } else {
+              toast("Error", result);
+            }
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -43,7 +108,7 @@ class _SingupPageState extends State<SingupPage> {
                     child: Image.asset("assets/icons/logo.png", height: 10.h),
                   ),
                   SizedBox(height: 3.h),
-                 
+
                   Center(
                     child: Container(
                       width: 88.w,
@@ -58,13 +123,14 @@ class _SingupPageState extends State<SingupPage> {
                           children: [
                             Row(
                               children: [
-                                text_widget("Register",
-                                
-                                fontSize: 22.sp,
-                                fontWeight: FontWeight.bold,
+                                text_widget(
+                                  "Register",
+
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.bold,
                                 ),
                                 Spacer(),
-                                Image.asset("assets/icons/dp.png",height: 6.h,),
+                                Image.asset("assets/icons/dp.png", height: 6.h),
                               ],
                             ),
                             SizedBox(height: 2.5.h),
@@ -72,9 +138,9 @@ class _SingupPageState extends State<SingupPage> {
                               'Username'.tr,
 
                               fillColor: Colors.white,
+                              controller: userNameController,
                               mainTxtColor: Colors.black,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
@@ -87,8 +153,8 @@ class _SingupPageState extends State<SingupPage> {
 
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
+                              controller: fullNameController,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
@@ -101,8 +167,8 @@ class _SingupPageState extends State<SingupPage> {
 
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
+                              controller: phoneController,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
@@ -115,124 +181,136 @@ class _SingupPageState extends State<SingupPage> {
 
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
+                              controller: emailController,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
 
                               pColor: MyColors.primary,
                             ),
-                            
+
                             SizedBox(height: 1.3.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               "Password".tr,
 
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
+                              controller: passwordController,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
-                                        hintColor: Color(0xff868686),
+                              hintColor: Color(0xff868686),
 
                               pColor: MyColors.primary,
                               isSuffix: true,
                             ),
-                             SizedBox(height: 1.3.h),
+                            SizedBox(height: 1.3.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               "Confirm Password".tr,
 
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
-                                         hintColor: Color(0xff868686),
+                              hintColor: Color(0xff868686),
+                              controller: confirmPasswordController,
 
                               pColor: MyColors.primary,
                               isSuffix: true,
                             ),
-                           SizedBox(height: 2.h),
-Row(
-  children: [
-    Spacer(),
-     CustomCheckBox(
-              value: shouldCheck,
-              shouldShowBorder: true,
-              borderColor:MyColors.primary1,
-              checkedFillColor:MyColors.primary1,
-              borderRadius: 4,
-              borderWidth: 1.5,
-              checkBoxSize: 18,
-              onChanged: (val) {
-                //do your stuff here
-                setState(() {
-                  shouldCheck = val;
-                });
-              },
-            ),
-            SizedBox(width: .5.w,),
-            RichText(
-                                                             text: TextSpan(
-                                                               text: 'I Accept ',
-                                                               style: TextStyle(fontSize: 15, color: MyColors.black, fontWeight: FontWeight.w400),
-                                                               children: [
-                                                                 TextSpan(
-                                                                   text: 'Terms & Conditions',
-                                                                   
-                                                                   style: TextStyle(fontSize: 15, color: MyColors.primary1,fontWeight: FontWeight.bold,
-                                                                   decoration: TextDecoration.underline,
-                                                                   ),
-                                                                 ),
-                                                               ],
-                                                             ),
-                                                           ),
-    Spacer(),
-
-
-  ],
-),
                             SizedBox(height: 2.h),
-                           customButon(
+                            Row(
+                              children: [
+                                Spacer(),
+                                CustomCheckBox(
+                                  value: shouldCheck,
+                                  shouldShowBorder: true,
+                                  borderColor: MyColors.primary,
+                                  checkedFillColor: MyColors.primary,
+                                  borderRadius: 4,
+                                  borderWidth: 1.5,
+                                  checkBoxSize: 18,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      shouldCheck = val;
+                                    });
+                                  },
+                                ),
+                                SizedBox(width: .5.w),
+                                RichText(
+                                  text: TextSpan(
+                                    text: 'I Accept ',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: MyColors.black,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: 'Terms & Conditions',
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            launchMyUrl(
+                                              'https://thepokerrunapp.com/contact-us%2Fprivacy-policy',
+                                            );
+                                          },
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: MyColors.secondary,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Spacer(),
+                              ],
+                            ),
+                            SizedBox(height: 2.h),
+                            customButon(
                               isIcon: false,
                               btnText: "Sign Up",
                               icon: "assets/icons/p1.png",
-                              onTap: (){
-                                // Get.to(() =>  );
-                              },
+                              onTap: signUp,
                             ),
                             SizedBox(height: 2.h),
-                                     Center(
-                                       child: onPress(
-                                         ontap: (){
-                                          // Get.to(SignupPage());
-                                        },
-                                         child: RichText(
-                                                             text: TextSpan(
-                                                               text: 'Already have an account? ',
-                                                               style: TextStyle(fontSize: 15, color: MyColors.black, fontWeight: FontWeight.w400),
-                                                               children: [
-                                                                 TextSpan(
-                                                                   text: 'Sign In',
-                                                                   style: TextStyle(fontSize: 15, color: MyColors.primary1,fontWeight: FontWeight.bold),
-                                                                 ),
-                                                               ],
-                                                             ),
-                                                           ),
-                                       ),
-                                     ),
-                                    SizedBox(height: 2.h),
-                           
-
+                            Center(
+                              child: onPress(
+                                ontap: () {
+                                  Get.back();
+                                },
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: 'Already have an account? ',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: MyColors.black,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: 'Sign In',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: MyColors.secondary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 2.h),
                           ],
                         ),
                       ),
                     ),
                   ),
-                                    SizedBox(height: 12.h),
-
+                  SizedBox(height: 12.h),
                 ],
               ),
             ),

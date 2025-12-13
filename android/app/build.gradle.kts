@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.pokerrunnetwork"
+    namespace = "com.techbolic.pokernetwork"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,26 +13,20 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 Widget textFieldWithPrefixSuffuxIconAndHintText(
   String hintText, {
   suffixIcon,
-  prefixIcon,
   TextEditingController? controller,
   int line = 1,
   bool isSuffix = false,
   bool enable = true,
   bool isEmail = false,
   double? radius,
-  double? padd,
   bool isTextSuffix = false,
   suffText,
-
   fillColor,
   bColor,
   mainTxtColor,
   pColor,
   hintColor,
   Function? ontap,
-  bool isPrefix = false,
-  color,
-  iconColor,
   bool obsecure = false,
 }) {
   return StatefulBuilder(
@@ -49,10 +42,8 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
             : null,
         inputFormatters: hintText == 'Zip Code' || hintText == 'Enter Zip Code'
             ? [
-                FilteringTextInputFormatter.digitsOnly, // Allows only numbers
-                LengthLimitingTextInputFormatter(
-                  5,
-                ), // Limits to 6 digits (adjust as needed)
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(5),
               ]
             : hintText.contains("Phone Number")
             ? [FilteringTextInputFormatter.digitsOnly]
@@ -64,6 +55,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
         },
         enabled: enable,
         obscureText: obsecure,
+        cursorColor: Colors.grey.shade300,
         controller: controller,
         style: TextStyle(
           color: mainTxtColor ?? Colors.black54,
@@ -76,7 +68,6 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
             fontWeight: FontWeight.w400,
             color: hintColor ?? Colors.black54,
           ),
-          // contentPadding: EdgeInsets.symmetric(vertical: 5),
           suffixIconConstraints: BoxConstraints(),
           suffixIcon: isTextSuffix
               ? Padding(
@@ -92,20 +83,13 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
               ? Padding(
                   padding: EdgeInsets.only(right: 12.0),
                   child: onPress(
-                    ontap: (){
-
-                    },
-                    child: Image.asset(
-                      suffixIcon,
-                      height:  3.h,
-                    ),
+                    ontap: () {},
+                    child: Image.asset(suffixIcon, height: 3.h),
                   ),
                 )
               : isSuffix
               ? Padding(
-                  padding: EdgeInsets.only(
-                    right: appLanguage == 'en' ? 5.w : 0,
-                  ),
+                  padding: EdgeInsets.only(right: 5.w),
                   child: onPress(
                     ontap: () {
                       setState(() {
@@ -123,7 +107,6 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
                   ),
                 )
               : const SizedBox(),
-       
           filled: true,
           fillColor: fillColor ?? Color(0xffF7F7F7),
           enabledBorder: OutlineInputBorder(

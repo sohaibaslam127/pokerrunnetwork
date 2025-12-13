@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/page/auth/singup_page.dart';
-import 'package:pokerrunnetwork/page/home/co_manager_menu.dart';
-import 'package:pokerrunnetwork/page/home/affilate_menu.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
+import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/widgets/ontap.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -19,6 +18,34 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailContoller = TextEditingController();
+  TextEditingController passwordContoller = TextEditingController();
+
+  void signIn() {
+    if (!emailContoller.text.isEmail) {
+      toast("Info", "Please enter a valid email address");
+    } else if (passwordContoller.text.isEmpty) {
+      toast("Info", "Password is required");
+    } else {
+      AuthServices.I
+          .emailSignIn(emailContoller.text, passwordContoller.text)
+          .then((result) {
+            if (result.isEmpty) {
+              Get.offAll(const HomePage());
+            } else {
+              toast("Login Error", result.toString());
+            }
+          });
+    }
+  }
+
+  @override
+  void dispose() {
+    emailContoller.dispose();
+    passwordContoller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -46,7 +73,6 @@ class _LoginPageState extends State<LoginPage> {
                     child: text_widget(
                       "Welcome Back To\nThe Poker Run\nNetwork.",
                       textAlign: TextAlign.center,
-
                       fontSize: 24.sp,
                       height: 1.1,
                       fontWeight: FontWeight.bold,
@@ -68,29 +94,26 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             textFieldWithPrefixSuffuxIconAndHintText(
                               'Enter your Email'.tr,
-
                               fillColor: Colors.white,
+                              controller: emailContoller,
                               mainTxtColor: Colors.black,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
-
                               pColor: MyColors.primary,
                             ),
                             SizedBox(height: 2.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               '*******'.tr,
-
                               fillColor: Colors.white,
+                              controller: passwordContoller,
                               mainTxtColor: Colors.black,
                               radius: 12,
-                              padd: 16,
 
+                              obsecure: true,
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xffACB5BB),
-
                               pColor: MyColors.primary,
                               isSuffix: true,
                             ),
@@ -98,79 +121,86 @@ class _LoginPageState extends State<LoginPage> {
                             Row(
                               children: [
                                 Spacer(),
-                                text_widget(
-                                  "Forgot Password?",
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: MyColors.primary1,
+                                onPress(
+                                  ontap: () {},
+                                  child: text_widget(
+                                    "Forgot Password?",
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: MyColors.secondary,
+                                  ),
                                 ),
-                            SizedBox(height: 2.5.h),
-
-                                // Spacer(),
+                                SizedBox(height: 2.5.h),
                               ],
                             ),
                             SizedBox(height: 2.5.h),
-                           customButon(
+                            customButon(
                               isIcon: false,
                               btnText: "Sign In",
                               icon: "assets/icons/p1.png",
-                              onTap: (){
-                                Get.to(HomePage());
-                                // Get.to(() =>  );
-                              },
+                              onTap: signIn,
                             ),
                             SizedBox(height: 3.h),
-                                     Center(
-                                       child: onPress(
-                                         ontap: (){
-                                          Get.to(SingupPage());
-                                        },
-                                         child: RichText(
-                                                             text: TextSpan(
-                                                               text: 'Don’t have an account? ',
-                                                               style: TextStyle(fontSize: 15, color: MyColors.black, fontWeight: FontWeight.w400),
-                                                               children: [
-                                                                 TextSpan(
-                                                                   text: 'Sign Up',
-                                                                   style: TextStyle(fontSize: 15, color: MyColors.primary1,fontWeight: FontWeight.bold),
-                                                                 ),
-                                                               ],
-                                                             ),
-                                                           ),
-                                       ),
-                                     ),
-                                    
-                           
-                  SizedBox(height: 2.h),
-
+                            Center(
+                              child: onPress(
+                                ontap: () {
+                                  Get.to(SingupPage());
+                                },
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: 'Don’t have an account? ',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: MyColors.black,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: 'Sign Up',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: MyColors.secondary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 2.h),
                           ],
                         ),
                       ),
                     ),
                   ),
                   SizedBox(height: 6.h),
-                                    Center(
-                                      child: Container(
-                                        width: 32.w,
-                                        height: 4.7.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.20),
-                                          border: Border.all(
-                                          color: Colors.white.withOpacity(0.30),
-
-                                          ),
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Center(
-                                          child: text_widget("About Us",
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.sp,
-                                          ),
-                                        ),
-
-                                      ),
-                                    ),
+                  Center(
+                    child: onPress(
+                      ontap: () {
+                        launchMyUrl('https://thepokerrunapp.com');
+                      },
+                      child: Container(
+                        width: 32.w,
+                        height: 4.7.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.20),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.30),
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: text_widget(
+                            "About Us",
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

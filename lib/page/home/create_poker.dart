@@ -20,65 +20,66 @@ class _CreatePokerState extends State<CreatePoker> {
   bool shouldCheck = false;
   DateTime? selectedDate;
   Future<DateTime?> pickDate(BuildContext context) async {
-  const primaryColor = Color(0xFFF0C11D);
+    const primaryColor = Color(0xFFF0C11D);
 
-  final DateTime? picked = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime(1900),
-    lastDate: DateTime(2100),
-    helpText: "Select Date",
-    confirmText: "Done",
-    cancelText: "Cancel",
-    builder: (context, child) {
-      return Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: primaryColor,       // Header background color
-            onPrimary: Colors.white,     // Header text color
-            onSurface: Colors.black,     // Body text color
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor: primaryColor, // Buttons color
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+      helpText: "Select Date",
+      confirmText: "Done",
+      cancelText: "Cancel",
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: primaryColor, // Header background color
+              onPrimary: Colors.white, // Header text color
+              onSurface: Colors.black, // Body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: primaryColor, // Buttons color
+              ),
             ),
           ),
-        ),
-        child: child!,
-      );
-    },
-  );
+          child: child!,
+        );
+      },
+    );
 
-  return picked;
-}
-TimeOfDay? selectedTime;
-Future<TimeOfDay?> pickTime(BuildContext context) async {
-  const primaryColor = Color(0xFFF0C11D);
+    return picked;
+  }
 
-  final TimeOfDay? picked = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
-    builder: (context, child) {
-      return Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: primaryColor,       // Header color
-            onPrimary: Colors.white,     // Header text color
-            onSurface: Colors.black,     // Body text color
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor: primaryColor, // Button color
+  TimeOfDay? selectedTime;
+  Future<TimeOfDay?> pickTime(BuildContext context) async {
+    const primaryColor = Color(0xFFF0C11D);
+
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: primaryColor, // Header color
+              onPrimary: Colors.white, // Header text color
+              onSurface: Colors.black, // Body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: primaryColor, // Button color
+              ),
             ),
           ),
-        ),
-        child: child!,
-      );
-    },
-  );
+          child: child!,
+        );
+      },
+    );
 
-  return picked;
-}
+    return picked;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,9 +101,8 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-             
                   SizedBox(height: 3.h),
-                 
+
                   Center(
                     child: Container(
                       width: 88.w,
@@ -118,17 +118,21 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
                             Row(
                               children: [
                                 onPress(
-                                  ontap: (){
+                                  ontap: () {
                                     Get.back();
                                   },
-                                  child: Image.asset("assets/icons/back.png",height: 3.6.h,)),
-                                SizedBox(width: 3.w),
-                                text_widget("Create a new Poker Run",
-                                
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.bold,
+                                  child: Image.asset(
+                                    "assets/icons/back.png",
+                                    height: 3.6.h,
+                                  ),
                                 ),
-                               
+                                SizedBox(width: 3.w),
+                                text_widget(
+                                  "Create a new Poker Run",
+
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ],
                             ),
                             SizedBox(height: 2.5.h),
@@ -138,7 +142,6 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
@@ -152,7 +155,7 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               radius: 12,
-                              padd: 16,
+
                               line: 3,
 
                               bColor: Color(0xffEDF1F3),
@@ -164,10 +167,10 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
                             onPress(
                               ontap: () async {
                                 selectedDate = await pickDate(context);
-  if (selectedDate != null) {
-    print("Selected Date: $selectedDate");
-    setState(() {});
-  }
+                                if (selectedDate != null) {
+                                  print("Selected Date: $selectedDate");
+                                  setState(() {});
+                                }
                               },
                               child: textFieldWithPrefixSuffuxIconAndHintText(
                                 'Select Date'.tr,
@@ -177,27 +180,28 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
                                       ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"
                                       : '',
                                 ),
-                              
+
                                 fillColor: Colors.white,
                                 mainTxtColor: Colors.black,
                                 radius: 12,
-                                padd: 16,
-                              
+
                                 bColor: Color(0xffEDF1F3),
                                 hintColor: Color(0xff868686),
-                              
+
                                 pColor: MyColors.primary,
                               ),
                             ),
                             SizedBox(height: 1.3.h),
-                           
+
                             onPress(
                               ontap: () async {
-                                 selectedTime = await pickTime(context);
-  if (selectedTime != null) {
-    print("Selected Time: ${selectedTime!.format(context)}");
-    setState(() {});
-  }
+                                selectedTime = await pickTime(context);
+                                if (selectedTime != null) {
+                                  print(
+                                    "Selected Time: ${selectedTime!.format(context)}",
+                                  );
+                                  setState(() {});
+                                }
                               },
                               child: textFieldWithPrefixSuffuxIconAndHintText(
                                 'Select Time'.tr,
@@ -207,15 +211,14 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
                                       ? selectedTime!.format(context)
                                       : '',
                                 ),
-                              
+
                                 fillColor: Colors.white,
                                 mainTxtColor: Colors.black,
                                 radius: 12,
-                                padd: 16,
-                              
+
                                 bColor: Color(0xffEDF1F3),
                                 hintColor: Color(0xff868686),
-                              
+
                                 pColor: MyColors.primary,
                               ),
                             ),
@@ -226,138 +229,140 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               radius: 12,
-                              padd: 16,
 
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
 
                               pColor: MyColors.primary,
                             ),
-                            
-                           
-                           SizedBox(height: 2.h),
-                           text_widget("Do you want participants to have the option of adding a co-rider?",
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xff6C7278),
-                           ),
-                           Row(
-                            children: [
-                               CustomCheckBox(
-              value: shouldCheck,
-              shouldShowBorder: true,
-              borderColor:Color(0xff6C7278),
-              checkedFillColor:MyColors.primary1,
-              borderRadius: 4,
-              borderWidth: 1.5,
-              checkBoxSize: 16,
-              onChanged: (val) {
-                //do your stuff here
-                setState(() {
-                  shouldCheck = val;
-                });
-              },
-            ),
-                            SizedBox(width: 1.w),
-                            text_widget("Yes",
-                             fontSize: 15.sp,
-                             fontWeight: FontWeight.bold,
-                             color: Color(0xff6C7278),
+
+                            SizedBox(height: 2.h),
+                            text_widget(
+                              "Do you want participants to have the option of adding a co-rider?",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xff6C7278),
                             ),
-                            SizedBox(width: 6.w),
-                              CustomCheckBox(
-              value: shouldCheck,
-              shouldShowBorder: true,
-              borderColor:Color(0xff6C7278),
-              checkedFillColor:MyColors.primary1,
-              borderRadius: 4,
-              borderWidth: 1.5,
-              checkBoxSize: 16,
-              
-              onChanged: (val) {
-                //do your stuff here
-                setState(() {
-                  shouldCheck = val;
-                });
-              },
-            ),
-                            SizedBox(width: 1.w),
-                            text_widget("No",
-                             fontSize: 15.sp,
-                             fontWeight: FontWeight.bold,
-                             color: Color(0xff6C7278),
+                            Row(
+                              children: [
+                                CustomCheckBox(
+                                  value: shouldCheck,
+                                  shouldShowBorder: true,
+                                  borderColor: Color(0xff6C7278),
+                                  checkedFillColor: MyColors.primary,
+                                  borderRadius: 4,
+                                  borderWidth: 1.5,
+                                  checkBoxSize: 16,
+                                  onChanged: (val) {
+                                    //do your stuff here
+                                    setState(() {
+                                      shouldCheck = val;
+                                    });
+                                  },
+                                ),
+                                SizedBox(width: 1.w),
+                                text_widget(
+                                  "Yes",
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff6C7278),
+                                ),
+                                SizedBox(width: 6.w),
+                                CustomCheckBox(
+                                  value: shouldCheck,
+                                  shouldShowBorder: true,
+                                  borderColor: Color(0xff6C7278),
+                                  checkedFillColor: MyColors.primary,
+                                  borderRadius: 4,
+                                  borderWidth: 1.5,
+                                  checkBoxSize: 16,
+
+                                  onChanged: (val) {
+                                    //do your stuff here
+                                    setState(() {
+                                      shouldCheck = val;
+                                    });
+                                  },
+                                ),
+                                SizedBox(width: 1.w),
+                                text_widget(
+                                  "No",
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff6C7278),
+                                ),
+                              ],
                             ),
-                            ],
-                           ),
-                             SizedBox(height: 2.h),
-                           text_widget("Do you want participants to have the option of changing their card at each stop?",
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xff6C7278),
-                           ),
-                           Row(
-                            children: [
-                               CustomCheckBox(
-              value: shouldCheck,
-              shouldShowBorder: true,
-              borderColor:Color(0xff6C7278),
-              checkedFillColor:MyColors.primary1,
-              borderRadius: 4,
-              borderWidth: 1.5,
-              checkBoxSize: 16,
-              onChanged: (val) {
-                //do your stuff here
-                setState(() {
-                  shouldCheck = val;
-                });
-              },
-            ),
-                            SizedBox(width: 1.w),
-                            text_widget("Yes",
-                             fontSize: 15.sp,
-                             fontWeight: FontWeight.bold,
-                             color: Color(0xff6C7278),
+                            SizedBox(height: 2.h),
+                            text_widget(
+                              "Do you want participants to have the option of changing their card at each stop?",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xff6C7278),
                             ),
-                            SizedBox(width: 6.w),
-                              CustomCheckBox(
-              value: shouldCheck,
-              shouldShowBorder: true,
-              borderColor:Color(0xff6C7278),
-              checkedFillColor:MyColors.primary1,
-              borderRadius: 4,
-              borderWidth: 1.5,
-              checkBoxSize: 16,
-              
-              onChanged: (val) {
-                //do your stuff here
-                setState(() {
-                  shouldCheck = val;
-                });
-              },
-            ),
-                            SizedBox(width: 1.w),
-                            text_widget("No",
-                             fontSize: 15.sp,
-                             fontWeight: FontWeight.bold,
-                             color: Color(0xff6C7278),
+                            Row(
+                              children: [
+                                CustomCheckBox(
+                                  value: shouldCheck,
+                                  shouldShowBorder: true,
+                                  borderColor: Color(0xff6C7278),
+                                  checkedFillColor: MyColors.primary,
+                                  borderRadius: 4,
+                                  borderWidth: 1.5,
+                                  checkBoxSize: 16,
+                                  onChanged: (val) {
+                                    //do your stuff here
+                                    setState(() {
+                                      shouldCheck = val;
+                                    });
+                                  },
+                                ),
+                                SizedBox(width: 1.w),
+                                text_widget(
+                                  "Yes",
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff6C7278),
+                                ),
+                                SizedBox(width: 6.w),
+                                CustomCheckBox(
+                                  value: shouldCheck,
+                                  shouldShowBorder: true,
+                                  borderColor: Color(0xff6C7278),
+                                  checkedFillColor: MyColors.primary,
+                                  borderRadius: 4,
+                                  borderWidth: 1.5,
+                                  checkBoxSize: 16,
+
+                                  onChanged: (val) {
+                                    //do your stuff here
+                                    setState(() {
+                                      shouldCheck = val;
+                                    });
+                                  },
+                                ),
+                                SizedBox(width: 1.w),
+                                text_widget(
+                                  "No",
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff6C7278),
+                                ),
+                              ],
                             ),
-                            ],
-                           ),
 
                             SizedBox(height: 2.5.h),
-                           customButon(
+                            customButon(
                               isIcon: false,
                               btnText: "Continue",
                               icon: "assets/icons/p1.png",
-                              onTap: (){
+                              onTap: () {
                                 Get.to(PokerRoute());
                                 // Get.to(() =>  );
                               },
                             ),
-                            
-                                    SizedBox(height: 2.h),
-                           
 
+                            SizedBox(height: 2.h),
                           ],
                         ),
                       ),

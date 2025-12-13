@@ -33,9 +33,9 @@ class _CompletedPokerState extends State<CompletedPoker> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.white.withOpacity(0.08),
-            surfaceTintColor: Colors.white.withOpacity(0.08),
-            backgroundColor: Colors.white.withOpacity(0.08),
+            foregroundColor: Colors.white.withValues(alpha: 0.08),
+            surfaceTintColor: Colors.white.withValues(alpha: 0.08),
+            backgroundColor: Colors.white.withValues(alpha: 0.08),
 
             elevation: 0,
             leadingWidth: 14.w,
@@ -48,14 +48,14 @@ class _CompletedPokerState extends State<CompletedPoker> {
                 child: Icon(
                   RemixIcons.arrow_left_s_line,
                   size: 24.sp,
-                  color: Colors.white.withOpacity(0.80),
+                  color: Colors.white.withValues(alpha: 0.80),
                 ),
               ),
             ),
             title: text_widget(
               "Completed Poker Runs List",
               fontSize: 17.sp,
-              color: Colors.white.withOpacity(0.80),
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -69,18 +69,18 @@ class _CompletedPokerState extends State<CompletedPoker> {
                   SizedBox(height: 2.h),
                   ...List.generate(4, (index) {
                     return onPress(
-                      ontap: (){
+                      ontap: () {
                         Get.to(ManagerPokerRun2());
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 18.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.18),
+                            color: Colors.white.withValues(alpha: 0.18),
                             border: Border.all(
                               color: const Color(
                                 0xffFFFFFF,
-                              ).withOpacity(0.30), // ✅ border color
+                              ).withValues(alpha: 0.30), // ✅ border color
                               width: 1.2,
                             ),
                             borderRadius: BorderRadius.circular(12),
@@ -100,7 +100,7 @@ class _CompletedPokerState extends State<CompletedPoker> {
                                   "5 November 9:30 AM",
                                   fontSize: 14.7.sp,
                                   fontWeight: FontWeight.w400,
-                                  color: Colors.white.withOpacity(0.60),
+                                  color: Colors.white.withValues(alpha: 0.60),
                                 ),
                                 SizedBox(height: 0.5.h),
                                 Row(
@@ -116,7 +116,9 @@ class _CompletedPokerState extends State<CompletedPoker> {
                                       "5 November 9:30 AM",
                                       fontSize: 14.7.sp,
                                       fontWeight: FontWeight.w400,
-                                      color: Colors.white.withOpacity(0.60),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.60,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -129,7 +131,7 @@ class _CompletedPokerState extends State<CompletedPoker> {
                                 Icon(
                                   Icons.arrow_forward_ios_outlined,
                                   size: 2.h,
-                                  color: Colors.white.withOpacity(0.80),
+                                  color: Colors.white.withValues(alpha: 0.80),
                                 ),
                                 Spacer(),
                                 Row(
@@ -146,7 +148,9 @@ class _CompletedPokerState extends State<CompletedPoker> {
                                       "Stright",
                                       fontSize: 14.7.sp,
                                       fontWeight: FontWeight.w400,
-                                      color: Colors.white.withOpacity(0.60),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.60,
+                                      ),
                                     ),
                                   ],
                                 ),

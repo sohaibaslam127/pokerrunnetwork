@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+
 Widget text_widget(
   String text, {
   fontSize,
@@ -25,7 +25,7 @@ Widget text_widget(
     textAlign: textAlign,
     textDirection: txtDirection,
     style: TextStyle(
-      height: appLanguage == 'ar' ? 2 : height,
+      height: height,
       color: color ?? Colors.black,
       // fontFamily: "Calibri",
       fontSize: fontSize ?? 17.sp,
@@ -41,7 +41,7 @@ Widget text_widget(
                 color: Colors.black26,
                 offset: Offset(1, 1),
                 blurRadius: 2,
-              )
+              ),
             ]
           : null,
     ),
