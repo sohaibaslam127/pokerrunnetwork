@@ -17,7 +17,7 @@ Widget text_widget(
   height,
   maxline,
   bool isShadow = false,
-  bool isItalic = false, // 👈 added italic option
+  bool isItalic = false,
 }) {
   return Text(
     text,
@@ -27,10 +27,9 @@ Widget text_widget(
     style: TextStyle(
       height: height,
       color: color ?? Colors.black,
-      // fontFamily: "Calibri",
       fontSize: fontSize ?? 17.sp,
       fontWeight: fontWeight ?? FontWeight.w500,
-      fontStyle: isItalic ? FontStyle.italic : FontStyle.normal, // 👈 applied
+      fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
       decoration: decoration ?? TextDecoration.none,
       decorationColor: decorationColor ?? Colors.transparent,
       decorationThickness: decorationWidth ?? 1.0,

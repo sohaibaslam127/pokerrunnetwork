@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/firebase_options.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
+import 'package:pokerrunnetwork/services/firestoreServices.dart';
+import 'package:pokerrunnetwork/services/locationsServices.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,6 +38,10 @@ class _SplashScreenState extends State<SplashScreen> {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    await Future.wait([
+      FirestoreServices.I.init(),
+      LocationServices.I.getUserLocation(),
+    ]);
     await AuthServices.I.checkUser();
   }
 

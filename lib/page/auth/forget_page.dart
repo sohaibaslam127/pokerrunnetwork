@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
-import 'package:pokerrunnetwork/page/auth/forget_page.dart';
 import 'package:pokerrunnetwork/page/auth/singup_page.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
@@ -12,39 +11,33 @@ import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ForgetPage extends StatefulWidget {
+  const ForgetPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ForgetPage> createState() => _ForgetPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ForgetPageState extends State<ForgetPage> {
   TextEditingController emailContoller = TextEditingController();
-  TextEditingController passwordContoller = TextEditingController();
 
-  void signIn() {
+  void forgetPassword() {
     if (!emailContoller.text.isEmail) {
       toast("Info", "Please enter a valid email address");
-    } else if (passwordContoller.text.isEmpty) {
-      toast("Info", "Password is required");
-    } else {
-      AuthServices.I
-          .emailSignIn(emailContoller.text, passwordContoller.text)
-          .then((result) {
-            if (result.isEmpty) {
-              Get.offAll(const HomePage());
-            } else {
-              toast("Login Error", result.toString());
-            }
-          });
     }
+    AuthServices.I.forgetPassword(emailContoller.text).then((value) {
+      if (value.isEmpty) {
+        Get.back();
+        toast("Info", "Password reset link sent to your email");
+      } else {
+        toast("Error", value);
+      }
+    });
   }
 
   @override
   void dispose() {
     emailContoller.dispose();
-    passwordContoller.dispose();
     super.dispose();
   }
 
@@ -94,6 +87,17 @@ class _LoginPageState extends State<LoginPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Row(
+                              children: [
+                                text_widget(
+                                  "Forget Password",
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                Spacer(),
+                              ],
+                            ),
+                            SizedBox(height: 1.5.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               'Enter your Email'.tr,
                               fillColor: Colors.white,
@@ -105,30 +109,16 @@ class _LoginPageState extends State<LoginPage> {
                               hintColor: Color(0xff868686),
                               pColor: MyColors.primary,
                             ),
-                            SizedBox(height: 2.h),
-                            textFieldWithPrefixSuffuxIconAndHintText(
-                              '*******'.tr,
-                              fillColor: Colors.white,
-                              controller: passwordContoller,
-                              mainTxtColor: Colors.black,
-                              radius: 12,
-                              textInputType: TextInputType.visiblePassword,
-                              obsecure: true,
-                              bColor: Color(0xffEDF1F3),
-                              hintColor: Color(0xffACB5BB),
-                              pColor: MyColors.primary,
-                              isSuffix: true,
-                            ),
                             SizedBox(height: 1.5.h),
                             Row(
                               children: [
                                 Spacer(),
                                 onPress(
                                   ontap: () {
-                                    Get.to(() => ForgetPage());
+                                    Get.to(SingupPage());
                                   },
                                   child: text_widget(
-                                    "Forgot Password?",
+                                    "Register New Account",
                                     fontSize: 15.sp,
                                     fontWeight: FontWeight.w700,
                                     color: MyColors.secondary,
@@ -140,19 +130,35 @@ class _LoginPageState extends State<LoginPage> {
                             SizedBox(height: 2.5.h),
                             customButon(
                               isIcon: false,
-                              btnText: "Sign In",
+                              btnText: "Reset Password",
                               icon: "assets/icons/p1.png",
-                              onTap: signIn,
+                              onTap: forgetPassword,
+                            ),
+                            Center(
+                              child: onPress(
+                                ontap: () {
+                                  Get.back();
+                                },
+                                child: Text(
+                                  'We will send the reset password link, on your\nRegistered Email.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: MyColors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
                             ),
                             SizedBox(height: 3.h),
                             Center(
                               child: onPress(
                                 ontap: () {
-                                  Get.to(SingupPage());
+                                  Get.back();
                                 },
                                 child: RichText(
                                   text: TextSpan(
-                                    text: 'Don’t have an account? ',
+                                    text: 'I remeber my password, ',
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: MyColors.black,
@@ -160,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                     children: [
                                       TextSpan(
-                                        text: 'Sign Up',
+                                        text: 'Sign In',
                                         style: TextStyle(
                                           fontSize: 15,
                                           color: MyColors.secondary,

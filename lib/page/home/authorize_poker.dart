@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
@@ -32,10 +32,9 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.white..withValues(alpha: 0.08),
-            surfaceTintColor: Colors.white..withValues(alpha: 0.08),
-            backgroundColor: Colors.white..withValues(alpha: 0.08),
-
+            foregroundColor: Colors.white.withValues(alpha: 0.08),
+            surfaceTintColor: Colors.white.withValues(alpha: 0.08),
+            backgroundColor: Colors.white.withValues(alpha: 0.08),
             elevation: 0,
             leadingWidth: 14.w,
             leading: Padding(
@@ -47,14 +46,14 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
                 child: Icon(
                   RemixIcons.arrow_left_s_line,
                   size: 24.sp,
-                  color: Colors.white..withValues(alpha: 0.80),
+                  color: Colors.white.withValues(alpha: 0.80),
                 ),
               ),
             ),
             title: text_widget(
               "Authorize Poker Run Participants",
               fontSize: 17.sp,
-              color: Colors.white..withValues(alpha: 0.80),
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -210,7 +209,6 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // Cancel Button
                       Expanded(
                         child: GestureDetector(
                           onTap: () => Navigator.pop(context),

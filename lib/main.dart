@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/page/auth/splash_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 

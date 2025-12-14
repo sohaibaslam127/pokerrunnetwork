@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/page/auth/login_page.dart';
+import 'package:pokerrunnetwork/services/authServices.dart';
+import 'package:pokerrunnetwork/services/firestoreServices.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
+import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -14,10 +18,45 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  bool faq = false;
-  List<bool> faqs = [false, false, false, false, false];
-  bool status4 = false;
-  int current = 0;
+  Future<void> logout() async {
+    showPopup(
+      context,
+      "Are You Sure, You Want To Logout?",
+      "Logout",
+      "Cancel",
+      () async {
+        Get.back();
+        // await AuthServices.I.logOut();
+        // Get.offAll(() => const LoginPage());
+      },
+      () {
+        Get.back();
+      },
+    );
+  }
+
+  Future<void> deleteAccount() async {
+    showPopup(
+      context,
+      "Are You Sure, You Want To Delete Your Account, You Will Not Be Able To Undo This Action?",
+      "Delete Account",
+      "Cancel",
+      () async {
+        Get.back();
+        // await FirestoreServices.I.deleteAccount();
+        // await AuthServices.I.logOut();
+        // Get.offAll(() => const LoginPage());
+      },
+      () {
+        Get.back();
+      },
+    );
+  }
+
+  void editProfile() {}
+  void helpLine() {}
+  void termsAndConditions() {}
+  void reportProblem() {}
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -31,29 +70,29 @@ class _SettingPageState extends State<SettingPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.white.withValues(alpha: 0.08),
-            surfaceTintColor: Colors.white.withValues(alpha: 0.08),
-            backgroundColor: Colors.white.withValues(alpha: 0.08),
-
+            foregroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            backgroundColor: Colors.transparent,
             elevation: 0,
             leadingWidth: 14.w,
             leading: Padding(
-              padding: EdgeInsets.only(left: 17.0),
+              padding: EdgeInsets.only(bottom: 3.5),
               child: onPress(
                 ontap: () {
                   Get.back();
                 },
                 child: Icon(
                   RemixIcons.arrow_left_s_line,
-                  size: 22.sp,
-                  color: Colors.white.withValues(alpha: 0.80),
+                  size: 25.sp,
+                  color: MyColors.white,
                 ),
               ),
             ),
             title: text_widget(
               "Setting",
-              fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
+              letterSpacing: 1.5,
+              fontSize: 20.sp,
+              color: MyColors.white,
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -66,10 +105,16 @@ class _SettingPageState extends State<SettingPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: Image.asset("assets/icons/s1.png", height: 16.h),
+                      child: onPress(
+                        ontap: editProfile,
+                        child: Image.asset("assets/icons/s1.png", height: 16.h),
+                      ),
                     ),
                     Expanded(
-                      child: Image.asset("assets/icons/s2.png", height: 16.h),
+                      child: onPress(
+                        ontap: helpLine,
+                        child: Image.asset("assets/icons/s2.png", height: 16.h),
+                      ),
                     ),
                   ],
                 ),
@@ -77,10 +122,16 @@ class _SettingPageState extends State<SettingPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: Image.asset("assets/icons/s3.png", height: 16.h),
+                      child: onPress(
+                        ontap: termsAndConditions,
+                        child: Image.asset("assets/icons/s3.png", height: 16.h),
+                      ),
                     ),
                     Expanded(
-                      child: Image.asset("assets/icons/s4.png", height: 16.h),
+                      child: onPress(
+                        ontap: reportProblem,
+                        child: Image.asset("assets/icons/s4.png", height: 16.h),
+                      ),
                     ),
                   ],
                 ),
@@ -100,12 +151,12 @@ class _SettingPageState extends State<SettingPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           onPress(
-                            ontap: () {},
+                            ontap: logout,
                             child: Image.asset("assets/icons/out.png"),
                           ),
                           SizedBox(height: 1.6.h),
                           onPress(
-                            ontap: () {},
+                            ontap: deleteAccount,
                             child: Image.asset("assets/icons/del.png"),
                           ),
                           SizedBox(height: 1.h),

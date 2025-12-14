@@ -7,7 +7,7 @@ import 'package:pokerrunnetwork/page/home/co_manager_menu.dart';
 import 'package:pokerrunnetwork/page/home/affilate_menu.dart';
 import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
 import 'package:pokerrunnetwork/page/home/setting_page.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                     "Welcome To The\nPoker Run Network.",
                     textAlign: TextAlign.center,
 
-                    fontSize: 25.sp,
+                    fontSize: 22.sp,
                     height: 1.1,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
                 Spacer(),
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: customButon(
                     isIcon: true,
                     btnText: "Poker Run Network Affiliate",
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: 1.h),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: customButon(
                     isIcon: true,
                     btnText: "Poker Run Co-Manager",
@@ -85,8 +85,6 @@ class _HomePageState extends State<HomePage> {
                         // userType = 2;
                       });
                       Get.to(SchedulePoker(isCoManager: true));
-
-                      // Get.to(() =>  );
                     },
                   ),
                 ),

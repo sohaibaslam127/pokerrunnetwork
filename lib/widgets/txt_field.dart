@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
-
 import 'package:responsive_sizer/responsive_sizer.dart';
-// import 'package:taha/config/colors.dart';
 
 Widget textFieldWithPrefixSuffuxIconAndHintText(
   String hintText, {
@@ -17,7 +11,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
   int line = 1,
   bool isSuffix = false,
   bool enable = true,
-  bool isEmail = false,
+  TextInputType textInputType = TextInputType.text,
   double? radius,
   bool isTextSuffix = false,
   suffText,
@@ -33,21 +27,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
     builder: (BuildContext context, setState) {
       return TextField(
         maxLines: line,
-        keyboardType: isEmail && hintText.contains("email")
-            ? TextInputType.emailAddress
-            : hintText == 'Zip Code' ||
-                  hintText == 'Enter Zip Code' ||
-                  hintText == 'Enter Phone Number'
-            ? TextInputType.number
-            : null,
-        inputFormatters: hintText == 'Zip Code' || hintText == 'Enter Zip Code'
-            ? [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(5),
-              ]
-            : hintText.contains("Phone Number")
-            ? [FilteringTextInputFormatter.digitsOnly]
-            : [],
+        keyboardType: textInputType,
         onChanged: (value) {
           if (ontap != null) {
             ontap();
@@ -96,7 +76,6 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
                         obsecure = !obsecure;
                       });
                     },
-
                     child: Icon(
                       suffixIcon ?? obsecure
                           ? Icons.visibility_off_outlined

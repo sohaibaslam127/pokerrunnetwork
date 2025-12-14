@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
@@ -67,10 +66,13 @@ class AuthServices {
 
   Future<String> forgetPassword(String mail) async {
     try {
+      EasyLoading.show();
       await _auth.sendPasswordResetEmail(email: mail);
+      EasyLoading.dismiss();
       return "";
     } on FirebaseAuthException catch (error) {
-      return error.code;
+      EasyLoading.dismiss();
+      return error.message ?? error.code;
     }
   }
 

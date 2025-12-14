@@ -1,4 +1,5 @@
 import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
 
 class TransactionModel {
   String id = "";

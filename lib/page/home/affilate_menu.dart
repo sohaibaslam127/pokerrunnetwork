@@ -8,7 +8,7 @@ import 'package:pokerrunnetwork/page/home/create_poker.dart';
 import 'package:pokerrunnetwork/page/home/existing_pokers.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
 import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -39,24 +39,22 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                     },
                     child: Image.asset("assets/icons/bb.png", height: 3.h),
                   ),
-                  SizedBox(height: 1.h),
+                  SizedBox(height: 2.h),
                   Center(
                     child: Image.asset("assets/icons/logo.png", height: 24.h),
                   ),
-                  SizedBox(height: 3.h),
-
+                  Spacer(),
                   Center(
                     child: text_widget(
-                      "Poker Run Network Affiliate Management Page",
+                      "Poker Run Network\nAffiliate Management Page",
                       textAlign: TextAlign.center,
-
                       fontSize: 22.sp,
                       height: 1.1,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 3.h),
+                  Spacer(),
                   Row(
                     children: [
                       Expanded(
@@ -67,10 +65,12 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                           child: Image.asset(
                             "assets/icons/p31.png",
                             height: 18.h,
+
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                      // SizedBox(width: 1.w),
+                      SizedBox(width: 3.w),
                       Expanded(
                         child: onPress(
                           ontap: () {
@@ -79,12 +79,12 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                           child: Image.asset(
                             "assets/icons/p32.png",
                             height: 18.h,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 2.h),
                   Row(
                     children: [
                       Expanded(
@@ -95,10 +95,11 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                           child: Image.asset(
                             "assets/icons/p33.png",
                             height: 18.h,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                      // SizedBox(width: 1.w),
+                      SizedBox(width: 3.w),
                       Expanded(
                         child: onPress(
                           ontap: () {
@@ -107,13 +108,13 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                           child: Image.asset(
                             "assets/icons/p34.png",
                             height: 18.h,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 3.5.h),
-
+                  Spacer(),
                   Center(
                     child: onPress(
                       ontap: () {
@@ -123,9 +124,9 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                         width: 37.w,
                         height: 4.7.h,
                         decoration: BoxDecoration(
-                          color: Colors.white..withValues(alpha: 0.20),
+                          color: Colors.white.withValues(alpha: 0.20),
                           border: Border.all(
-                            color: Colors.white..withValues(alpha: 0.30),
+                            color: Colors.white.withValues(alpha: 0.30),
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -140,6 +141,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                       ),
                     ),
                   ),
+                  Spacer(),
                 ],
               ),
             ),

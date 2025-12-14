@@ -1,57 +1,10 @@
 import 'dart:io';
-
+import 'dart:math';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-void toast(String title, String message) {
-  Get.snackbar(
-    title.toUpperCase(),
-    message,
-    colorText: Colors.white,
-    backgroundColor: MyColors.secondary,
-  );
-}
-
-void launchMyUrl(String url) async {
-  final Uri uri = Uri.parse(url);
-  try {
-    await launchUrl(uri, mode: LaunchMode.platformDefault);
-  } catch (e) {
-    debugPrint("Error launching URL: $e");
-  }
-}
-
-List<String> generateArray(String name, [bool subSearch = false]) {
-  name = name.toLowerCase();
-  List<String> list = [];
-  for (int i = 0; i < name.length; i++) {
-    list.add(name.substring(0, i + 1));
-  }
-  if (subSearch) {
-    for (String test in name.split(' ')) {
-      for (int i = 0; i < test.length; i++) {
-        list.add(test.substring(0, i + 1));
-      }
-    }
-  }
-  return list;
-}
-
-Future<void> openStore(bool playStoreId, bool appStoreId) async {
-  final String url = GetPlatform.isAndroid
-      ? 'https://play.google.com/store/apps/details?id=$playStoreId'
-      : 'https://apps.apple.com/app/id$appStoreId';
-
-  final Uri uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  } else {
-    debugPrint('Could not launch $url');
-  }
-}
 
 UserModel currentUser = UserModel();
 String countryCode = "US";

@@ -8,7 +8,7 @@ import 'package:pokerrunnetwork/page/home/authorize_poker.dart';
 import 'package:pokerrunnetwork/page/home/co_manager.dart';
 import 'package:pokerrunnetwork/page/home/completed_poker.dart';
 import 'package:pokerrunnetwork/page/home/progress_poker.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';

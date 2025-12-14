@@ -4,7 +4,7 @@ import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/page/home/co_manager_menu.dart';
 import 'package:pokerrunnetwork/page/home/manager_pokerRun_1.dart';
 import 'package:pokerrunnetwork/page/home/manager_poker_2.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';

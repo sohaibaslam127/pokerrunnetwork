@@ -5,10 +5,11 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -72,9 +73,20 @@ class _SingupPageState extends State<SingupPage> {
       }
       AuthServices.I
           .emailSignUp(emailController.text, passwordController.text)
-          .then((result) {
+          .then((result) async {
             if (result.isEmpty) {
-              Get.offAll(() => const HomePage());
+              currentUser.email = emailController.text;
+              currentUser.roadName = userNameController.text
+                  .trim()
+                  .toLowerCase();
+              currentUser.name = fullNameController.text;
+              currentUser.number = phoneController.text;
+              bool isRegistered = await FirestoreServices.I.registerUser();
+              if (isRegistered) {
+                Get.offAll(() => const HomePage());
+              } else {
+                toast("Error", "Failed to register user");
+              }
             } else {
               toast("Error", result);
             }
@@ -136,87 +148,74 @@ class _SingupPageState extends State<SingupPage> {
                             SizedBox(height: 2.5.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               'Username'.tr,
-
                               fillColor: Colors.white,
                               controller: userNameController,
                               mainTxtColor: Colors.black,
                               radius: 12,
-
+                              textInputType: TextInputType.text,
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
-
                               pColor: MyColors.primary,
                             ),
                             SizedBox(height: 1.3.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               'Enter Full Name'.tr,
-
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               controller: fullNameController,
                               radius: 12,
-
+                              textInputType: TextInputType.text,
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
-
                               pColor: MyColors.primary,
                             ),
                             SizedBox(height: 1.3.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               'Enter Phone Number'.tr,
-
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               controller: phoneController,
                               radius: 12,
-
+                              textInputType: TextInputType.phone,
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
-
                               pColor: MyColors.primary,
                             ),
                             SizedBox(height: 1.3.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               'Email Address'.tr,
-
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               controller: emailController,
                               radius: 12,
-
+                              textInputType: TextInputType.emailAddress,
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
-
                               pColor: MyColors.primary,
                             ),
-
                             SizedBox(height: 1.3.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               "Password".tr,
-
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               controller: passwordController,
                               radius: 12,
-
+                              textInputType: TextInputType.visiblePassword,
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
-
                               pColor: MyColors.primary,
                               isSuffix: true,
                             ),
                             SizedBox(height: 1.3.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               "Confirm Password".tr,
-
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               radius: 12,
-
+                              textInputType: TextInputType.visiblePassword,
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
                               controller: confirmPasswordController,
-
                               pColor: MyColors.primary,
                               isSuffix: true,
                             ),

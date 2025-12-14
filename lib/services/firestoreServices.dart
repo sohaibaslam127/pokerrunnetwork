@@ -78,6 +78,8 @@ class FirestoreServices {
 
   Future<bool> registerUser() async {
     try {
+      if (currentUser.id == "") return false;
+      EasyLoading.show();
       await _instance
           .collection('userProfiles')
           .doc(currentUser.id)
@@ -85,8 +87,10 @@ class FirestoreServices {
       await _instance.collection('admin').doc('stats').update({
         'users': FieldValue.increment(1),
       });
+      EasyLoading.dismiss();
       return true;
     } catch (e) {
+      EasyLoading.dismiss();
       return false;
     }
   }
@@ -200,8 +204,8 @@ class FirestoreServices {
     }
   }
 
-  Future<void> deleteAccount(String userId) async {
-    await _instance.collection('userProfiles').doc(userId).delete();
+  Future<void> deleteAccount() async {
+    await _instance.collection('userProfiles').doc(currentUser.id).delete();
   }
 
   Query getEvents() {

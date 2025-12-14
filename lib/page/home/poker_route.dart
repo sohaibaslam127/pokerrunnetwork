@@ -1,16 +1,16 @@
-import 'package:custom_check_box/custom_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/page/home/poker_Stops.dart';
-import 'package:pokerrunnetwork/widgets/ontap.dart';
+import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class PokerRoute extends StatefulWidget {
-  const PokerRoute({super.key});
+  EventModel eventModel;
+  PokerRoute(this.eventModel, {super.key});
 
   @override
   State<PokerRoute> createState() => _PokerRouteState();
