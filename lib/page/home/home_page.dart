@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Spacer(),
                 Center(
-                  child: Image.asset("assets/icons/logo.png", height: 26.h),
+                  child: Image.asset("assets/logo/logo.png", height: 26.h),
                 ),
                 Spacer(),
                 Padding(

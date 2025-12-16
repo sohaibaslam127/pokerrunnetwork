@@ -47,7 +47,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 icons_launcher:
-  image_path: "assets/appicon.jpg"
+  image_path: "assets/logo/appicon.jpg"
   adaptive_background_color: '#0F1552'
   platforms:
     android:
@@ -58,11 +58,13 @@ icons_launcher:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
-    - assets/icons/
+    - assets/background/
+    - assets/buttons/menubuttons/
+    - assets/buttons/popupbuttons/
     - assets/font/
-    - assets/appicon.jpg
-    - assets/appiconWhite.jpg
+    - assets/icons/
+    - assets/logo/
+
   fonts:
     - family: Calibri
       fonts:

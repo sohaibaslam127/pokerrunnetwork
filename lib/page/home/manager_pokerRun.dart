@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/page/home/authorize_poker.dart';
@@ -56,7 +57,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                     ),
                     SizedBox(height: 1.h),
                     Center(
-                      child: Image.asset("assets/icons/logo.png", height: 22.h),
+                      child: Image.asset("assets/logo/logo.png", height: 22.h),
                     ),
                     SizedBox(height: 2.h),
                     Center(
@@ -73,54 +74,50 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                       ),
                     ),
                     SizedBox(height: 2.h),
-                    Row(
+                    GridView.count(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.2,
+                      crossAxisSpacing: 1.w,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
                       children: [
-                        Expanded(
-                          child: onPress(
+                        if (!isCompleted)
+                          onPress(
                             ontap: () {
                               Get.to(CreatePoker(widget.eventModel));
                             },
                             child: Image.asset(
-                              "assets/icons/g1.png",
-                              height: 16.h,
+                              MenuActionButtons.editPokerrun,
+                              fit: BoxFit.contain,
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: onPress(
+                        if (!isCompleted)
+                          onPress(
                             ontap: () {
                               Get.to(AuthorizePoker());
                             },
                             child: Image.asset(
-                              "assets/icons/g2.png",
-                              height: 16.h,
+                              MenuActionButtons.authorizeParticipants,
+                              fit: BoxFit.contain,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 1.h),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: onPress(
-                            ontap: () {
-                              Get.to(ProgressPoker());
-                            },
-                            child: Image.asset(
-                              "assets/icons/g3.png",
-                              height: 16.h,
-                            ),
+                        onPress(
+                          ontap: () {
+                            Get.to(ProgressPoker());
+                          },
+                          child: Image.asset(
+                            MenuActionButtons.progressPokerrun,
+                            fit: BoxFit.contain,
                           ),
                         ),
-                        Expanded(
-                          child: onPress(
+                        if (!isCompleted)
+                          onPress(
                             ontap: () {
                               showPopup(
                                 context,
                                 'Are you sure your Poker Run is completed and you are ready to publish the results?',
-                                ButtonActions.completeButton,
-                                ButtonActions.noButton,
+                                PopupActionsButtons.complete,
+                                PopupActionsButtons.no,
                                 () async {
                                   Get.back();
                                   EasyLoading.show();
@@ -151,24 +148,44 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               );
                             },
                             child: Image.asset(
-                              "assets/icons/g4.png",
-                              height: 16.h,
+                              MenuActionButtons.finishPokerrun,
+                              fit: BoxFit.contain,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 1.h),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: onPress(
+                        if (!isCoManager)
+                          onPress(
+                            ontap: () {
+                              showPopup(
+                                context,
+                                "Are you sure you want to Copy an Existing Poker Run",
+                                PopupActionsButtons.cancel,
+                                PopupActionsButtons.copy,
+                                () {
+                                  Get.back();
+                                },
+                                () {
+                                  Get.back();
+                                  widget.eventModel.id = "";
+                                  widget.eventModel.status = 1;
+                                  widget.eventModel.eventWinner = null;
+                                  widget.eventModel.userIds = [];
+                                  Get.to(CreatePoker(widget.eventModel));
+                                },
+                              );
+                            },
+                            child: Image.asset(
+                              MenuActionButtons.copyExistingPokerrun,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        if (isCompleted && !isCoManager)
+                          onPress(
                             ontap: () {
                               showPopup(
                                 context,
                                 "Are You Sure You Want To Delete That Poker Run?",
-                                ButtonActions.deleteEventButton,
-                                ButtonActions.noButton,
+                                PopupActionsButtons.deleteEvent,
+                                PopupActionsButtons.no,
                                 () async {
                                   Get.back();
                                   EasyLoading.show();
@@ -184,22 +201,54 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               );
                             },
                             child: Image.asset(
-                              "assets/icons/g5.png",
-                              height: 16.h,
+                              MenuActionButtons.deletePokerrun,
+                              fit: BoxFit.fill,
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: onPress(
+                        if (!isCoManager)
+                          onPress(
                             ontap: () {
                               Get.to(CoManagerPage(widget.eventModel));
                             },
                             child: Image.asset(
-                              "assets/icons/g6.png",
-                              height: 16.h,
+                              MenuActionButtons.authorizedComanager,
+                              fit: BoxFit.contain,
                             ),
                           ),
-                        ),
+                        if (isCoManager)
+                          onPress(
+                            ontap: () async {
+                              showPopup(
+                                context,
+                                "Are You Sure You Want To Remove Yourself As Co-Manager?",
+                                PopupActionsButtons.remove,
+                                PopupActionsButtons.no,
+                                () async {
+                                  Get.back();
+                                  int index = widget.eventModel.coManagers
+                                      .indexOf(currentUser.email.toLowerCase());
+                                  widget.eventModel.coManagers.removeAt(index);
+                                  widget.eventModel.coManagerNames.removeAt(
+                                    index,
+                                  );
+                                  await FirestoreServices.I.setEvent(
+                                    context,
+                                    widget.eventModel,
+                                    null,
+                                    false,
+                                  );
+                                  Get.back();
+                                },
+                                () {
+                                  Get.back();
+                                },
+                              );
+                            },
+                            child: Image.asset(
+                              MenuActionButtons.removeYourself,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
                       ],
                     ),
                     SizedBox(height: 2.5.h),

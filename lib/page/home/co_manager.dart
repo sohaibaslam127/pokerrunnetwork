@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
@@ -104,19 +107,15 @@ class _CoManagerPageState extends State<CoManagerPage> {
                           showPopup(
                             context,
                             "Are You Sure You Want To Remove That Co-Manager?",
-                            ButtonActions.noButton,
-                            ButtonActions.removeButton,
+                            PopupActionsButtons.no,
+                            PopupActionsButtons.remove,
                             () async {
                               Get.back();
                             },
                             () {
                               Get.back();
-                              widget.eventModel.coManagers.remove(
-                                widget.eventModel.coManagers[index],
-                              );
-                              widget.eventModel.coManagerNames.remove(
-                                widget.eventModel.coManagerNames[index],
-                              );
+                              widget.eventModel.coManagers.removeAt(index);
+                              widget.eventModel.coManagerNames.removeAt(index);
                               setState(() {});
                               FirestoreServices.I.setEvent(
                                 context,
@@ -242,6 +241,15 @@ class _CoManagerPageState extends State<CoManagerPage> {
                                 context,
                                 "Duplicate email",
                                 "This email is already added as a co-manager",
+                                type: 2,
+                              );
+                              return;
+                            }
+                            if (email == currentUser.email.toLowerCase()) {
+                              toast(
+                                context,
+                                "Invalid email",
+                                "You cannot add yourself as a co-manager",
                                 type: 2,
                               );
                               return;

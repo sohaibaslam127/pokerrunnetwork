@@ -123,8 +123,8 @@ class _SchedulePokerState extends State<PokerRunList> {
                           showPopup(
                             context,
                             "Are you sure you want to Copy an Existing Poker Run",
-                            ButtonActions.cancelButton,
-                            ButtonActions.copyButton,
+                            PopupActionsButtons.cancel,
+                            PopupActionsButtons.copy,
                             () {
                               Get.back();
                             },
@@ -266,8 +266,8 @@ class _SchedulePokerState extends State<PokerRunList> {
                                         showPopup(
                                           context,
                                           "Are you sure you want to ${eventModel.status == 0 ? "Enable" : "Disable"} that Poker Run?",
-                                          ButtonActions.disableButton,
-                                          ButtonActions.enableButton,
+                                          PopupActionsButtons.disable,
+                                          PopupActionsButtons.enable,
                                           () {
                                             Get.back();
                                             eventModel.status = 0;

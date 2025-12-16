@@ -3,20 +3,6 @@ import 'package:get/get_utils/get_utils.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class ButtonActions {
-  static String yesButton = "assets/icons/yes.png";
-  static String noButton = "assets/icons/no.png";
-  static String cancelButton = "assets/icons/cancel.png";
-  static String copyButton = "assets/icons/copy.png";
-  static String completeButton = "assets/icons/completed.png";
-  static String deleteEventButton = "assets/icons/deleteaccount.png";
-  static String deleteAccountButton = "assets/icons/deleteaccount.png";
-  static String enableButton = "assets/icons/enable.png";
-  static String removeButton = "assets/icons/remove.png";
-  static String disableButton = "assets/icons/disable.png";
-  static String logoutButton = "assets/icons/logout.png";
-}
-
 void showPopup(
   BuildContext context,
   String title,

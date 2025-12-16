@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/models/event.dart';
-import 'package:pokerrunnetwork/page/home/completed_poker.dart';
 import 'package:pokerrunnetwork/page/home/create_poker.dart';
-import 'package:pokerrunnetwork/page/home/existing_pokers.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
 import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
@@ -38,9 +37,9 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                   ),
                   SizedBox(height: 2.h),
                   Center(
-                    child: Image.asset("assets/icons/logo.png", height: 24.h),
+                    child: Image.asset("assets/logo/logo.png", height: 24.h),
                   ),
-                  Spacer(),
+                  Spacer(flex: 2),
                   Center(
                     child: text_widget(
                       "Poker Run Network\nAffiliate Management Page",
@@ -51,66 +50,72 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                       color: Colors.white,
                     ),
                   ),
-                  Spacer(),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: onPress(
-                          ontap: () {
-                            Get.to(CreatePoker(EventModel()));
-                          },
-                          child: Image.asset(
-                            "assets/icons/p31.png",
-                            height: 18.h,
-                            fit: BoxFit.cover,
-                          ),
+                  Spacer(flex: 3),
+                  SizedBox(
+                    height: 40.h,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: onPress(
+                                ontap: () {
+                                  Get.to(CreatePoker(EventModel()));
+                                },
+                                child: Image.asset(
+                                  MenuActionButtons.createPokerrun,
+                                  height: 20.h,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: onPress(
+                                ontap: () {
+                                  Get.to(PokerRunList(type: 1));
+                                },
+                                child: Image.asset(
+                                  MenuActionButtons.schedulePokerrun,
+                                  height: 20.h,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(width: 3.w),
-                      Expanded(
-                        child: onPress(
-                          ontap: () {
-                            Get.to(PokerRunList(type: 1));
-                          },
-                          child: Image.asset(
-                            "assets/icons/p32.png",
-                            height: 18.h,
-                            fit: BoxFit.cover,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: onPress(
+                                ontap: () {
+                                  Get.to(PokerRunList(type: 2));
+                                },
+                                child: Image.asset(
+                                  MenuActionButtons.completedPokerrun,
+                                  height: 20.h,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: onPress(
+                                ontap: () {
+                                  Get.to(PokerRunList(type: 3));
+                                },
+                                child: Image.asset(
+                                  MenuActionButtons.copyExistingPokerrun,
+                                  height: 20.h,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: onPress(
-                          ontap: () {
-                            Get.to(PokerRunList(type: 2));
-                          },
-                          child: Image.asset(
-                            "assets/icons/p33.png",
-                            height: 18.h,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 3.w),
-                      Expanded(
-                        child: onPress(
-                          ontap: () {
-                            Get.to(PokerRunList(type: 3));
-                          },
-                          child: Image.asset(
-                            "assets/icons/p34.png",
-                            height: 18.h,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
+
+                  Spacer(flex: 2),
                   Center(
                     child: onPress(
                       ontap: () {

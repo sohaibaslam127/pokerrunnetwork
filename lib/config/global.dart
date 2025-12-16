@@ -1,10 +1,5 @@
 import 'dart:io';
-import 'dart:math';
-import 'package:get/get.dart';
-import 'package:flutter/material.dart';
-import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 UserModel currentUser = UserModel();
 String countryCode = "US";

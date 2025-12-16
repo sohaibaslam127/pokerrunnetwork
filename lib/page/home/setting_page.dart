@@ -22,8 +22,8 @@ class _SettingPageState extends State<SettingPage> {
     showPopup(
       context,
       "Are You Sure, You Want To Logout?",
-      ButtonActions.cancelButton,
-      ButtonActions.logoutButton,
+      PopupActionsButtons.cancel,
+      PopupActionsButtons.logout,
       () {
         Get.back();
       },
@@ -39,8 +39,8 @@ class _SettingPageState extends State<SettingPage> {
     showPopup(
       context,
       "Are You Sure, You Want To Delete Your Account, You Will Not Be Able To Undo This Action?",
-      ButtonActions.deleteAccountButton,
-      ButtonActions.cancelButton,
+      PopupActionsButtons.deleteAccount,
+      PopupActionsButtons.cancel,
       () async {
         Get.back();
         await FirestoreServices.I.deleteAccount();
@@ -107,13 +107,19 @@ class _SettingPageState extends State<SettingPage> {
                     Expanded(
                       child: onPress(
                         ontap: editProfile,
-                        child: Image.asset("assets/icons/s1.png", height: 16.h),
+                        child: Image.asset(
+                          MenuActionButtons.editProfile,
+                          height: 16.h,
+                        ),
                       ),
                     ),
                     Expanded(
                       child: onPress(
                         ontap: helpLine,
-                        child: Image.asset("assets/icons/s2.png", height: 16.h),
+                        child: Image.asset(
+                          MenuActionButtons.helpLine,
+                          height: 16.h,
+                        ),
                       ),
                     ),
                   ],
@@ -124,13 +130,19 @@ class _SettingPageState extends State<SettingPage> {
                     Expanded(
                       child: onPress(
                         ontap: termsAndConditions,
-                        child: Image.asset("assets/icons/s3.png", height: 16.h),
+                        child: Image.asset(
+                          MenuActionButtons.termAndCondition,
+                          height: 16.h,
+                        ),
                       ),
                     ),
                     Expanded(
                       child: onPress(
                         ontap: reportProblem,
-                        child: Image.asset("assets/icons/s4.png", height: 16.h),
+                        child: Image.asset(
+                          MenuActionButtons.reportAProblem,
+                          height: 16.h,
+                        ),
                       ),
                     ),
                   ],
