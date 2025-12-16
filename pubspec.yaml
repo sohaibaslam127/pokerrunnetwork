@@ -38,8 +38,8 @@ dependencies:
   location:
   app_settings:
   image_picker:
-  flutter_icon_snackbar:
-
+  snackify:
+  place_picker:
 
 dev_dependencies:
   flutter_test:
@@ -47,7 +47,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 icons_launcher:
-  image_path: "assets/appiconWhite.jpg"
+  image_path: "assets/appicon.jpg"
   adaptive_background_color: '#0F1552'
   platforms:
     android:

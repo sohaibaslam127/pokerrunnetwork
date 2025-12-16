@@ -44,28 +44,39 @@ class _SingupPageState extends State<SingupPage> {
 
   Future<void> signUp() async {
     if (userNameController.text.isEmpty) {
-      toast("Info", "Username is required");
+      toast(context, "Username", "Username is required", type: 1);
     } else if (fullNameController.text.isEmpty) {
-      toast("Info", "Full name is required");
+      toast(context, "Full name", "Full name is required", type: 1);
     } else if (phoneController.text.isEmpty) {
-      toast("Info", "Phone number is required");
+      toast(context, "Phone number", "Phone number is required", type: 1);
     } else if (emailController.text.isEmpty) {
-      toast("Info", "Email is required");
+      toast(context, "Email", "Email is required", type: 1);
     } else if (passwordController.text.isEmpty) {
-      toast("Info", "Password is required");
+      toast(context, "Password", "Password is required", type: 1);
     } else if (passwordController.text.length < 6) {
-      toast("Info", "Select a strong password is required");
+      toast(
+        context,
+        "Password",
+        "Select a strong password is required",
+        type: 1,
+      );
     } else if (confirmPasswordController.text !=
         confirmPasswordController.text) {
-      toast("Info", "Passwords must match");
+      toast(context, "Confirm Password", "Passwords must match", type: 1);
     } else if (!shouldCheck) {
-      toast("Info", "You must need to accept Term and Conditions");
+      toast(
+        context,
+        "Term and Conditions",
+        "You must need to accept Term and Conditions",
+        type: 1,
+      );
     } else {
       bool roadUnique = await FirestoreServices.I.isRoadNameUnique(
         userNameController.text.trim().toLowerCase(),
       );
       if (!roadUnique) {
         toast(
+          context,
           "Road name taken",
           "This Road Name/User Name is already in use. Suggestion like: ${userNameController.text}01",
         );
@@ -85,10 +96,15 @@ class _SingupPageState extends State<SingupPage> {
               if (isRegistered) {
                 Get.offAll(() => const HomePage());
               } else {
-                toast("Error", "Failed to register user");
+                toast(
+                  context,
+                  "Register User",
+                  "Failed to register user",
+                  type: 1,
+                );
               }
             } else {
-              toast("Error", result);
+              toast(context, "Error", result, type: 1);
             }
           });
     }

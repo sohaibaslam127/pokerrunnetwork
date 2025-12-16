@@ -10,6 +10,7 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:snackify/enums/snack_enums.dart';
 
 class ForgetPage extends StatefulWidget {
   const ForgetPage({super.key});
@@ -23,14 +24,19 @@ class _ForgetPageState extends State<ForgetPage> {
 
   void forgetPassword() {
     if (!emailContoller.text.isEmail) {
-      toast("Info", "Please enter a valid email address");
+      toast(context, "Valid Email", "Please enter a valid email address");
     }
     AuthServices.I.forgetPassword(emailContoller.text).then((value) {
       if (value.isEmpty) {
         Get.back();
-        toast("Info", "Password reset link sent to your email");
+        toast(
+          context,
+          "Reset Password",
+          "Password reset link sent to your email",
+          type: 0,
+        );
       } else {
-        toast("Error", value);
+        toast(context, "Error", value, type: 1);
       }
     });
   }

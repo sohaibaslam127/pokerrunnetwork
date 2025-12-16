@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/config/random.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
@@ -216,11 +217,36 @@ class FirestoreServices {
         .orderBy('eventDate');
   }
 
-  Query getMyEvents() {
+  Query getScheduleEvents() {
     return _instance
         .collection('events')
         .where('ownerId', isEqualTo: currentUser.id)
         .where('status', whereIn: [0, 1])
+        .orderBy('eventDate');
+  }
+
+  Query getCompletedEvents() {
+    return _instance
+        .collection('events')
+        .where('ownerId', isEqualTo: currentUser.id)
+        .where('status', whereIn: [2, 3])
+        .orderBy('eventDate');
+  }
+
+  Query getAllEvents() {
+    return _instance
+        .collection('events')
+        .where('ownerId', isEqualTo: currentUser.id)
+        .orderBy('eventDate');
+  }
+
+  Query getCoAffiliateEvents() {
+    return _instance
+        .collection('events')
+        .where(
+          'coManagers',
+          arrayContains: currentUser.email.toLowerCase().trim(),
+        )
         .orderBy('eventDate');
   }
 
@@ -523,5 +549,31 @@ class FirestoreServices {
       await Future.delayed(const Duration(milliseconds: 200));
     }
     await eventRef.delete();
+  }
+
+  Future<void> autoFillCards(String eventId) async {
+    NRandom random = NRandom(52, 4);
+    QuerySnapshot<Map<String, dynamic>> snapshot = await _instance
+        .collection('events')
+        .doc(eventId)
+        .collection('participants')
+        .where('currentStop', isLessThan: 6)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      for (var doc in snapshot.docs) {
+        GamePlayerModel gamePlayer = GamePlayerModel.toModel(doc.data());
+        for (var i = gamePlayer.currentStop; i < 6; i++) {
+          int number = random.getNextIndex();
+          gamePlayer.cards.add(number);
+        }
+        gamePlayer.currentStop = 6;
+        await _instance
+            .collection('events')
+            .doc(eventId)
+            .collection('participants')
+            .doc(doc.id)
+            .update(gamePlayer.toSaveJSON());
+      }
+    }
   }
 }

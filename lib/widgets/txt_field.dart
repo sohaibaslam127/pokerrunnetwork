@@ -20,7 +20,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
   mainTxtColor,
   pColor,
   hintColor,
-  Function? ontap,
+  Function? onChange,
   bool obsecure = false,
 }) {
   return StatefulBuilder(
@@ -29,8 +29,8 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
         maxLines: line,
         keyboardType: textInputType,
         onChanged: (value) {
-          if (ontap != null) {
-            ontap();
+          if (onChange != null) {
+            onChange();
           }
         },
         enabled: enable,

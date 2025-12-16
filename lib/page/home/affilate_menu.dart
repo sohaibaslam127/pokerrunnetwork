@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:pokerrunnetwork/config/colors.dart';
-import 'package:pokerrunnetwork/page/auth/singup_page.dart';
+import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/page/home/completed_poker.dart';
 import 'package:pokerrunnetwork/page/home/create_poker.dart';
 import 'package:pokerrunnetwork/page/home/existing_pokers.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
-import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
+import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
-import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -60,12 +57,11 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                       Expanded(
                         child: onPress(
                           ontap: () {
-                            Get.to(CreatePoker());
+                            Get.to(CreatePoker(EventModel()));
                           },
                           child: Image.asset(
                             "assets/icons/p31.png",
                             height: 18.h,
-
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -74,7 +70,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                       Expanded(
                         child: onPress(
                           ontap: () {
-                            Get.to(SchedulePoker(isCoManager: false));
+                            Get.to(PokerRunList(type: 1));
                           },
                           child: Image.asset(
                             "assets/icons/p32.png",
@@ -90,7 +86,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                       Expanded(
                         child: onPress(
                           ontap: () {
-                            Get.to(CompletedPoker());
+                            Get.to(PokerRunList(type: 2));
                           },
                           child: Image.asset(
                             "assets/icons/p33.png",
@@ -103,7 +99,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                       Expanded(
                         child: onPress(
                           ontap: () {
-                            Get.to(ExistingPokers());
+                            Get.to(PokerRunList(type: 3));
                           },
                           child: Image.asset(
                             "assets/icons/p34.png",

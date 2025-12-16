@@ -1,18 +1,60 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:place_picker/place_picker.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:snackify/enums/snack_enums.dart';
+import 'package:snackify/snackify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-void toast(String title, String message) {
-  Get.snackbar(
-    title.toUpperCase(),
-    message.capitalize!,
-    colorText: Colors.white,
-    backgroundColor: MyColors.secondary,
+void toast(BuildContext context, String title, String message, {int type = 3}) {
+  // success, 0
+  // error, 1
+  Snackify.show(
+    context: context,
+    type: SnackType.values[type],
+    title: Text(
+      title,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 16.sp,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    subtitle: Text(
+      message,
+      style: TextStyle(color: Colors.white, fontSize: 16.sp),
+    ),
+    duration: const Duration(seconds: 5),
+    backgroundGradient: LinearGradient(
+      colors: [MyColors.secondaryDark, MyColors.secondary],
+    ),
+    position: SnackPosition.top,
   );
+}
+
+Future<LocationResult> showPlacePicker(BuildContext context) async {
+  LocationResult? result = await Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => Theme(
+        data: ThemeData(
+          appBarTheme: AppBarTheme(backgroundColor: MyColors.secondaryDark),
+        ),
+        child: PlacePicker(
+          mapApiKey,
+          displayLocation: LatLng(
+            currentUser.location.latitude,
+            currentUser.location.longitude,
+          ),
+        ),
+      ),
+    ),
+  );
+  return result ?? LocationResult();
 }
 
 void launchMyUrl(String url) async {

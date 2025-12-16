@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
+import 'package:pokerrunnetwork/models/event.dart';
+import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
+import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CoManagerPage extends StatefulWidget {
-  const CoManagerPage({super.key});
+  EventModel eventModel;
+  CoManagerPage(this.eventModel, {super.key});
 
   @override
   State<CoManagerPage> createState() => _CoManagerPageState();
 }
 
 class _CoManagerPageState extends State<CoManagerPage> {
-  bool faq = false;
-  List<bool> faqs = [false, false, false, false, false];
-  bool status4 = false;
-  int current = 0;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -32,9 +33,9 @@ class _CoManagerPageState extends State<CoManagerPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.white.withValues(alpha: 0.08),
-            surfaceTintColor: Colors.white.withValues(alpha: 0.08),
-            backgroundColor: Colors.white.withValues(alpha: 0.08),
+            foregroundColor: Colors.transparent.withValues(alpha: 0.08),
+            surfaceTintColor: Colors.transparent.withValues(alpha: 0.08),
+            backgroundColor: Colors.transparent.withValues(alpha: 0.08),
 
             elevation: 0,
             leadingWidth: 14.w,
@@ -52,7 +53,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
               ),
             ),
             title: text_widget(
-              "Co-manager List",
+              "Co-Manager List",
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
@@ -61,71 +62,77 @@ class _CoManagerPageState extends State<CoManagerPage> {
             actions: [
               onPress(
                 ontap: () {
-                  showDeleteAccountPopup(context);
+                  addcoManagerPopup(context);
                 },
-                child: Image.asset("assets/icons/addc.png", height: 4.5.h),
+                child: Image.asset("assets/icons/addc.png", height: 5.5.h),
               ),
             ],
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 2.h),
-                  ...List.generate(4, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.18),
-                          border: Border.all(
-                            color: const Color(
-                              0xffFFFFFF,
-                            ).withValues(alpha: 0.30), // ✅ border color
-                            width: 1.2,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          title: text_widget(
-                            "Jhonson",
-                            fontSize: 16.5.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                          subtitle: text_widget(
-                            "alexjhon@gmail.com",
-                            fontSize: 14.7.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white.withValues(alpha: 0.60),
-                          ),
-                          trailing: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Spacer(),
-                              Image.asset(
-                                "assets/icons/remove.png",
-                                height: 2.7.h,
-                              ),
-                              Spacer(),
-
-                              text_widget(
-                                "5 November",
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white.withValues(alpha: 0.60),
-                              ),
-                              Spacer(),
-                            ],
-                          ),
-                        ),
+            padding: const EdgeInsets.all(20),
+            child: ListView(
+              children: List.generate(widget.eventModel.coManagers.length, (
+                index,
+              ) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 1.2.h),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      border: Border.all(
+                        color: const Color(0xffFFFFFF).withValues(alpha: 0.30),
+                        width: 1.2,
                       ),
-                    );
-                  }),
-                ],
-              ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      title: text_widget(
+                        widget.eventModel.coManagerNames[index].capitalize!,
+                        fontSize: 16.5.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 3.w),
+                      subtitle: text_widget(
+                        widget.eventModel.coManagers[index].toLowerCase(),
+                        fontSize: 14.7.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white.withValues(alpha: 0.60),
+                      ),
+                      trailing: onPress(
+                        ontap: () {
+                          showPopup(
+                            context,
+                            "Are You Sure You Want To Remove That Co-Manager?",
+                            ButtonActions.noButton,
+                            ButtonActions.removeButton,
+                            () async {
+                              Get.back();
+                            },
+                            () {
+                              Get.back();
+                              widget.eventModel.coManagers.remove(
+                                widget.eventModel.coManagers[index],
+                              );
+                              widget.eventModel.coManagerNames.remove(
+                                widget.eventModel.coManagerNames[index],
+                              );
+                              setState(() {});
+                              FirestoreServices.I.setEvent(
+                                context,
+                                widget.eventModel,
+                                null,
+                                false,
+                              );
+                            },
+                          );
+                        },
+                        child: Image.asset("assets/icons/rem.png", height: 3.h),
+                      ),
+                    ),
+                  ),
+                );
+              }),
             ),
           ),
         ),
@@ -133,7 +140,9 @@ class _CoManagerPageState extends State<CoManagerPage> {
     );
   }
 
-  void showDeleteAccountPopup(BuildContext context) {
+  void addcoManagerPopup(BuildContext context) {
+    TextEditingController emailController = TextEditingController();
+    TextEditingController nameController = TextEditingController();
     showDialog(
       context: context,
       barrierDismissible: true, // Close on tap outside
@@ -142,7 +151,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
           child: Material(
             color: Colors.transparent,
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.8,
+              width: 80.w,
               padding: EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -151,8 +160,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 15),
-
+                  SizedBox(height: 2.h),
                   Row(
                     children: [
                       onPress(
@@ -176,35 +184,86 @@ class _CoManagerPageState extends State<CoManagerPage> {
                       ),
                     ],
                   ),
-
-                  SizedBox(height: 25),
+                  SizedBox(height: 2.h),
                   textFieldWithPrefixSuffuxIconAndHintText(
-                    "Enter email or username".tr,
+                    "Enter the name of the co-manager".tr,
                     fillColor: Colors.white,
                     mainTxtColor: Colors.black,
+                    textInputType: TextInputType.text,
                     radius: 12,
-
+                    controller: nameController,
                     bColor: Color(0xffEDF1F3),
                     hintColor: Color(0xff868686),
                     pColor: MyColors.primary,
                   ),
-                  SizedBox(height: 25),
-
+                  SizedBox(height: 1.h),
+                  textFieldWithPrefixSuffuxIconAndHintText(
+                    "Enter the email of the co-manager".tr,
+                    fillColor: Colors.white,
+                    mainTxtColor: Colors.black,
+                    textInputType: TextInputType.emailAddress,
+                    radius: 12,
+                    controller: emailController,
+                    bColor: Color(0xffEDF1F3),
+                    hintColor: Color(0xff868686),
+                    pColor: MyColors.primary,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // Cancel Button
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            Get.back();
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            if (nameController.text.isEmpty) {
+                              toast(
+                                context,
+                                "Invalid name",
+                                "Please enter the name of the co-manager",
+                                type: 2,
+                              );
+                              return;
+                            }
+                            if (!emailController.text.isEmail) {
+                              toast(
+                                context,
+                                "Invalid email",
+                                "Please enter a valid email",
+                                type: 2,
+                              );
+                              return;
+                            }
+                            String email = emailController.text
+                                .toLowerCase()
+                                .trim();
+                            if (widget.eventModel.coManagers.contains(email)) {
+                              toast(
+                                context,
+                                "Duplicate email",
+                                "This email is already added as a co-manager",
+                                type: 2,
+                              );
+                              return;
+                            }
+                            widget.eventModel.coManagers.add(email);
+                            widget.eventModel.coManagerNames.add(
+                              nameController.text,
+                            );
+                            setState(() {});
+                            FirestoreServices.I.setEvent(
+                              context,
+                              widget.eventModel,
+                              null,
+                              false,
+                            );
+                          },
                           child: Image.asset(
                             "assets/icons/addc1.png",
                             height: 10.h,
                           ),
                         ),
                       ),
-
-                      // Delete Button
                     ],
                   ),
                 ],

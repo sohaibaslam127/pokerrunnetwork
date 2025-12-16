@@ -25,9 +25,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void signIn() {
     if (!emailContoller.text.isEmail) {
-      toast("Info", "Please enter a valid email address");
+      toast(context, "Email Address", "Please enter a valid email address");
     } else if (passwordContoller.text.isEmpty) {
-      toast("Info", "Password is required");
+      toast(context, "Password", "Password is required");
     } else {
       AuthServices.I
           .emailSignIn(emailContoller.text, passwordContoller.text)
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
             if (result.isEmpty) {
               Get.offAll(const HomePage());
             } else {
-              toast("Login Error", result.toString());
+              toast(context, "Login Error", result.toString(), type: 1);
             }
           });
     }
@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Spacer(),
                                 onPress(
                                   ontap: () {
-                                    Get.to(() => ForgetPage());
+                                    Get.to(ForgetPage());
                                   },
                                   child: text_widget(
                                     "Forgot Password?",

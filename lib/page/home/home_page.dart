@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:pokerrunnetwork/config/colors.dart';
-import 'package:pokerrunnetwork/page/auth/singup_page.dart';
-import 'package:pokerrunnetwork/page/home/co_manager_menu.dart';
 import 'package:pokerrunnetwork/page/home/affilate_menu.dart';
-import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
+import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
 import 'package:pokerrunnetwork/page/home/setting_page.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
-import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -52,12 +47,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Spacer(),
-
                 Center(
                   child: Image.asset("assets/icons/logo.png", height: 26.h),
                 ),
                 Spacer(),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: customButon(
@@ -65,11 +58,7 @@ class _HomePageState extends State<HomePage> {
                     btnText: "Poker Run Network Affiliate",
                     icon: "assets/icons/p1.png",
                     onTap: () {
-                      setState(() {
-                        // userType = 1;
-                      });
                       Get.to(AffilateMenuPage());
-                      // Get.to(() =>  );
                     },
                   ),
                 ),
@@ -81,10 +70,7 @@ class _HomePageState extends State<HomePage> {
                     btnText: "Poker Run Co-Manager",
                     icon: "assets/icons/p2.png",
                     onTap: () {
-                      setState(() {
-                        // userType = 2;
-                      });
-                      Get.to(SchedulePoker(isCoManager: true));
+                      Get.to(PokerRunList(type: 4));
                     },
                   ),
                 ),

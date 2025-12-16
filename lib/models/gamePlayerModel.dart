@@ -31,12 +31,12 @@ class GamePlayerModel {
     userName = jsonMap['userName'];
     currentLocation = jsonMap['currentLocation'] ?? GeoPoint(0, 0);
     rank = jsonMap['rank'];
-    rankValue = jsonMap['rankValue'];
-    spends = jsonMap['spends'];
+    rankValue = toInt(jsonMap['rankValue']);
+    spends = toDouble(jsonMap['spends']);
     cards = List<int>.from(jsonMap['cards']);
-    currentStop = jsonMap['currentStop'];
+    currentStop = toInt(jsonMap['currentStop']);
     pokerId = jsonMap['pokerId'] ?? "";
-    changeCardAttempts = jsonMap['changeCardAttempts'] ?? 0;
+    changeCardAttempts = toInt(jsonMap['changeCardAttempts']);
   }
 
   Map<String, dynamic> toSaveJSON() {
@@ -53,13 +53,13 @@ class GamePlayerModel {
     jsonMap['userName'] = userName;
     jsonMap['currentLocation'] = currentLocation;
     jsonMap['searchParameter'] = generateArray(roadName.trim().toLowerCase());
-    jsonMap['currentStop'] = currentStop;
+    jsonMap['currentStop'] = toInt(currentStop);
     jsonMap['pokerId'] = pokerId;
     jsonMap['cards'] = cards;
     jsonMap['rank'] = rank;
-    jsonMap['rankValue'] = rankValue;
-    jsonMap['changeCardAttempts'] = changeCardAttempts;
-    jsonMap['spends'] = spends;
+    jsonMap['rankValue'] = toInt(rankValue);
+    jsonMap['changeCardAttempts'] = toInt(changeCardAttempts);
+    jsonMap['spends'] = toDouble(spends);
     return jsonMap;
   }
 }

@@ -15,7 +15,7 @@ Widget text_widget(
   TextDirection txtDirection = TextDirection.ltr,
   decorationWidth,
   height,
-  maxline,
+  int? maxline,
   bool isShadow = false,
   bool isItalic = false,
 }) {

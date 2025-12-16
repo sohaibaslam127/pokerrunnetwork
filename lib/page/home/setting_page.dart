@@ -22,15 +22,15 @@ class _SettingPageState extends State<SettingPage> {
     showPopup(
       context,
       "Are You Sure, You Want To Logout?",
-      "Logout",
-      "Cancel",
-      () async {
-        Get.back();
-        // await AuthServices.I.logOut();
-        // Get.offAll(() => const LoginPage());
-      },
+      ButtonActions.cancelButton,
+      ButtonActions.logoutButton,
       () {
         Get.back();
+      },
+      () async {
+        Get.back();
+        await AuthServices.I.logOut();
+        Get.offAll(() => const LoginPage());
       },
     );
   }
@@ -39,13 +39,13 @@ class _SettingPageState extends State<SettingPage> {
     showPopup(
       context,
       "Are You Sure, You Want To Delete Your Account, You Will Not Be Able To Undo This Action?",
-      "Delete Account",
-      "Cancel",
+      ButtonActions.deleteAccountButton,
+      ButtonActions.cancelButton,
       () async {
         Get.back();
-        // await FirestoreServices.I.deleteAccount();
-        // await AuthServices.I.logOut();
-        // Get.offAll(() => const LoginPage());
+        await FirestoreServices.I.deleteAccount();
+        await AuthServices.I.logOut();
+        Get.offAll(() => const LoginPage());
       },
       () {
         Get.back();

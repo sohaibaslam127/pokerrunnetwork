@@ -19,6 +19,7 @@ class AuthServices {
       EasyLoading.dismiss();
       if (fbUser.user != null) {
         currentUser.id = fbUser.user!.uid;
+        currentUser.email = fbUser.user!.email!;
         return "";
       }
       return "error";

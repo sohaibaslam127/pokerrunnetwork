@@ -1,23 +1,24 @@
 import 'package:custom_check_box/custom_check_box.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide SnackPosition;
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
+import 'package:pokerrunnetwork/page/home/poker_route.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CreatePoker extends StatefulWidget {
-  const CreatePoker({super.key});
+  EventModel eventModel;
+  CreatePoker(this.eventModel, {super.key});
 
   @override
   State<CreatePoker> createState() => _CreatePokerState();
 }
 
 class _CreatePokerState extends State<CreatePoker> {
-  EventModel eventModel = EventModel();
   ScrollController scrollController = ScrollController();
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -26,6 +27,33 @@ class _CreatePokerState extends State<CreatePoker> {
   TimeOfDay? selectedTime;
   TextEditingController coRiderCostController = TextEditingController();
   TextEditingController additionalCostController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.eventModel.pokerName.trim().isNotEmpty) {
+      nameController.text = widget.eventModel.pokerName;
+      descriptionController.text = widget.eventModel.description;
+      pokerRunCostController.text = widget.eventModel.joinFee.toString();
+      coRiderCostController.text = widget.eventModel.coRiderFee.toString();
+      additionalCostController.text = widget.eventModel.changeCardFee
+          .toString();
+      selectedDate = widget.eventModel.eventDate;
+      selectedTime = TimeOfDay.fromDateTime(widget.eventModel.eventDate);
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    selectedDate = null;
+    selectedTime = null;
+    nameController.dispose();
+    descriptionController.dispose();
+    pokerRunCostController.dispose();
+    coRiderCostController.dispose();
+    additionalCostController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +208,7 @@ class _CreatePokerState extends State<CreatePoker> {
                               Row(
                                 children: [
                                   CustomCheckBox(
-                                    value: eventModel.coRider ?? false,
+                                    value: widget.eventModel.coRider ?? false,
                                     shouldShowBorder: true,
                                     borderColor: Color(0xff6C7278),
                                     checkedFillColor: MyColors.primary,
@@ -189,9 +217,9 @@ class _CreatePokerState extends State<CreatePoker> {
                                     checkBoxSize: 16,
                                     onChanged: (val) {
                                       setState(() {
-                                        eventModel.coRider = val;
+                                        widget.eventModel.coRider = val;
                                       });
-                                      if (eventModel.coRider ?? false) {
+                                      if (widget.eventModel.coRider ?? false) {
                                         scrollController.animateTo(
                                           scrollController
                                                   .position
@@ -214,7 +242,8 @@ class _CreatePokerState extends State<CreatePoker> {
                                   ),
                                   SizedBox(width: 6.w),
                                   CustomCheckBox(
-                                    value: !(eventModel.coRider ?? false),
+                                    value:
+                                        !(widget.eventModel.coRider ?? false),
                                     shouldShowBorder: true,
                                     borderColor: Color(0xff6C7278),
                                     checkedFillColor: MyColors.primary,
@@ -223,7 +252,7 @@ class _CreatePokerState extends State<CreatePoker> {
                                     checkBoxSize: 16,
                                     onChanged: (val) {
                                       setState(() {
-                                        eventModel.coRider = !val;
+                                        widget.eventModel.coRider = !val;
                                       });
                                     },
                                   ),
@@ -236,7 +265,7 @@ class _CreatePokerState extends State<CreatePoker> {
                                   ),
                                 ],
                               ),
-                              if (eventModel.coRider ?? false) ...[
+                              if (widget.eventModel.coRider ?? false) ...[
                                 SizedBox(height: 1.3.h),
                                 textFieldWithPrefixSuffuxIconAndHintText(
                                   "If Yes, what is the cost for the Co-rider? ",
@@ -263,7 +292,9 @@ class _CreatePokerState extends State<CreatePoker> {
                               Row(
                                 children: [
                                   CustomCheckBox(
-                                    value: eventModel.isAdditionalCard ?? false,
+                                    value:
+                                        widget.eventModel.isAdditionalCard ??
+                                        false,
                                     shouldShowBorder: true,
                                     borderColor: Color(0xff6C7278),
                                     checkedFillColor: MyColors.primary,
@@ -272,9 +303,10 @@ class _CreatePokerState extends State<CreatePoker> {
                                     checkBoxSize: 16,
                                     onChanged: (val) {
                                       setState(() {
-                                        eventModel.isAdditionalCard = val;
+                                        widget.eventModel.isAdditionalCard =
+                                            val;
                                       });
-                                      if (eventModel.isAdditionalCard ??
+                                      if (widget.eventModel.isAdditionalCard ??
                                           false) {
                                         scrollController.animateTo(
                                           scrollController
@@ -299,7 +331,8 @@ class _CreatePokerState extends State<CreatePoker> {
                                   SizedBox(width: 6.w),
                                   CustomCheckBox(
                                     value:
-                                        !(eventModel.isAdditionalCard ?? false),
+                                        !(widget.eventModel.isAdditionalCard ??
+                                            false),
                                     shouldShowBorder: true,
                                     borderColor: Color(0xff6C7278),
                                     checkedFillColor: MyColors.primary,
@@ -308,7 +341,8 @@ class _CreatePokerState extends State<CreatePoker> {
                                     checkBoxSize: 16,
                                     onChanged: (val) {
                                       setState(() {
-                                        eventModel.isAdditionalCard = !val;
+                                        widget.eventModel.isAdditionalCard =
+                                            !val;
                                       });
                                     },
                                   ),
@@ -321,7 +355,8 @@ class _CreatePokerState extends State<CreatePoker> {
                                   ),
                                 ],
                               ),
-                              if (eventModel.isAdditionalCard ?? false) ...[
+                              if (widget.eventModel.isAdditionalCard ??
+                                  false) ...[
                                 SizedBox(height: 1.3.h),
                                 textFieldWithPrefixSuffuxIconAndHintText(
                                   "What is the cost of Additional Cards?",
@@ -344,6 +379,7 @@ class _CreatePokerState extends State<CreatePoker> {
                                 btnText: "Continue",
                                 icon: "assets/icons/p1.png",
                                 onTap: () {
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                   if (nameController.text.trim().isEmpty ||
                                       descriptionController.text
                                           .trim()
@@ -354,49 +390,62 @@ class _CreatePokerState extends State<CreatePoker> {
                                       selectedDate == null ||
                                       selectedTime == null) {
                                     toast(
+                                      context,
                                       "Info",
                                       "Please fill all the required fields.",
                                     );
                                     return;
                                   }
-                                  if (eventModel.coRider ?? false) {
+                                  if (widget.eventModel.coRider ?? false) {
                                     if (coRiderCostController.text
                                         .trim()
                                         .isEmpty) {
                                       toast(
-                                        "Info",
+                                        context,
+                                        "Co-Rider Cost",
                                         "Please fill Co-Rider cost.",
                                       );
                                       return;
                                     }
                                   }
-                                  if (eventModel.isAdditionalCard ?? false) {
+                                  if (widget.eventModel.isAdditionalCard ??
+                                      false) {
                                     if (additionalCostController.text
                                         .trim()
                                         .isEmpty) {
-                                      // toast(
-                                      //   "Info",
-                                      //   "Please fill Additional Cards cost.",
-                                      // );
+                                      toast(
+                                        context,
+                                        "Additional Cards Cost",
+                                        "Please fill Additional Cards cost.",
+                                      );
                                       return;
                                     }
                                   }
-                                  eventModel.pokerName = nameController.text;
-                                  eventModel.description =
+                                  widget.eventModel.pokerName =
+                                      nameController.text;
+                                  widget.eventModel.description =
                                       descriptionController.text;
-                                  eventModel.eventDate = selectedDate!;
-                                  eventModel.eventTimezone = selectedTime!.hour;
-                                  eventModel.joinFee = toDouble(
+
+                                  widget.eventModel.eventDate = DateTime(
+                                    selectedDate!.year,
+                                    selectedDate!.month,
+                                    selectedDate!.day,
+                                    selectedTime!.hour,
+                                    selectedTime!.minute,
+                                    0,
+                                  );
+
+                                  widget.eventModel.joinFee = toDouble(
                                     pokerRunCostController.text,
                                   );
-                                  eventModel.coRiderFee = toDouble(
+                                  widget.eventModel.coRiderFee = toDouble(
                                     coRiderCostController.text,
                                   );
-                                  eventModel.changeCardFee = toDouble(
+                                  widget.eventModel.changeCardFee = toDouble(
                                     additionalCostController.text,
                                   );
                                   FocusManager.instance.primaryFocus?.unfocus();
-                                  // Get.to(PokerRoute(eventModel));
+                                  Get.to(PokerRoute(widget.eventModel));
                                 },
                               ),
                             ],
