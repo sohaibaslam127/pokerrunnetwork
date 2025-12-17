@@ -79,7 +79,7 @@ class LocationServices {
         );
         if (distanceMoved > miles) {
           currentUser.location = newPoint;
-          await Get.find<FirestoreServices>().updateLocation();
+          await FirestoreServices.I.updateLocation();
         } else {
           currentUser.location = newPoint;
         }

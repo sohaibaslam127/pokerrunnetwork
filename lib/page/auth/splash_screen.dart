@@ -25,13 +25,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     init().then((_) {
-      // Timer(const Duration(seconds: 2), () async {
-      //   if (currentUser.id == "") {
-      //     Get.offAll(() => const LoginPage());
-      //   } else {
-      //     Get.offAll(() => const HomePage());
-      //   }
-      // });
+      Timer(const Duration(seconds: 2), () async {
+        if (currentUser.id == "") {
+          Get.offAll(() => const LoginPage());
+        } else {
+          Get.offAll(() => const HomePage());
+        }
+      });
     });
   }
 
@@ -39,9 +39,10 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsFlutterBinding.ensureInitialized();
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    version = packageInfo.version;
-    buildNumber = packageInfo.buildNumber;
-    setState(() {});
+    setState(() {
+      version = packageInfo.version;
+      buildNumber = packageInfo.buildNumber;
+    });
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
