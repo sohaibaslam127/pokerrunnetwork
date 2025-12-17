@@ -16,8 +16,6 @@ class FaqPage extends StatefulWidget {
 class _FaqPageState extends State<FaqPage> {
   bool faq = false;
   List<bool> faqs = [false, false, false, false, false];
-  bool status4 = false;
-  int current = 0;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -31,10 +29,9 @@ class _FaqPageState extends State<FaqPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.white.withValues(alpha: 0.08),
-            surfaceTintColor: Colors.white.withValues(alpha: 0.08),
-            backgroundColor: Colors.white.withValues(alpha: 0.08),
-
+            foregroundColor: Colors.transparent.withValues(alpha: 0.08),
+            surfaceTintColor: Colors.transparent.withValues(alpha: 0.08),
+            backgroundColor: Colors.transparent.withValues(alpha: 0.08),
             elevation: 0,
             leadingWidth: 14.w,
             leading: Padding(
@@ -62,7 +59,7 @@ class _FaqPageState extends State<FaqPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 2.h),
+                SizedBox(height: 1.h),
                 Center(
                   child: onPress(
                     ontap: () {
@@ -84,7 +81,7 @@ class _FaqPageState extends State<FaqPage> {
                       child: Image.asset(
                         faq ? "assets/icons/faq1.png" : "assets/icons/faq0.png",
                         key: ValueKey(faq), // Must add to animate swap
-                        height: 8.h,
+                        height: 8.5.h,
                       ),
                     ),
                   ),
@@ -96,42 +93,42 @@ class _FaqPageState extends State<FaqPage> {
                           ...List.generate(4, (index) {
                             return Padding(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 18.0,
-                                vertical: 10,
+                                vertical: 8.0,
+                                horizontal: 22,
                               ),
-                              child: Container(
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      "assets/icons/video.png",
-                                      height: 12.h,
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          text_widget(
-                                            "Prepare for your first skateboard jump",
-                                            color: Colors.white,
-                                            fontSize: 16.8.sp,
-                                            fontWeight: FontWeight.w600,
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/video.png",
+                                    height: 10.h,
+                                  ),
+                                  SizedBox(width: 3.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        text_widget(
+                                          "Prepare for your first skateboard jump",
+                                          color: Colors.white,
+                                          fontSize: 16.sp,
+                                          maxline: 2,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        SizedBox(height: 0.2.h),
+                                        text_widget(
+                                          "Lorem Ipsrum is simply dummy text of the printing and typesetting industry.",
+                                          color: Colors.white.withValues(
+                                            alpha: 0.70,
                                           ),
-                                          SizedBox(height: 0.2.h),
-                                          text_widget(
-                                            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                                            color: Colors.white.withValues(
-                                              alpha: 0.70,
-                                            ),
-                                            fontSize: 14.5.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ],
-                                      ),
+                                          maxline: 3,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             );
                           }),
@@ -143,7 +140,7 @@ class _FaqPageState extends State<FaqPage> {
                             faqs.length,
                             (index) => Padding(
                               padding: const EdgeInsets.symmetric(
-                                vertical: 12.0,
+                                vertical: 6.0,
                                 horizontal: 22,
                               ),
                               child: Theme(
@@ -171,13 +168,15 @@ class _FaqPageState extends State<FaqPage> {
                                     ),
 
                                     childrenPadding: const EdgeInsets.symmetric(
-                                      horizontal: 14,
+                                      horizontal: 18,
                                     ),
                                     backgroundColor: Colors.transparent,
                                     collapsedBackgroundColor:
                                         Colors.transparent,
-                                    tilePadding: const EdgeInsets.all(08),
-
+                                    tilePadding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                      horizontal: 12,
+                                    ),
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     onExpansionChanged: (value) {
@@ -186,19 +185,29 @@ class _FaqPageState extends State<FaqPage> {
                                       });
                                     },
                                     title: text_widget(
-                                      "How to create a account?",
+                                      " ${index + 1}.  How to create a account?",
                                       color: Colors.white,
                                       fontSize: 15.5.sp,
                                     ),
                                     iconColor: MyColors.primary,
                                     trailing: faqs[index] == true
-                                        ? Icon(
-                                            Remix.close_fill,
-                                            color: Color(0xff7E82B4),
+                                        ? Padding(
+                                            padding: EdgeInsets.only(
+                                              right: 8.0,
+                                            ),
+                                            child: Icon(
+                                              Remix.close_fill,
+                                              color: Color(0xff7E82B4),
+                                            ),
                                           )
-                                        : Icon(
-                                            Remix.add_line,
-                                            color: Color(0xff7E82B4),
+                                        : Padding(
+                                            padding: EdgeInsets.only(
+                                              right: 8.0,
+                                            ),
+                                            child: Icon(
+                                              Remix.add_line,
+                                              color: Color(0xff7E82B4),
+                                            ),
                                           ),
                                     children: [
                                       text_widget(
@@ -208,7 +217,7 @@ class _FaqPageState extends State<FaqPage> {
                                         ),
                                         fontSize: 15.sp,
                                       ),
-                                      SizedBox(height: 2.h),
+                                      SizedBox(height: 1.h),
                                     ],
                                   ),
                                 ),

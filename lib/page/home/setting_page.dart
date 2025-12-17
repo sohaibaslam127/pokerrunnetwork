@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
@@ -53,10 +54,22 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  void editProfile() {}
-  void helpLine() {}
-  void termsAndConditions() {}
-  void reportProblem() {}
+  void editProfile() {
+    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
+  }
+
+  void helpLine() {
+    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
+  }
+
+  void termsAndConditions() {
+    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
+  }
+
+  void reportProblem() {
+    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -107,42 +120,29 @@ class _SettingPageState extends State<SettingPage> {
                     Expanded(
                       child: onPress(
                         ontap: editProfile,
-                        child: Image.asset(
-                          MenuActionButtons.editProfile,
-                          height: 16.h,
-                        ),
+                        child: Image.asset(MenuActionButtons.editProfile),
                       ),
                     ),
                     Expanded(
                       child: onPress(
                         ontap: helpLine,
-                        child: Image.asset(
-                          MenuActionButtons.helpLine,
-                          height: 16.h,
-                        ),
+                        child: Image.asset(MenuActionButtons.helpLine),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 2.h),
                 Row(
                   children: [
                     Expanded(
                       child: onPress(
                         ontap: termsAndConditions,
-                        child: Image.asset(
-                          MenuActionButtons.termAndCondition,
-                          height: 16.h,
-                        ),
+                        child: Image.asset(MenuActionButtons.termAndCondition),
                       ),
                     ),
                     Expanded(
                       child: onPress(
                         ontap: reportProblem,
-                        child: Image.asset(
-                          MenuActionButtons.reportAProblem,
-                          height: 16.h,
-                        ),
+                        child: Image.asset(MenuActionButtons.reportAProblem),
                       ),
                     ),
                   ],

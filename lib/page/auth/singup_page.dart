@@ -133,7 +133,7 @@ class _SingupPageState extends State<SingupPage> {
                   SizedBox(height: 1.h),
 
                   Center(
-                    child: Image.asset("assets/icons/logo.png", height: 10.h),
+                    child: Image.asset("assets/logo/logo.png", height: 10.h),
                   ),
                   SizedBox(height: 3.h),
 

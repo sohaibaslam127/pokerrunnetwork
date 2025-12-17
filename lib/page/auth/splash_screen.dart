@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/firebase_options.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
@@ -19,22 +20,29 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String version = "", buildNumber = "";
   @override
   void initState() {
     super.initState();
     init().then((_) {
-      Timer(const Duration(seconds: 2), () async {
-        if (currentUser.id == "") {
-          Get.offAll(() => const LoginPage());
-        } else {
-          Get.offAll(() => const HomePage());
-        }
-      });
+      // Timer(const Duration(seconds: 2), () async {
+      //   if (currentUser.id == "") {
+      //     Get.offAll(() => const LoginPage());
+      //   } else {
+      //     Get.offAll(() => const HomePage());
+      //   }
+      // });
     });
   }
 
   Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+    buildNumber = packageInfo.buildNumber;
+    setState(() {});
+
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -55,6 +63,23 @@ class _SplashScreenState extends State<SplashScreen> {
             height: 100.h,
             width: 100.w,
             fit: BoxFit.cover,
+          ),
+        ),
+        Positioned(
+          bottom: 40,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Text(
+              "Version $version+$buildNumber".toUpperCase(),
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.25),
+                fontSize: 16.5.sp,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.8,
+                wordSpacing: 5,
+              ),
+            ),
           ),
         ),
       ],

@@ -67,7 +67,7 @@ class _ForgetPageState extends State<ForgetPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Image.asset("assets/icons/logo.png", height: 19.h),
+                    child: Image.asset("assets/logo/logo.png", height: 19.h),
                   ),
                   SizedBox(height: 3.h),
                   Center(

@@ -39,7 +39,7 @@ class _CoManagerMenuState extends State<CoManagerMenu> {
 
                   SizedBox(height: 1.h),
                   Center(
-                    child: Image.asset("assets/icons/logo.png", height: 24.h),
+                    child: Image.asset("assets/logo/logo.png", height: 24.h),
                   ),
                   SizedBox(height: 3.h),
 

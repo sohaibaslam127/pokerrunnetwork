@@ -11,7 +11,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>Poker Run Network</string>
+		<string>PokerRun Network</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -71,11 +71,11 @@
 		<key>NSCameraUsageDescription</key>
 		<string>Need Camera Access for the Profile Pic</string>
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>Poker Run need to Access position so app Identify that you are on the right Stop and Poker Organizer also Traces you</string>
+		<string>Poker Network need to Access position so app Identify that you are on the right Stop and Poker Organizer also Traces you</string>
 		<key>NSLocationAlwaysUsageDescription</key>
-		<string>Poker Run need to Access position so app Identify that you are on the right Stop and Poker Organizer also Traces you</string>
+		<string>Poker Network need to Access position so app Identify that you are on the right Stop and Poker Organizer also Traces you</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Poker Run need to Access position so app Identify that you are on the right Stop and Poker Organizer also Traces you</string>
+		<string>Poker Network need to Access position so app Identify that you are on the right Stop and Poker Organizer also Traces you</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>Can I use the mic please?</string>
 		<key>NSPhotoLibraryUsageDescription</key>
