@@ -74,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
               "Version $version+$buildNumber".toUpperCase(),
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.25),
-                fontSize: 16.5.sp,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.8,
                 wordSpacing: 5,
