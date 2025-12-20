@@ -55,7 +55,8 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   void editProfile() {
-    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
+    toast(context, "cc", "xx");
+    // launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
   }
 
   void helpLine() {

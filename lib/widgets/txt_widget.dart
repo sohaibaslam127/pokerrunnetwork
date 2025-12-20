@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 Widget text_widget(

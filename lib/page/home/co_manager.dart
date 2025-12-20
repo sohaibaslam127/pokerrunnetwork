@@ -64,6 +64,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
             centerTitle: false,
             actions: [
               onPress(
+                key: UniqueKey(),
                 ontap: () {
                   addcoManagerPopup(context);
                 },

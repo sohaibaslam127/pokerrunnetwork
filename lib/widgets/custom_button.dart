@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-Widget onPress({Function? ontap, Widget? child}) {
+Widget onPress({Function? ontap, Widget? child, Key? key}) {
   return InkWell(
+    key: key,
     splashColor: Colors.transparent,
     focusColor: Colors.transparent,
     highlightColor: Colors.transparent,

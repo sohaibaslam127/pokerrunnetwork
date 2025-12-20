@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 void toast(BuildContext context, String title, String message, {int type = 3}) {
   // success, 0
   // error, 1
+  final topInset = MediaQuery.of(context).padding.top;
   Snackify.show(
     context: context,
     type: SnackType.values[type],
@@ -25,13 +26,20 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
         fontWeight: FontWeight.bold,
       ),
     ),
+    offset: Offset(3.w, topInset > 44 ? 3.h : 0),
     subtitle: Text(
       message,
       style: TextStyle(color: Colors.white, fontSize: 16.sp),
     ),
-    duration: const Duration(seconds: 5),
+    duration: const Duration(seconds: 2),
     backgroundGradient: LinearGradient(
-      colors: [MyColors.secondaryDark, MyColors.secondary],
+      colors: type == 0
+          ? [Colors.green.shade600, Colors.green.shade300]
+          : type == 1
+          ? [Colors.red.shade600, Colors.red.shade300]
+          : type == 2
+          ? [Colors.yellow.shade900, Colors.yellow.shade800]
+          : [MyColors.secondaryDark, MyColors.secondary],
     ),
     position: SnackPosition.top,
   );

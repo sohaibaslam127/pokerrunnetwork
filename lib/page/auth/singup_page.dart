@@ -47,8 +47,6 @@ class _SingupPageState extends State<SingupPage> {
       toast(context, "Username", "Username is required", type: 1);
     } else if (fullNameController.text.isEmpty) {
       toast(context, "Full name", "Full name is required", type: 1);
-    } else if (phoneController.text.isEmpty) {
-      toast(context, "Phone number", "Phone number is required", type: 1);
     } else if (emailController.text.isEmpty) {
       toast(context, "Email", "Email is required", type: 1);
     } else if (passwordController.text.isEmpty) {
@@ -153,12 +151,10 @@ class _SingupPageState extends State<SingupPage> {
                               children: [
                                 text_widget(
                                   "Register",
-
                                   fontSize: 22.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 Spacer(),
-                                Image.asset("assets/icons/dp.png", height: 6.h),
                               ],
                             ),
                             SizedBox(height: 2.5.h),
@@ -187,7 +183,7 @@ class _SingupPageState extends State<SingupPage> {
                             ),
                             SizedBox(height: 1.3.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
-                              'Enter Phone Number'.tr,
+                              'Enter Phone Number (Optional)'.tr,
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               controller: phoneController,
