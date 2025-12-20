@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,10 +53,11 @@ class _SplashScreenState extends State<SplashScreen> {
       LocationServices.I.getUserLocation(),
     ]);
     await AuthServices.I.checkUser();
+    log("ID: ${currentUser.id}");
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Positioned.fill(

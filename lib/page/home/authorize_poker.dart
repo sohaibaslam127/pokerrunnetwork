@@ -20,7 +20,7 @@ class _AuthorizePokerState extends State<AuthorizePoker> {
   bool status4 = false;
   int current = 0;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Image.asset(

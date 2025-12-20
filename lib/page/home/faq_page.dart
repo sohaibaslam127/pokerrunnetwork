@@ -17,7 +17,7 @@ class _FaqPageState extends State<FaqPage> {
   bool faq = false;
   List<bool> faqs = [false, false, false, false, false];
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Image.asset(

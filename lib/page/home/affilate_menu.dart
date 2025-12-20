@@ -18,7 +18,7 @@ class AffilateMenuPage extends StatefulWidget {
 
 class _AffilateMenuPageState extends State<AffilateMenuPage> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Scaffold(

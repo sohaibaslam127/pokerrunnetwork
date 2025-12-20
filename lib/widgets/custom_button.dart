@@ -101,7 +101,7 @@ class customActionButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(_) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

@@ -45,7 +45,7 @@ class _PokerRouteState extends State<PokerRoute> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Positioned.fill(

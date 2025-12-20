@@ -65,7 +65,7 @@ class _PokerStopsState extends State<PokerStops> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Positioned.fill(
@@ -125,7 +125,7 @@ class _PokerStopsState extends State<PokerStops> {
                                 padding: EdgeInsets.zero,
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
+                                itemBuilder: (_, index) {
                                   int number = index + 1;
                                   String suffix = number == 1
                                       ? "st"

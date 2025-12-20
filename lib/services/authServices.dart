@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pokerrunnetwork/config/global.dart';
@@ -77,11 +79,12 @@ class AuthServices {
     }
   }
 
-  Future<UserModel> checkUser() async {
+  Future<void> checkUser() async {
     User? fbUser = FirebaseAuth.instance.currentUser;
     if (fbUser != null) {
       currentUser = await FirestoreServices.I.getUser(fbUser.uid);
       currentUser.id = fbUser.uid;
+      currentUser.email = fbUser.email ?? "";
       if (currentUser.id != "") {
         currentUser.lastAppOpen = DateTime.now();
         await FirestoreServices.I.updateUser();
@@ -91,7 +94,6 @@ class AuthServices {
     } else {
       await logOut();
     }
-    return currentUser;
   }
 
   Future<void> logOut() async {

@@ -37,7 +37,7 @@ class _SchedulePokerState extends State<PokerRunList> {
   bool status4 = false;
   int current = 0;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Image.asset(
@@ -99,7 +99,7 @@ class _SchedulePokerState extends State<PokerRunList> {
                   child: CircularProgressIndicator(color: MyColors.primary),
                 ),
               ),
-              itemBuilder: (BuildContext context, documentSnapshots, index) {
+              itemBuilder: (_, documentSnapshots, index) {
                 if (documentSnapshots.isEmpty) {
                   return Container();
                 }

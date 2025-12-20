@@ -56,7 +56,7 @@ class _CreatePokerState extends State<CreatePoker> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Positioned.fill(

@@ -24,7 +24,7 @@ class CoManagerPage extends StatefulWidget {
 
 class _CoManagerPageState extends State<CoManagerPage> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Image.asset(

@@ -19,7 +19,7 @@ class CoManagerMenu extends StatefulWidget {
 
 class _CoManagerMenuState extends State<CoManagerMenu> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Scaffold(

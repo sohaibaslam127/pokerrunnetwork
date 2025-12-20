@@ -37,7 +37,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Scaffold(

@@ -109,7 +109,7 @@ class _SingupPageState extends State<SingupPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Positioned.fill(

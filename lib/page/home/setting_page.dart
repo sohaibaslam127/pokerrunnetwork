@@ -55,8 +55,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   void editProfile() {
-    toast(context, "cc", "xx");
-    // launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
+    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
   }
 
   void helpLine() {
@@ -72,7 +71,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext maincontext) {
     return Stack(
       children: [
         Image.asset(
@@ -111,76 +110,74 @@ class _SettingPageState extends State<SettingPage> {
             ),
             centerTitle: false,
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 4.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: onPress(
-                        ontap: editProfile,
-                        child: Image.asset(MenuActionButtons.editProfile),
-                      ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 4.h),
+              Row(
+                children: [
+                  // Expanded(
+                  //   child: onPress(
+                  //     ontap: editProfile,
+                  //     child: Image.asset(MenuActionButtons.editProfile),
+                  //   ),
+                  // ),
+                  // Expanded(
+                  //   child: onPress(
+                  //     ontap: helpLine,
+                  //     child: Image.asset(MenuActionButtons.helpLine),
+                  //   ),
+                  // ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: onPress(
+                      ontap: termsAndConditions,
+                      child: Image.asset(MenuActionButtons.termAndCondition),
                     ),
-                    Expanded(
-                      child: onPress(
-                        ontap: helpLine,
-                        child: Image.asset(MenuActionButtons.helpLine),
-                      ),
+                  ),
+                  Expanded(
+                    child: onPress(
+                      ontap: reportProblem,
+                      child: Image.asset(MenuActionButtons.reportAProblem),
                     ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: onPress(
-                        ontap: termsAndConditions,
-                        child: Image.asset(MenuActionButtons.termAndCondition),
-                      ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 3.h),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color(0xffF98080).withValues(alpha: 0.50),
                     ),
-                    Expanded(
-                      child: onPress(
-                        ontap: reportProblem,
-                        child: Image.asset(MenuActionButtons.reportAProblem),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 3.h),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Color(0xffF98080).withValues(alpha: 0.50),
-                      ),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          onPress(
-                            ontap: logout,
-                            child: Image.asset("assets/icons/out.png"),
-                          ),
-                          SizedBox(height: 1.6.h),
-                          onPress(
-                            ontap: deleteAccount,
-                            child: Image.asset("assets/icons/del.png"),
-                          ),
-                          SizedBox(height: 1.h),
-                          Image.asset("assets/icons/txt.png"),
-                        ],
-                      ),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        onPress(
+                          ontap: logout,
+                          child: Image.asset("assets/icons/out.png"),
+                        ),
+                        SizedBox(height: 1.6.h),
+                        onPress(
+                          ontap: deleteAccount,
+                          child: Image.asset("assets/icons/del.png"),
+                        ),
+                        SizedBox(height: 1.h),
+                        Image.asset("assets/icons/txt.png"),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],

@@ -14,7 +14,7 @@ void showPopup(
   showDialog(
     context: context,
     barrierDismissible: true,
-    builder: (context) {
+    builder: (_) {
       return Center(
         child: Material(
           color: Colors.transparent,
