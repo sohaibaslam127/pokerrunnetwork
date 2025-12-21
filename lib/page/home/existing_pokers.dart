@@ -19,7 +19,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
   bool status4 = false;
   int current = 0;
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Image.asset(
@@ -118,7 +118,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
     showDialog(
       context: context,
       barrierDismissible: true, // Close on tap outside
-      builder: (context) {
+      builder: (_) {
         return Center(
           child: Material(
             color: Colors.transparent,

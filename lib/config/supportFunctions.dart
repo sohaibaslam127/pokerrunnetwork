@@ -48,7 +48,7 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
 Future<LocationResult> showPlacePicker(BuildContext context) async {
   LocationResult? result = await Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (context) => Theme(
+      builder: (_) => Theme(
         data: ThemeData(
           appBarTheme: AppBarTheme(backgroundColor: MyColors.secondaryDark),
         ),
@@ -113,7 +113,7 @@ Future<DateTime?> pickDate(BuildContext context) async {
     helpText: "Select Date",
     confirmText: "Done",
     cancelText: "Cancel",
-    builder: (context, child) {
+    builder: (_, child) {
       return Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
@@ -149,7 +149,7 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
   final TimeOfDay? picked = await showTimePicker(
     context: context,
     initialTime: TimeOfDay.now(),
-    builder: (context, child) {
+    builder: (_, child) {
       return Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(

@@ -65,7 +65,7 @@ class _PokerStopsState extends State<PokerStops> {
   }
 
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Positioned.fill(

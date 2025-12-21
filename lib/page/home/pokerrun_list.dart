@@ -37,7 +37,7 @@ class _SchedulePokerState extends State<PokerRunList> {
   bool status4 = false;
   int current = 0;
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Image.asset(

@@ -10,7 +10,7 @@ class CloseApp extends StatelessWidget {
   final String message;
 
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.secondaryLight,
       body: Center(child: _NoInternetDialog(title, message)),
@@ -25,7 +25,7 @@ class _NoInternetDialog extends StatelessWidget {
   final String message;
 
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.white,
       title: Text(

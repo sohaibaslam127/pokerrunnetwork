@@ -71,7 +71,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Image.asset(

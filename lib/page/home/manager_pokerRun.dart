@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/models/event.dart';
-import 'package:pokerrunnetwork/page/home/authorize_poker.dart';
+import 'package:pokerrunnetwork/page/home/partner_list.dart';
 import 'package:pokerrunnetwork/page/home/co_manager.dart';
 import 'package:pokerrunnetwork/page/home/create_poker.dart';
 import 'package:pokerrunnetwork/page/home/progress_poker.dart';
@@ -37,7 +37,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
   }
 
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Scaffold(
@@ -94,7 +94,12 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                         if (!isCompleted)
                           onPress(
                             ontap: () {
-                              Get.to(AuthorizePoker());
+                              Get.to(
+                                PartnerList(
+                                  type: 0,
+                                  eventModel: widget.eventModel,
+                                ),
+                              );
                             },
                             child: Image.asset(
                               MenuActionButtons.authorizeParticipants,
@@ -103,7 +108,12 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                           ),
                         onPress(
                           ontap: () {
-                            Get.to(ProgressPoker());
+                            Get.to(
+                              PartnerList(
+                                type: 1,
+                                eventModel: widget.eventModel,
+                              ),
+                            );
                           },
                           child: Image.asset(
                             MenuActionButtons.progressPokerrun,
@@ -135,12 +145,14 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                                   }
                                   widget.eventModel.status = 2;
                                   isCompleted = true;
-                                  FirestoreServices.I.setEvent(
+                                  await FirestoreServices.I.setEvent(
                                     context,
                                     widget.eventModel,
                                     null,
                                     false,
                                   );
+                                  setState(() {});
+                                  EasyLoading.dismiss();
                                 },
                                 () async {
                                   Get.back();

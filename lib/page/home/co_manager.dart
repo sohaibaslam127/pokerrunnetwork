@@ -24,7 +24,7 @@ class CoManagerPage extends StatefulWidget {
 
 class _CoManagerPageState extends State<CoManagerPage> {
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Image.asset(
@@ -146,7 +146,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
     showDialog(
       context: context,
       barrierDismissible: true, // Close on tap outside
-      builder: (context) {
+      builder: (_) {
         return Center(
           child: Material(
             color: Colors.transparent,

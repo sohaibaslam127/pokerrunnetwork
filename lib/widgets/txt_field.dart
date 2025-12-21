@@ -24,7 +24,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
   bool obsecure = false,
 }) {
   return StatefulBuilder(
-    builder: (BuildContext context, setState) {
+    builder: (BuildContext _, setState) {
       return TextField(
         maxLines: line,
         keyboardType: textInputType,

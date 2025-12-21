@@ -508,15 +508,33 @@ class FirestoreServices {
           .collection('events')
           .doc(pokerId)
           .collection("participants")
-          .orderBy('rankValue', descending: true);
+          .where('rankValue', isEqualTo: 0)
+          .orderBy('roadName');
     } else {
       return _instance
           .collection('events')
           .doc(pokerId)
           .collection("participants")
+          .where('rankValue', isEqualTo: 0)
           .where("searchParameter", arrayContains: search.toLowerCase())
-          .orderBy('approved', descending: false);
+          .orderBy('roadName');
     }
+  }
+
+  Query getGamePlayersProgress(String pokerId, String search) {
+    Query query = _instance
+        .collection('events')
+        .doc(pokerId)
+        .collection('participants');
+    if (search.isNotEmpty) {
+      query = query.where(
+        'searchParameter',
+        arrayContains: search.toLowerCase(),
+      );
+    } else {
+      query = query.where('rankValue', isNotEqualTo: 0).orderBy('rankValue');
+    }
+    return query;
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> newPlayerStatus(String pokerId) {

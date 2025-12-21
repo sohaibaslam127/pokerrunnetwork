@@ -20,9 +20,9 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
-  Widget build(BuildContext maincontext) {
+  Widget build(BuildContext context) {
     return ResponsiveSizer(
-      builder: (context, orientation, screenType) {
+      builder: (_, orientation, screenType) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(fontFamily: "Calibri"),
