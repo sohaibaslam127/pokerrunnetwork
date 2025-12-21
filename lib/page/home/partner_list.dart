@@ -234,7 +234,7 @@ class _PartnerListState extends State<PartnerList> {
                                                           : "Not Paid \$${total.toStringAsFixed(2)}";
                                                     })()
                                                   : "Paid"
-                                            : game.rank,
+                                            : "${game.rank.capitalize}",
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w500,

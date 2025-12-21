@@ -594,4 +594,34 @@ class FirestoreServices {
       }
     }
   }
+
+  Future<List<Map<String, dynamic>>> getFaqs() async {
+    List<Map<String, dynamic>> faqs = [];
+    QuerySnapshot<Map<String, dynamic>> faqsSnapshot = await _instance
+        .collection('admin')
+        .doc('info')
+        .collection('faqs')
+        .get();
+    if (faqsSnapshot.docs.isNotEmpty) {
+      for (var doc in faqsSnapshot.docs) {
+        faqs.add(doc.data());
+      }
+    }
+    return faqs;
+  }
+
+  Future<List<Map<String, dynamic>>> getVideos() async {
+    List<Map<String, dynamic>> videos = [];
+    QuerySnapshot<Map<String, dynamic>> videosSnapshot = await _instance
+        .collection('admin')
+        .doc('info')
+        .collection('videos')
+        .get();
+    if (videosSnapshot.docs.isNotEmpty) {
+      for (var doc in videosSnapshot.docs) {
+        videos.add(doc.data());
+      }
+    }
+    return videos;
+  }
 }
