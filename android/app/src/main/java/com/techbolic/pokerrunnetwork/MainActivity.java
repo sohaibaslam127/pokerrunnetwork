@@ -1,4 +1,4 @@
-package com.techbolic.pokerrunnetwork;
+package com.techbolic.pokernetwork;
 
 import io.flutter.embedding.android.FlutterActivity;
 

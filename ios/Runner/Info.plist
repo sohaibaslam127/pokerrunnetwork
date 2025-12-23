@@ -30,31 +30,6 @@
 		<string>$(CURRENT_PROJECT_VERSION)</string>
 		<key>FirebaseAppDelegateProxyEnabled</key>
 		<false/>
-		<key>LSApplicationQueriesSchemes</key>
-		<array>
-			<string>comgooglemaps</string>
-			<string>baidumap</string>
-			<string>iosamap</string>
-			<string>waze</string>
-			<string>yandexmaps</string>
-			<string>yandexnavi</string>
-			<string>citymapper</string>
-			<string>mapswithme</string>
-			<string>osmandmaps</string>
-			<string>dgis</string>
-			<string>qqmap</string>
-			<string>here-location</string>
-			<string>tomtomgo</string>
-			<string>copilot</string>
-			<string>com.sygic.aura</string>
-			<string>nmap</string>
-			<string>kakaomap</string>
-			<string>tmap</string>
-			<string>szn-mapy</string>
-			<string>mappls</string>
-			<string>moovit</string>
-			<string>neshan</string>
-		</array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>LSSupportsOpeningDocumentsInPlace</key>
@@ -97,11 +72,7 @@
 			<string>UIInterfaceOrientationPortrait</string>
 			<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		</array>
-		<key>UISupportsDocumentBrowser</key>
-		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
-		<key>GADApplicationIdentifier</key>
-		<string>ca-app-pub-2555335650225733~8257574631</string>
 	</dict>
 </plist>
