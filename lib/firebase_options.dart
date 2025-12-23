@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBe5djPy8Cpm6fZMl14cmjw4ZewHtKFPI0',
-    appId: '1:157383110136:android:ddd5a103a6fae43d637a0d',
+    appId: '1:157383110136:android:da530fe01a4e2693637a0d',
     messagingSenderId: '157383110136',
     projectId: 'pokerapp-e17f8',
     storageBucket: 'pokerapp-e17f8.appspot.com',
