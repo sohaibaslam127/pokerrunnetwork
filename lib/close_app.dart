@@ -12,7 +12,7 @@ class CloseApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.secondaryLight,
+      backgroundColor: MyColors.secondaryDark,
       body: Center(child: _NoInternetDialog(title, message)),
     );
   }
@@ -51,7 +51,11 @@ class _NoInternetDialog extends StatelessWidget {
           },
           child: const Text(
             "Close App",
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],

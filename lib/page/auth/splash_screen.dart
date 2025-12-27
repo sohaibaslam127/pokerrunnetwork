@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pokerrunnetwork/close_app.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/firebase_options.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
@@ -25,18 +27,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    init().then((_) {
-      Timer(const Duration(seconds: 2), () async {
-        if (currentUser.id == "") {
-          Get.offAll(() => const LoginPage());
-        } else {
-          Get.offAll(() => const HomePage());
-        }
-      });
+    init().then((appRun) {
+      if (appRun) {
+        Timer(const Duration(seconds: 2), () async {
+          if (currentUser.id == "") {
+            Get.offAll(() => const LoginPage());
+          } else {
+            Get.offAll(() => const HomePage());
+          }
+        });
+      }
     });
   }
 
-  Future<void> init() async {
+  Future<bool> init() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -45,15 +49,28 @@ class _SplashScreenState extends State<SplashScreen> {
       buildNumber = packageInfo.buildNumber;
     });
 
+    final bool isConnected =
+        await InternetConnectionChecker.instance.hasConnection;
+    if (isConnected) {
+      log('Device is connected to the internet');
+    } else {
+      Get.offAll(
+        CloseApp(
+          "No Internet Connection!",
+          "Pokerrun Network requires active internet connection to function. Please enable internet and restart the app.",
+        ),
+      );
+      return false;
+    }
+
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    await Future.wait([
-      FirestoreServices.I.init(),
-      LocationServices.I.getUserLocation(),
-    ]);
+    await FirestoreServices.I.init();
     await AuthServices.I.checkUser();
+    LocationServices.I.getUserLocation();
     log("ID: ${currentUser.id}");
+    return true;
   }
 
   @override

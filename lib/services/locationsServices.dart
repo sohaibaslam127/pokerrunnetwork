@@ -1,11 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import "package:location/location.dart" as LocationManager;
 import 'package:app_settings/app_settings.dart';
-import 'package:pokerrunnetwork/close_app.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
@@ -27,12 +24,6 @@ class LocationServices {
           await Future.delayed(const Duration(seconds: 8));
           serviceEnabled = await _location.serviceEnabled();
           if (!serviceEnabled) {
-            runApp(
-              CloseApp(
-                "Location Service Disabled!",
-                "This app requires active location service to function. Please enable location from settings and restart the app.",
-              ),
-            );
             return;
           }
         }
@@ -42,12 +33,6 @@ class LocationServices {
       if (permissionGranted == LocationManager.PermissionStatus.denied) {
         permissionGranted = await _location.requestPermission();
         if (permissionGranted != LocationManager.PermissionStatus.granted) {
-          runApp(
-            CloseApp(
-              "Location Permission Denied!",
-              "This app requires location permission to function. Please allow access and restart the app.",
-            ),
-          );
           return;
         }
       }
@@ -62,7 +47,6 @@ class LocationServices {
       _locationSubscription = _location.onLocationChanged.listen((
         locationData,
       ) async {
-        print(locationData);
         if (locationData.latitude == null || locationData.longitude == null) {
           return;
         }
@@ -85,31 +69,9 @@ class LocationServices {
         }
       });
     } on TimeoutException catch (e, stack) {
-      await FirebaseCrashlytics.instance.recordError(
-        e,
-        stack,
-        reason: 'Location request timed out',
-        fatal: false,
-      );
-      runApp(
-        CloseApp(
-          "Location Service Disabled!",
-          "This app requires active location service to function. Please enable location and restart the app.",
-        ),
-      );
+      log('Location request timed out');
     } catch (e, stack) {
-      await FirebaseCrashlytics.instance.recordError(
-        e,
-        stack,
-        reason: 'Error occurred in getUserLocation()',
-        fatal: false,
-      );
-      runApp(
-        CloseApp(
-          "Location Disabled!",
-          "This app requires active location service to function. Please enable location and restart the app.",
-        ),
-      );
+      log('Error occurred in getUserLocation()');
     }
   }
 
