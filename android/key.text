@@ -1,4 +1,4 @@
 storePassword=123qweasd?
 keyPassword=123qweasd?
-keyAlias=pokernetwork
+keyAlias=pokerplayer
 storeFile=../../keys/keystore.jks

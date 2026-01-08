@@ -18,7 +18,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.techbolic.pokernetwork"
+    namespace = "com.techbolic.pokerplayer"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -32,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.techbolic.pokernetwork"
+        applicationId = "com.techbolic.pokerplayer"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode

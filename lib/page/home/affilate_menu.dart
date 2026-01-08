@@ -42,7 +42,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                   Spacer(flex: 2),
                   Center(
                     child: text_widget(
-                      "Poker Run Network\nAffiliate Management Page",
+                      "Poker Run Player\nAffiliate Management Page",
                       textAlign: TextAlign.center,
                       fontSize: 22.sp,
                       height: 1.1,

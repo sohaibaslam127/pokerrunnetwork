@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBe5djPy8Cpm6fZMl14cmjw4ZewHtKFPI0',
-    appId: '1:157383110136:android:da530fe01a4e2693637a0d',
+    appId: '1:157383110136:android:4c21f3f19cb05bef637a0d',
     messagingSenderId: '157383110136',
     projectId: 'pokerapp-e17f8',
     storageBucket: 'pokerapp-e17f8.appspot.com',
@@ -59,10 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCnUqH6cLCs3mjzRLLbPQYcPIoePD299Ps',
-    appId: '1:157383110136:ios:7f64c3e860626f2a637a0d',
+    appId: '1:157383110136:ios:df075005ee708269637a0d',
     messagingSenderId: '157383110136',
     projectId: 'pokerapp-e17f8',
     storageBucket: 'pokerapp-e17f8.appspot.com',
-    iosBundleId: 'com.techbolic.pokernetwork',
+    iosBundleId: 'com.techbolic.pokerplayer',
   );
 }

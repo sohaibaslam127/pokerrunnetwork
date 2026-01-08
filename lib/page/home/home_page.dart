@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
                 Center(
                   child: text_widget(
-                    "Welcome To The\nPoker Run Network.",
+                    "Welcome To The\nPoker Run Player.",
                     textAlign: TextAlign.center,
 
                     fontSize: 22.sp,
@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: customButon(
                     isIcon: true,
-                    btnText: "Poker Run Network Affiliate",
+                    btnText: "Poker Run Player",
                     icon: "assets/icons/p1.png",
                     onTap: () {
                       Get.to(AffilateMenuPage());

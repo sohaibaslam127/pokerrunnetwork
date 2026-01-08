@@ -439,10 +439,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_tts
-      sha256: bdf2fc4483e74450dc9fc6fe6a9b6a5663e108d4d0dad3324a22c8e26bf48af4
+      sha256: ce5eb209b40e95f2f4a1397116c87ab2fcdff32257d04ed7a764e75894c03775
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.3"
+    version: "4.2.5"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -540,10 +540,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_ios
-      sha256: "115b03c2e637e74d084a78c0e1faf42884fcd8e65d1a9ce58d909ca5493afa32"
+      sha256: "16fb8f913a7575d6f9156e43401e7ba5f7766d58f4d250580f4f983dba16bdb3"
       url: "https://pub.dev"
     source: hosted
-    version: "2.15.7"
+    version: "2.16.0"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:

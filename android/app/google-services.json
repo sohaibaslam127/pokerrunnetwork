@@ -44,6 +44,43 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:157383110136:android:4c21f3f19cb05bef637a0d",
+        "android_client_info": {
+          "package_name": "com.techbolic.pokerplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157383110136-jqqa5ki0qstoetfj2hdtuf5pedu2vas4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBe5djPy8Cpm6fZMl14cmjw4ZewHtKFPI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157383110136-jqqa5ki0qstoetfj2hdtuf5pedu2vas4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "157383110136-lm89qbh1qaht576q9n43pv7ofjl7l86b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.techbolic.pokerrun",
+                "app_store_id": "1626958029"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:157383110136:android:8028686b475bdb2e637a0d",
         "android_client_info": {
           "package_name": "com.techbolic.pokerrun"

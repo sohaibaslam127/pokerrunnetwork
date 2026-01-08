@@ -45,7 +45,7 @@
 
 //                   Center(
 //                     child: text_widget(
-//                       "Poker Run Network Affiliate Management Page",
+//                       "Poker Run Player Affiliate Management Page",
 //                       textAlign: TextAlign.center,
 
 //                       fontSize: 22.sp,
