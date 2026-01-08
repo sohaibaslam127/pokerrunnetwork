@@ -49,19 +49,19 @@ class _SplashScreenState extends State<SplashScreen> {
       buildNumber = packageInfo.buildNumber;
     });
 
-    final bool isConnected =
-        await InternetConnectionChecker.instance.hasConnection;
-    if (isConnected) {
-      log('Device is connected to the internet');
-    } else {
-      Get.offAll(
-        CloseApp(
-          "No Internet Connection!",
-          "Pokerrun Network requires active internet connection to function. Please enable internet and restart the app.",
-        ),
-      );
-      return false;
-    }
+    // final bool isConnected =
+    //     await InternetConnectionChecker.instance.hasConnection;
+    // if (isConnected) {
+    //   log('Device is connected to the internet');
+    // } else {
+    //   Get.offAll(
+    //     CloseApp(
+    //       "No Internet Connection!",
+    //       "Pokerrun Network requires active internet connection to function. Please enable internet and restart the app.",
+    //     ),
+    //   );
+    //   return false;
+    // }
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

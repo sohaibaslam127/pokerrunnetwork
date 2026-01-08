@@ -15,22 +15,21 @@ dependencies:
   custom_check_box: ^0.0.4
   url_launcher: ^6.3.2
   package_info_plus: ^9.0.0
-  cloud_firestore: ^6.1.1
-  intl: ^0.20.2
+  cloud_firestore: 
+  intl: 
   flutter_easyloading: ^3.0.5
-  firebase_auth: ^6.1.3
+  firebase_auth: 
   paginate_firestore:
-  firebase_core: ^4.3.0
+  firebase_core: 
   country_currency_pickers: ^3.0.0
   location: ^8.0.1
   app_settings: ^7.0.0
   image_picker: ^1.2.1
   snackify: ^1.2.4
   youtube_player_flutter: ^9.1.3
-  place_picker: ^0.10.0
-  flutter_inappwebview: ^6.2.0-beta.2
-  firebase_remote_config: ^6.1.3
-  internet_connection_checker: ^3.0.1
+  place_picker: 
+  firebase_remote_config: 
+  internet_connection_checker:
 
 dev_dependencies:
   flutter_test:
