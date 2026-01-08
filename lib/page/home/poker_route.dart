@@ -122,30 +122,30 @@ class _PokerRouteState extends State<PokerRoute> {
                                 SizedBox(height: 1.3.h),
                                 onPress(
                                   ontap: () {
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                    showPlacePicker(context).then(
-                                      (loc) => loc.latLng == null
-                                          ? toast(
-                                              context,
-                                              "Location",
-                                              "Select Address of the Valid Location",
-                                              type: 1,
-                                            )
-                                          : () {
-                                              startingPointAddressController
-                                                      .text =
-                                                  loc.formattedAddress ?? "";
-                                              widget
-                                                  .eventModel
-                                                  .stops[0]
-                                                  .stopLocation = GeoPoint(
-                                                loc.latLng!.latitude,
-                                                loc.latLng!.longitude,
-                                              );
-                                              setState(() {});
-                                            }(),
-                                    );
+                                    // FocusManager.instance.primaryFocus
+                                    //     ?.unfocus();
+                                    // showPlacePicker(context).then(
+                                    //   (loc) => loc.latLng == null
+                                    //       ? toast(
+                                    //           context,
+                                    //           "Location",
+                                    //           "Select Address of the Valid Location",
+                                    //           type: 1,
+                                    //         )
+                                    //       : () {
+                                    //           startingPointAddressController
+                                    //                   .text =
+                                    //               loc.formattedAddress ?? "";
+                                    //           widget
+                                    //               .eventModel
+                                    //               .stops[0]
+                                    //               .stopLocation = GeoPoint(
+                                    //             loc.latLng!.latitude,
+                                    //             loc.latLng!.longitude,
+                                    //           );
+                                    //           setState(() {});
+                                    //         }(),
+                                    // );
                                   },
                                   child:
                                       textFieldWithPrefixSuffuxIconAndHintText(
@@ -189,30 +189,30 @@ class _PokerRouteState extends State<PokerRoute> {
                                 SizedBox(height: 1.3.h),
                                 onPress(
                                   ontap: () {
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                    showPlacePicker(context).then(
-                                      (loc) => loc.latLng == null
-                                          ? toast(
-                                              context,
-                                              "Location",
-                                              "Select Address of the Valid Location",
-                                              type: 1,
-                                            )
-                                          : () {
-                                              finalDestinationAddressController
-                                                      .text =
-                                                  loc.formattedAddress ?? "";
-                                              widget
-                                                  .eventModel
-                                                  .stops[6]
-                                                  .stopLocation = GeoPoint(
-                                                loc.latLng!.latitude,
-                                                loc.latLng!.longitude,
-                                              );
-                                              setState(() {});
-                                            }(),
-                                    );
+                                    // FocusManager.instance.primaryFocus
+                                    //     ?.unfocus();
+                                    // showPlacePicker(context).then(
+                                    //   (loc) => loc.latLng == null
+                                    //       ? toast(
+                                    //           context,
+                                    //           "Location",
+                                    //           "Select Address of the Valid Location",
+                                    //           type: 1,
+                                    //         )
+                                    //       : () {
+                                    //           finalDestinationAddressController
+                                    //                   .text =
+                                    //               loc.formattedAddress ?? "";
+                                    //           widget
+                                    //               .eventModel
+                                    //               .stops[6]
+                                    //               .stopLocation = GeoPoint(
+                                    //             loc.latLng!.latitude,
+                                    //             loc.latLng!.longitude,
+                                    //           );
+                                    //           setState(() {});
+                                    //         }(),
+                                    // );
                                   },
                                   child:
                                       textFieldWithPrefixSuffuxIconAndHintText(

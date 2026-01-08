@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/page/home/affilate_menu.dart';
 import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
-import 'package:pokerrunnetwork/page/home/setting_page.dart';
+import 'package:pokerrunnetwork/page/home/setting_page_network.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';

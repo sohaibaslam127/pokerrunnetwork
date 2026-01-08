@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:place_picker/place_picker.dart';
+
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -45,25 +45,25 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
   );
 }
 
-Future<LocationResult> showPlacePicker(BuildContext context) async {
-  LocationResult? result = await Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (_) => Theme(
-        data: ThemeData(
-          appBarTheme: AppBarTheme(backgroundColor: MyColors.secondaryDark),
-        ),
-        child: PlacePicker(
-          mapApiKey,
-          displayLocation: LatLng(
-            currentUser.location.latitude,
-            currentUser.location.longitude,
-          ),
-        ),
-      ),
-    ),
-  );
-  return result ?? LocationResult();
-}
+// Future<LocationResult> showPlacePicker(BuildContext context) async {
+//   LocationResult? result = await Navigator.of(context).push(
+//     MaterialPageRoute(
+//       builder: (_) => Theme(
+//         data: ThemeData(
+//           appBarTheme: AppBarTheme(backgroundColor: MyColors.secondaryDark),
+//         ),
+//         child: PlacePicker(
+//           mapApiKey,
+//           displayLocation: LatLng(
+//             currentUser.location.latitude,
+//             currentUser.location.longitude,
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+//   return result ?? LocationResult();
+// }
 
 void launchMyUrl(String url) async {
   final Uri uri = Uri.parse(url);

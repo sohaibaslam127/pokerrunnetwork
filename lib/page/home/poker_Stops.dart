@@ -168,47 +168,47 @@ class _PokerStopsState extends State<PokerStops> {
                                         ontap: () {
                                           FocusManager.instance.primaryFocus
                                               ?.unfocus();
-                                          showPlacePicker(context).then(
-                                            (loc) => loc.latLng == null
-                                                ? toast(
-                                                    context,
-                                                    "Location",
-                                                    "Select the Valid Location",
-                                                    type: 1,
-                                                  )
-                                                : () {
-                                                    if (index == 0) {
-                                                      firstStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
-                                                    } else if (index == 1) {
-                                                      secondStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
-                                                    } else if (index == 2) {
-                                                      thirdStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
-                                                    } else if (index == 3) {
-                                                      fourthStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
-                                                    } else {
-                                                      fifthStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
-                                                    }
-                                                    widget
-                                                            .eventModel
-                                                            .stops[index]
-                                                            .stopLocation =
-                                                        GeoPoint(
-                                                          loc.latLng!.latitude,
-                                                          loc.latLng!.longitude,
-                                                        );
-                                                    setState(() {});
-                                                  }(),
-                                          );
+                                          // showPlacePicker(context).then(
+                                          //   (loc) => loc.latLng == null
+                                          //       ? toast(
+                                          //           context,
+                                          //           "Location",
+                                          //           "Select the Valid Location",
+                                          //           type: 1,
+                                          //         )
+                                          //       : () {
+                                          //           if (index == 0) {
+                                          //             firstStopAddress.text =
+                                          //                 loc.formattedAddress ??
+                                          //                 "";
+                                          //           } else if (index == 1) {
+                                          //             secondStopAddress.text =
+                                          //                 loc.formattedAddress ??
+                                          //                 "";
+                                          //           } else if (index == 2) {
+                                          //             thirdStopAddress.text =
+                                          //                 loc.formattedAddress ??
+                                          //                 "";
+                                          //           } else if (index == 3) {
+                                          //             fourthStopAddress.text =
+                                          //                 loc.formattedAddress ??
+                                          //                 "";
+                                          //           } else {
+                                          //             fifthStopAddress.text =
+                                          //                 loc.formattedAddress ??
+                                          //                 "";
+                                          //           }
+                                          //           widget
+                                          //                   .eventModel
+                                          //                   .stops[index]
+                                          //                   .stopLocation =
+                                          //               GeoPoint(
+                                          //                 loc.latLng!.latitude,
+                                          //                 loc.latLng!.longitude,
+                                          //               );
+                                          //           setState(() {});
+                                          //         }(),
+                                          // );
                                         },
                                         child: textFieldWithPrefixSuffuxIconAndHintText(
                                           "Select Address of $number$suffix Poker Run Stop",
