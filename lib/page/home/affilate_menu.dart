@@ -63,7 +63,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                                   Get.to(CreatePoker(EventModel()));
                                 },
                                 child: Image.asset(
-                                  MenuActionButtons.createPokerrun,
+                                  MenuActionButtons.activePokerrun,
                                   height: 20.h,
                                   fit: BoxFit.cover,
                                 ),
@@ -75,7 +75,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                                   Get.to(PokerRunList(type: 1));
                                 },
                                 child: Image.asset(
-                                  MenuActionButtons.schedulePokerrun,
+                                  MenuActionButtons.activePokerrun,
                                   height: 20.h,
                                   fit: BoxFit.cover,
                                 ),
@@ -103,7 +103,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                                   Get.to(PokerRunList(type: 3));
                                 },
                                 child: Image.asset(
-                                  MenuActionButtons.copyExistingPokerrun,
+                                  MenuActionButtons.activePokerrun,
                                   height: 20.h,
                                   fit: BoxFit.cover,
                                 ),

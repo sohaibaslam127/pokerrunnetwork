@@ -10,47 +10,55 @@ class MyColors {
 }
 
 class PopupActionsButtons {
-  static String yes = "assets/buttons/popupbuttons/yes.png";
-  static String no = "assets/buttons/popupbuttons/no.png";
-  static String cancel = "assets/buttons/popupbuttons/cancel.png";
-  static String copy = "assets/buttons/popupbuttons/copy.png";
-  static String complete = "assets/buttons/popupbuttons/completed.png";
-  static String deleteEvent = "assets/buttons/popupbuttons/deleteevent.png";
-  static String deleteAccount = "assets/buttons/popupbuttons/deleteaccount.png";
-  static String enable = "assets/buttons/popupbuttons/enable.png";
-  static String remove = "assets/buttons/popupbuttons/remove.png";
-  static String disable = "assets/buttons/popupbuttons/disable.png";
-  static String logout = "assets/buttons/popupbuttons/logout.png";
+  static String yes = "assets/buttons/popup/yes.png";
+  static String no = "assets/buttons/popup/no.png";
+  static String cancel = "assets/buttons/popup/cancel.png";
+  static String copy = "assets/buttons/popup/copy.png";
+  static String complete = "assets/buttons/popup/completed.png";
+  static String deleteAccount = "assets/buttons/popup/deleteaccount.png";
+  static String enable = "assets/buttons/popup/enable.png";
+  static String remove = "assets/buttons/popup/remove.png";
+  static String disable = "assets/buttons/popup/disable.png";
+  static String logout = "assets/buttons/popup/logout.png";
 }
 
 class MenuActionButtons {
-  static String authorizedComanager =
-      "assets/buttons/menubuttons/authorizedcomanager.png";
-  static String authorizeParticipants =
-      "assets/buttons/menubuttons/authorizeparticipants.png";
-  static String completedPokerrun =
-      "assets/buttons/menubuttons/completedpokerrun.png";
-  static String copyExistingPokerrun =
-      "assets/buttons/menubuttons/copyexistingpokerrun.png";
-  static String copyPokerrun = "assets/buttons/menubuttons/copypokerrun.png";
-  static String createPokerrun = "assets/buttons/menubuttons/createpokerun.png";
-  static String deletePokerrun =
-      "assets/buttons/menubuttons/deletepokerrun.png";
-  static String editPokerrun = "assets/buttons/menubuttons/editpokerrun.png";
-  static String editProfile = "assets/buttons/menubuttons/editprofile.png";
-  static String helpLine = "assets/buttons/menubuttons/helpline.png";
-  static String progressPokerrun =
-      "assets/buttons/menubuttons/progresspokerrun.png";
-  static String removeYourself =
-      "assets/buttons/menubuttons/removeyourself.png";
-  static String reportAProblem =
-      "assets/buttons/menubuttons/reportaproblem.png";
-  static String resultsPokerrun =
-      "assets/buttons/menubuttons/resultspokerrun.png";
-  static String finishPokerrun =
-      "assets/buttons/menubuttons/finishpokerrun.png";
-  static String schedulePokerrun =
-      "assets/buttons/menubuttons/schedulepokerrun.png";
-  static String termAndCondition =
-      "assets/buttons/menubuttons/termandcondition.png";
+  static String completedPokerrun = "assets/buttons/menu/completedpokerrun.png";
+  static String activePokerrun = "assets/buttons/menu/activepokerrun.png";
+  static String editProfile = "assets/buttons/menu/editprofile.png";
+  static String findAPokerrun = "assets/buttons/menu/findapokerrun.png";
+  static String helpLine = "assets/buttons/menu/helpline.png";
+  static String profile = "assets/buttons/menu/profile.png";
+  static String reportAProblem = "assets/buttons/menu/reportaproblem.png";
+  static String termAndCondition = "assets/buttons/menu/termandcondition.png";
+}
+
+class OtherButtons {
+  static String card1 = "assets/buttons/other/card1.png";
+  static String card2 = "assets/buttons/other/card2.png";
+  static String card3 = "assets/buttons/other/card3.png";
+  static String card4 = "assets/buttons/other/card4.png";
+  static String card5 = "assets/buttons/other/card5.png";
+
+  static String navigate1 = "assets/buttons/other/navigate1.png";
+  static String navigate2 = "assets/buttons/other/navigate2.png";
+  static String navigate3 = "assets/buttons/other/navigate3.png";
+  static String navigate4 = "assets/buttons/other/navigate4.png";
+  static String navigate5 = "assets/buttons/other/navigate5.png";
+
+  static String changeThisCard = "assets/buttons/other/changethiscard.png";
+  static String completeYourPokerRun =
+      "assets/buttons/other/completeyourpokerrun.png";
+  static String currentPokerRun = "assets/buttons/other/currentpokerrun.png";
+  static String finalDestination = "assets/buttons/other/finaldestination.png";
+  static String joinThisPokerRun = "assets/buttons/other/jointhispokerrun.png";
+  static String keepThisCard = "assets/buttons/other/keepthiscard.png";
+  static String leaveThisPokerRun =
+      "assets/buttons/other/leavethispokerrun.png";
+  static String saveChanges = "assets/buttons/other/savechanges.png";
+  static String signIn = "assets/buttons/other/signin.png";
+  static String signUp = "assets/buttons/other/signup.png";
+  static String startYourPokerRun =
+      "assets/buttons/other/startyourpokerrun.png";
+  static String updateProfile = "assets/buttons/other/updateprofile.png";
 }

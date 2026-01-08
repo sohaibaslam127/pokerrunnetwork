@@ -87,7 +87,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               Get.to(CreatePoker(widget.eventModel));
                             },
                             child: Image.asset(
-                              MenuActionButtons.editPokerrun,
+                              MenuActionButtons.findAPokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -102,7 +102,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               );
                             },
                             child: Image.asset(
-                              MenuActionButtons.authorizeParticipants,
+                              MenuActionButtons.activePokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -116,7 +116,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                             );
                           },
                           child: Image.asset(
-                            MenuActionButtons.progressPokerrun,
+                            MenuActionButtons.completedPokerrun,
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -126,7 +126,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               showPopup(
                                 context,
                                 'Are you sure your Poker Run is completed and you are ready to publish the results?',
-                                PopupActionsButtons.complete,
+                                PopupActionsButtons.yes,
                                 PopupActionsButtons.no,
                                 () async {
                                   Get.back();
@@ -160,7 +160,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               );
                             },
                             child: Image.asset(
-                              MenuActionButtons.finishPokerrun,
+                              MenuActionButtons.completedPokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -170,8 +170,8 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               showPopup(
                                 context,
                                 "Are you sure you want to Copy an Existing Poker Run",
-                                PopupActionsButtons.cancel,
-                                PopupActionsButtons.copy,
+                                PopupActionsButtons.yes,
+                                PopupActionsButtons.no,
                                 () {
                                   Get.back();
                                 },
@@ -186,7 +186,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               );
                             },
                             child: Image.asset(
-                              MenuActionButtons.copyExistingPokerrun,
+                              MenuActionButtons.activePokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -196,7 +196,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               showPopup(
                                 context,
                                 "Are You Sure You Want To Delete That Poker Run?",
-                                PopupActionsButtons.deleteEvent,
+                                PopupActionsButtons.yes,
                                 PopupActionsButtons.no,
                                 () async {
                                   Get.back();
@@ -213,7 +213,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               );
                             },
                             child: Image.asset(
-                              MenuActionButtons.deletePokerrun,
+                              MenuActionButtons.activePokerrun,
                               fit: BoxFit.fill,
                             ),
                           ),
@@ -223,7 +223,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               Get.to(CoManagerPage(widget.eventModel));
                             },
                             child: Image.asset(
-                              MenuActionButtons.authorizedComanager,
+                              MenuActionButtons.activePokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -257,7 +257,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                               );
                             },
                             child: Image.asset(
-                              MenuActionButtons.removeYourself,
+                              MenuActionButtons.activePokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
