@@ -75,7 +75,7 @@ class _SettingPageState extends State<SettingPage> {
     return Stack(
       children: [
         Image.asset(
-          "assets/icons/bbg.jpg",
+          "assets/background/darkbackground.jpg",
           fit: BoxFit.cover,
           width: double.infinity,
           height: double.infinity,

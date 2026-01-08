@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/page/auth/profile.dart';
+import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
 import 'package:pokerrunnetwork/page/home/affilate_menu.dart';
+import 'package:pokerrunnetwork/page/home/complete_poker_view.dart';
+import 'package:pokerrunnetwork/page/home/completed_pokr.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
+import 'package:pokerrunnetwork/page/home/find_poker.dart';
 import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
 import 'package:pokerrunnetwork/page/home/setting_page_network.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
@@ -23,7 +28,7 @@ class _HomePage1State extends State<HomePage1> {
       children: [
         Positioned.fill(
           child: Image.asset(
-            "assets/ext/bbg.png",
+            "assets/background/lightbackground.jpg",
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -57,7 +62,7 @@ class _HomePage1State extends State<HomePage1> {
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Image.asset("assets/ext/currentpokerrun.png",
+                  child: Image.asset(OtherButtons.currentPokerRun,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: 11.h,
@@ -73,37 +78,40 @@ class _HomePage1State extends State<HomePage1> {
                       children: [
                           onPress(
                             ontap: () {
-                              // Get.to(CreatePoker(widget.eventModel));
+                              Get.to(FindPoker());
                             },
                             child: Image.asset(
-                              "assets/ext/findapokerrun.png",
+                             MenuActionButtons.findAPokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
                           onPress(
                             ontap: () {
+                              Get.to(ActivePokerRun());
                               // Get.to(CreatePoker(widget.eventModel));
                             },
                             child: Image.asset(
-                              "assets/ext/activepokerrun.png",
+                                MenuActionButtons.activePokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
                           onPress(
                             ontap: () {
+                              Get.to(CompletedPokr());
                               // Get.to(CreatePoker(widget.eventModel));
                             },
                             child: Image.asset(
-                              "assets/ext/completedpokerrun.png",
+                              MenuActionButtons.completedPokerrun,
                               fit: BoxFit.contain,
                             ),
                           ),
                           onPress(
                             ontap: () {
+                              Get.to(ProfilePage());
                               // Get.to(CreatePoker(widget.eventModel));
                             },
                             child: Image.asset(
-                              "assets/ext/profile.png",
+                               MenuActionButtons.profile,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -116,7 +124,7 @@ class _HomePage1State extends State<HomePage1> {
                 Center(
                   child: onPress(
                     ontap: () {
-                      Get.to(FaqPage());
+                      Get.to(SettingPage());
                     },
                     child: Container(
                       width: 40.w,
@@ -130,7 +138,7 @@ class _HomePage1State extends State<HomePage1> {
                       ),
                       child: Center(
                         child: text_widget(
-                          "Video’s and FAQ’s",
+                          "Settings",
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 16.sp,
