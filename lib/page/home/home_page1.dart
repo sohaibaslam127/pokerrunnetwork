@@ -3,12 +3,9 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/page/auth/profile.dart';
 import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
-import 'package:pokerrunnetwork/page/home/affilate_menu.dart';
-import 'package:pokerrunnetwork/page/home/complete_poker_view.dart';
 import 'package:pokerrunnetwork/page/home/completed_pokr.dart';
-import 'package:pokerrunnetwork/page/home/faq_page.dart';
 import 'package:pokerrunnetwork/page/home/find_poker.dart';
-import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
+import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
 import 'package:pokerrunnetwork/page/home/setting_page_network.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -62,10 +59,15 @@ class _HomePage1State extends State<HomePage1> {
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Image.asset(OtherButtons.currentPokerRun,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 11.h,
+                  child: onPress(
+                    ontap: (){
+                      Get.to(SchedulePokerN());
+                    },
+                    child: Image.asset(OtherButtons.currentPokerRun,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 11.h,
+                    ),
                   ),
                 ),
               

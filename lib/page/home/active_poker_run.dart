@@ -247,20 +247,32 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: Container(
-                                        width: 22.w,
-                                        height: 4.8.h,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xff5CAF5F),
-                                          borderRadius: BorderRadius.circular(8),
+                                  child: onPress(
+                                    ontap: (){
+                                                         showDialog(
+    context: context,
+    // This ensures the area behind the dialog is dimmed
+    barrierDismissible: true, 
+    builder: (BuildContext context) {
+      return const CautionPop();
+    },
+  );
+                                    },
+                                    child: Container(
+                                          width: 22.w,
+                                          height: 4.8.h,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xff5CAF5F),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Center(
+                                            child:  text_widget("Mark as a current poker run",
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                          ),
                                         ),
-                                        child: Center(
-                                          child:  text_widget("Scheduled",
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                        ),
-                                      ),
+                                  ),
                                 ),
                                 SizedBox(width: 2.w),
                                 onPress(

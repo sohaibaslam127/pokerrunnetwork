@@ -321,6 +321,66 @@ class DeletePop extends StatelessWidget {
   }}
 
 
+class CautionPop extends StatelessWidget {
+  const CautionPop({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Title
+            const Text(
+              'Caution',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xffFF7A7A), // Deep Navy Blue
+              ),
+            ),
+            const SizedBox(height: 12),
+            
+            // Subtitle
+            const Text(
+              'go to the final destination and select complete your poke rrun\nor\nyour poker hnd will not be registered with the organizer, ranked, or saved',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+                height: 1.4,
+              ),
+            ),
+            // const SizedBox(height: 24),
+  // const SizedBox(height: 15),
+
+            // Buttons
+            Row(
+              children: [
+                // Cancel Button
+               
+                
+                // Yes Button (Gradient)
+                Expanded(child: Image.asset( "assets/icons/cont.png",height: 9.h,fit: BoxFit.cover,)),
+              ],
+            ),
+           
+          ],
+        ),
+      ),
+    );
+  }}
+
+
 class DeletePop1 extends StatelessWidget {
   const DeletePop1({super.key});
 
