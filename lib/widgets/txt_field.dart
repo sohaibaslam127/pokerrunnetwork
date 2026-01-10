@@ -3,17 +3,19 @@ import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+
 Widget textFieldWithPrefixSuffuxIconAndHintText(
   String hintText, {
   suffixIcon,
   prefixIcon,
-  bool showPrefix = false,       // ✅ control prefix visibility
-  String? prefixImage,           // ✅ image path for prefix
+  bool showPrefix = false, // ✅ control prefix visibility
+  String? prefixImage, // ✅ image path for prefix
   TextEditingController? controller,
   int line = 1,
   bool isSuffix = false,
   bool enable = true,
   TextInputType textInputType = TextInputType.text,
+  TextInputAction textInputAction = TextInputAction.next,
   double? radius,
   bool isTextSuffix = false,
   suffText,
@@ -30,11 +32,13 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
       return TextField(
         maxLines: line,
         keyboardType: textInputType,
+        textInputAction: textInputAction,
         onChanged: (value) {
           if (onChange != null) {
             onChange();
           }
         },
+        autofocus: false,
         enabled: enable,
         obscureText: obsecure,
         cursorColor: Colors.grey.shade300,
@@ -50,16 +54,13 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
             fontWeight: FontWeight.w400,
             color: hintColor ?? Colors.black54,
           ),
-          
+
           // ✅ PREFIX ICON
           prefixIcon: showPrefix
               ? Padding(
-                  padding: const EdgeInsets.only(left: 12, right: 8),
+                  padding: const EdgeInsets.only(left: 18, right: 12),
                   child: prefixImage != null
-                      ? Image.asset(
-                          prefixImage,
-                          height: 3.h,
-                        )
+                      ? Image.asset(prefixImage, height: 2.4.h)
                       : Icon(
                           prefixIcon ?? Icons.person,
                           size: 2.3.h,
@@ -67,10 +68,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
                         ),
                 )
               : null,
-          prefixIconConstraints: BoxConstraints(
-            minHeight: 0,
-            minWidth: 0,
-          ),
+          prefixIconConstraints: BoxConstraints(minHeight: 0, minWidth: 0),
 
           // ✅ SUFFIX ICON / TEXT
           suffixIconConstraints: BoxConstraints(),
@@ -85,32 +83,33 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
                   ),
                 )
               : suffixIcon.toString().contains("assets")
-                  ? Padding(
-                      padding: EdgeInsets.only(right: 12.0),
-                      child: onPress(
-                        ontap: () {},
-                        child: Image.asset(suffixIcon, height: 3.h),
-                      ),
-                    )
-                  : isSuffix
-                      ? Padding(
-                          padding: EdgeInsets.only(right: 5.w),
-                          child: onPress(
-                            ontap: () {
-                              setState(() {
-                                obsecure = !obsecure;
-                              });
-                            },
-                            child: Icon(
-                              suffixIcon ?? (obsecure
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.remove_red_eye_outlined),
-                              size: 2.3.h,
-                              color: Color(0xffACB5BB),
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
+              ? Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: onPress(
+                    ontap: () {},
+                    child: Image.asset(suffixIcon, height: 3.h),
+                  ),
+                )
+              : isSuffix
+              ? Padding(
+                  padding: EdgeInsets.only(right: 5.w),
+                  child: onPress(
+                    ontap: () {
+                      setState(() {
+                        obsecure = !obsecure;
+                      });
+                    },
+                    child: Icon(
+                      suffixIcon ??
+                          (obsecure
+                              ? Icons.visibility_off_outlined
+                              : Icons.remove_red_eye_outlined),
+                      size: 2.3.h,
+                      color: Color(0xffACB5BB),
+                    ),
+                  ),
+                )
+              : const SizedBox(),
 
           filled: true,
           fillColor: fillColor ?? Color(0xffF7F7F7),
@@ -137,8 +136,6 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
     },
   );
 }
-
-
 
 class PokerJoinDialog extends StatelessWidget {
   const PokerJoinDialog({super.key});
@@ -168,7 +165,7 @@ class PokerJoinDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             // Subtitle
             const Text(
               'Are You Sure You Want To Join\nThis Poker Run?',
@@ -203,7 +200,11 @@ class PokerJoinDialog extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 8),
                     child: Divider(thickness: 0.8),
                   ),
-                  _buildPriceRow('Total Paid To Organizer At Start', '\$3.40', isBold: true),
+                  _buildPriceRow(
+                    'Total Paid To Organizer At Start',
+                    '\$3.40',
+                    isBold: true,
+                  ),
                 ],
               ),
             ),
@@ -213,11 +214,23 @@ class PokerJoinDialog extends StatelessWidget {
             Row(
               children: [
                 // Cancel Button
-                Expanded(child: Image.asset( PopupActionsButtons.no,height: 9.h,fit: BoxFit.cover,)),
-                    const SizedBox(width: 10),
-                
+                Expanded(
+                  child: Image.asset(
+                    PopupActionsButtons.no,
+                    height: 9.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 10),
+
                 // Yes Button (Gradient)
-                Expanded(child: Image.asset( PopupActionsButtons.yes,height: 9.h,fit: BoxFit.cover,)),
+                Expanded(
+                  child: Image.asset(
+                    PopupActionsButtons.yes,
+                    height: 9.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ],
             ),
           ],
@@ -225,7 +238,6 @@ class PokerJoinDialog extends StatelessWidget {
       ),
     );
   }
-  
 
   Widget _buildPriceRow(String label, String price, {bool isBold = false}) {
     return Row(
@@ -257,9 +269,6 @@ class PokerJoinDialog extends StatelessWidget {
 // How to call the dialog:
 // showDialog(context: context, builder: (context) => const PokerJoinDialog());
 
-
-
-
 class DeletePop extends StatelessWidget {
   const DeletePop({super.key});
 
@@ -288,7 +297,7 @@ class DeletePop extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             // Subtitle
             const Text(
               'Are You Sure You Want To Leave\nThis Poker Run?',
@@ -300,26 +309,37 @@ class DeletePop extends StatelessWidget {
               ),
             ),
             // const SizedBox(height: 24),
-  // const SizedBox(height: 15),
+            // const SizedBox(height: 15),
 
             // Buttons
             Row(
               children: [
                 // Cancel Button
-                Expanded(child: Image.asset( PopupActionsButtons.no,height: 9.h,fit: BoxFit.cover,)),
-                    const SizedBox(width: 10),
-                
+                Expanded(
+                  child: Image.asset(
+                    PopupActionsButtons.no,
+                    height: 9.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 10),
+
                 // Yes Button (Gradient)
-                Expanded(child: Image.asset( PopupActionsButtons.yes,height: 9.h,fit: BoxFit.cover,)),
+                Expanded(
+                  child: Image.asset(
+                    PopupActionsButtons.yes,
+                    height: 9.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ],
             ),
-           
           ],
         ),
       ),
     );
-  }}
-
+  }
+}
 
 class CautionPop extends StatelessWidget {
   const CautionPop({super.key});
@@ -349,7 +369,7 @@ class CautionPop extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             // Subtitle
             const Text(
               'go to the final destination and select complete your poke rrun\nor\nyour poker hnd will not be registered with the organizer, ranked, or saved',
@@ -361,25 +381,29 @@ class CautionPop extends StatelessWidget {
               ),
             ),
             // const SizedBox(height: 24),
-  // const SizedBox(height: 15),
+            // const SizedBox(height: 15),
 
             // Buttons
             Row(
               children: [
                 // Cancel Button
-               
-                
+
                 // Yes Button (Gradient)
-                Expanded(child: Image.asset( "assets/icons/cont.png",height: 9.h,fit: BoxFit.cover,)),
+                Expanded(
+                  child: Image.asset(
+                    "assets/icons/cont.png",
+                    height: 9.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ],
             ),
-           
           ],
         ),
       ),
     );
-  }}
-
+  }
+}
 
 class DeletePop1 extends StatelessWidget {
   const DeletePop1({super.key});
@@ -409,7 +433,7 @@ class DeletePop1 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             // Subtitle
             const Text(
               'Are You Sure You Want To Delete?',
@@ -421,22 +445,34 @@ class DeletePop1 extends StatelessWidget {
               ),
             ),
             // const SizedBox(height: 24),
-  // const SizedBox(height: 15),
+            // const SizedBox(height: 15),
 
             // Buttons
             Row(
               children: [
                 // Cancel Button
-                Expanded(child: Image.asset( PopupActionsButtons.no,height: 9.h,fit: BoxFit.cover,)),
-                    const SizedBox(width: 10),
-                
+                Expanded(
+                  child: Image.asset(
+                    PopupActionsButtons.no,
+                    height: 9.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 10),
+
                 // Yes Button (Gradient)
-                Expanded(child: Image.asset( PopupActionsButtons.yes,height: 9.h,fit: BoxFit.cover,)),
+                Expanded(
+                  child: Image.asset(
+                    PopupActionsButtons.yes,
+                    height: 9.h,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ],
             ),
-           
           ],
         ),
       ),
     );
-  }}
+  }
+}

@@ -31,14 +31,14 @@ class _StopViewState extends State<StopView> {
 
         Scaffold(
           backgroundColor: Colors.transparent,
-         
+
           appBar: AppBar(
             foregroundColor: Colors.transparent,
             surfaceTintColor: Colors.transparent,
             backgroundColor: Colors.transparent,
 
             elevation: 0,
-            leadingWidth: 14.w,
+            leadingWidth: 8.w,
             leading: Padding(
               padding: EdgeInsets.only(bottom: 3.5),
               child: onPress(
@@ -59,34 +59,31 @@ class _StopViewState extends State<StopView> {
               color: MyColors.white,
               fontWeight: FontWeight.w600,
             ),
-           
+
             centerTitle: false,
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:22.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 3.h),
-                Image.asset("assets/icons/cc.png"),
-                SizedBox(height: 3.h),
-
-              ],
-                 ),
+                    children: [
+                      SizedBox(height: 3.h),
+                      Image.asset("assets/icons/cc.png"),
+                      SizedBox(height: 3.h),
+                    ],
+                  ),
                 ),
-             Image.asset(OtherButtons.keepThisCard),
-             Image.asset(OtherButtons.changeThisCard),
-             text_widget("Note: 1 permanent card change per stop",
-             color: Colors.white.withOpacity(0.7),
-             fontSize: 16.sp,
-             ),
+                Image.asset(OtherButtons.keepThisCard),
+                Image.asset(OtherButtons.changeThisCard),
+                text_widget(
+                  "Note: 1 permanent card change per stop",
+                  color: Colors.white.withOpacity(0.7),
+                  fontSize: 16.sp,
+                ),
                 SizedBox(height: 3.h),
-
-
-
               ],
             ),
           ),

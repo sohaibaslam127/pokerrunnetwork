@@ -24,6 +24,7 @@ class PopupActionsButtons {
 
 class MenuActionButtons {
   static String completedPokerrun = "assets/buttons/menu/completedpokerrun.png";
+  static String settingPokerrun = "assets/buttons/menu/settingpokerrun.png";
   static String activePokerrun = "assets/buttons/menu/activepokerrun.png";
   static String editProfile = "assets/buttons/menu/editprofile.png";
   static String findAPokerrun = "assets/buttons/menu/findapokerrun.png";
@@ -61,4 +62,5 @@ class OtherButtons {
   static String startYourPokerRun =
       "assets/buttons/other/startyourpokerrun.png";
   static String updateProfile = "assets/buttons/other/updateprofile.png";
+  static String no = "assets/buttons/other/no.png";
 }

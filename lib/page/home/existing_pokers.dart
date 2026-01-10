@@ -36,7 +36,7 @@ class _ExistingPokersState extends State<ExistingPokers> {
             backgroundColor: Colors.white.withValues(alpha: 0.08),
 
             elevation: 0,
-            leadingWidth: 14.w,
+            leadingWidth: 8.w,
             leading: Padding(
               padding: EdgeInsets.only(left: 17.0),
               child: onPress(

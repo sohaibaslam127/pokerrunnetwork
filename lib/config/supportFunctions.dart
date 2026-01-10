@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:map_launcher/map_launcher.dart';
 
 import 'package:pokerrunnetwork/config/colors.dart';
-import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:snackify/enums/snack_enums.dart';
 import 'package:snackify/snackify.dart';
@@ -14,7 +17,9 @@ import 'package:url_launcher/url_launcher.dart';
 void toast(BuildContext context, String title, String message, {int type = 3}) {
   // success, 0
   // error, 1
+  EasyLoading.dismiss();
   final topInset = MediaQuery.of(context).padding.top;
+
   Snackify.show(
     context: context,
     type: SnackType.values[type],
@@ -43,6 +48,9 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
     ),
     position: SnackPosition.top,
   );
+  Future.delayed(const Duration(seconds: 3), () {
+    Snackify.close();
+  });
 }
 
 // Future<LocationResult> showPlacePicker(BuildContext context) async {
@@ -218,4 +226,47 @@ Future<File?> getImage() async {
     return null;
   }
   return File(image.path);
+}
+
+Future<void> openMaps(BuildContext context, name, lat, lng) async {
+  final availableMaps = await MapLauncher.installedMaps;
+  await showCupertinoModalPopup(
+    context: context,
+    builder: (context) => Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.0),
+      child: CupertinoActionSheet(
+        actions: availableMaps
+            .map(
+              (e) => e.mapName == "Waze"
+                  ? Container()
+                  : Container(
+                      color: Color(0xffaa6c39),
+                      child: CupertinoActionSheetAction(
+                        onPressed: () async {
+                          await e.showMarker(
+                            coords: Coords(lat, lng),
+                            title: name,
+                          );
+                        },
+                        child: text_widget("Open in ${e.mapName}"),
+                      ),
+                    ),
+            )
+            .toList(),
+        cancelButton: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13),
+            color: Colors.black26,
+          ),
+          child: CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: text_widget('Cancel'),
+          ),
+        ),
+      ),
+    ),
+  );
 }

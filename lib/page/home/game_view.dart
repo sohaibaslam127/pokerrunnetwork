@@ -33,14 +33,14 @@ class _GameViewState extends State<GameView> {
 
         Scaffold(
           backgroundColor: Colors.transparent,
-         
+
           appBar: AppBar(
             foregroundColor: Colors.transparent,
             surfaceTintColor: Colors.transparent,
             backgroundColor: Colors.transparent,
 
             elevation: 0,
-            leadingWidth: 14.w,
+            leadingWidth: 8.w,
             leading: Padding(
               padding: EdgeInsets.only(bottom: 3.5),
               child: onPress(
@@ -61,126 +61,131 @@ class _GameViewState extends State<GameView> {
               color: MyColors.white,
               fontWeight: FontWeight.w600,
             ),
-           
+
             centerTitle: false,
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:22.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 3.h),
-                    text_widget("P-36 Mian Zulfiqar Ali Road,\nCanal Block Shadman Town, Faisalabad, 38000",
-                    color: Colors.white.withOpacity(0.8),
-                    textAlign: TextAlign.center,
-                    fontWeight: FontWeight.w600
-                    ),
-                
-                SizedBox(height: 3.h),
-                SizedBox(
-                  height: 45.h,
-                  child: Stack(
-                                children: [
-                  InAppWebView(
-                    initialUrlRequest: URLRequest(
-                      url: WebUri("https://thepokerrunapp.com/"),
-                    ),
-                    initialSettings: InAppWebViewSettings(
-                      javaScriptEnabled: true,
-                      mediaPlaybackRequiresUserGesture: false,
-                      useHybridComposition: true,
-                    ),
-                    onWebViewCreated: (controller) {
-                      webViewController = controller;
-                    },
-                    onLoadStop: (controller, url) {
-                      setState(() => isLoading = false);
-                    },
-                  ),
-                  
-                  /// 🔹 Loader
-                  if (isLoading)
-                    const Center(child: CircularProgressIndicator()),
-                                ],
-                              ),
-                ),
-                SizedBox(height: 3.h),
+                      text_widget(
+                        "P-36 Mian Zulfiqar Ali Road,\nCanal Block Shadman Town, Faisalabad, 38000",
+                        color: Colors.white.withOpacity(0.8),
+                        textAlign: TextAlign.center,
+                        fontWeight: FontWeight.w600,
+                      ),
 
-            Container(
-              width: Get.width,
+                      SizedBox(height: 3.h),
+                      SizedBox(
+                        height: 45.h,
+                        child: Stack(
+                          children: [
+                            InAppWebView(
+                              initialUrlRequest: URLRequest(
+                                url: WebUri("https://thepokerrunapp.com/"),
+                              ),
+                              initialSettings: InAppWebViewSettings(
+                                javaScriptEnabled: true,
+                                mediaPlaybackRequiresUserGesture: false,
+                                useHybridComposition: true,
+                              ),
+                              onWebViewCreated: (controller) {
+                                webViewController = controller;
+                              },
+                              onLoadStop: (controller, url) {
+                                setState(() => isLoading = false);
+                              },
+                            ),
+
+                            /// 🔹 Loader
+                            if (isLoading)
+                              const Center(child: CircularProgressIndicator()),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 3.h),
+
+                      Container(
+                        width: Get.width,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.30),
                           border: Border.all(
-                          color: Colors.white.withOpacity(0.40),
-
+                            color: Colors.white.withOpacity(0.40),
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal:12.0,vertical: 15),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0,
+                            vertical: 15,
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                           
                               Container(
-                                        width: 23.w,
-                                        height: 3.4.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.green,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Center(
-                                          child:  text_widget("0.00 Miles",
-                                      fontSize: 14.4.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                        ),
-                                      ),
-                                      SizedBox(height: 1.5.h),
-                                       text_widget("P-36 Mian Zulfiqar Ali Road,\nCanal Block Shadman Town, Faisalabad, 38000",
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600
-                    ),
+                                width: 23.w,
+                                height: 3.4.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Center(
+                                  child: text_widget(
+                                    "0.00 Miles",
+                                    fontSize: 14.4.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.5.h),
+                              text_widget(
+                                "P-36 Mian Zulfiqar Ali Road,\nCanal Block Shadman Town, Faisalabad, 38000",
+                                color: Colors.white,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ],
                           ),
                         ),
                       ),
-                SizedBox(height: 2.h),
-
-                                         ],
+                      SizedBox(height: 2.h),
+                    ],
                   ),
                 ),
-             Row(
-              children: [
-                Expanded(child: onPress(
-                  ontap: (){
-                    showDialog(
-    context: context,
-    // This ensures the area behind the dialog is dimmed
-    barrierDismissible: true, 
-    builder: (BuildContext context) {
-      return const PokerResultDialog();
-    },
-  );
-                  },
-                  child: Image.asset(OtherButtons.navigate1))),
-                Expanded(child: onPress(
-                  ontap: (){
-                    Get.to(StopView());
-                  
-                  },
-                  child: Image.asset(OtherButtons.card1))),
-
-              ],
-             ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: onPress(
+                        ontap: () {
+                          showDialog(
+                            context: context,
+                            // This ensures the area behind the dialog is dimmed
+                            barrierDismissible: true,
+                            builder: (BuildContext context) {
+                              return const PokerResultDialog();
+                            },
+                          );
+                        },
+                        child: Image.asset(OtherButtons.navigate1),
+                      ),
+                    ),
+                    Expanded(
+                      child: onPress(
+                        ontap: () {
+                          Get.to(StopView());
+                        },
+                        child: Image.asset(OtherButtons.card1),
+                      ),
+                    ),
+                  ],
+                ),
                 SizedBox(height: 3.h),
-
-
-
               ],
             ),
           ),

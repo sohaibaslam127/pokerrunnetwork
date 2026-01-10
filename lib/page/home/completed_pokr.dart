@@ -87,11 +87,8 @@ class _CompletedPokrState extends State<CompletedPokr> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leadingWidth: 14.w,
+            backgroundColor: Colors.transparent.withValues(alpha: .2),
+            leadingWidth: 8.w,
             leading: Padding(
               padding: EdgeInsets.only(bottom: 3.5),
               child: onPress(
@@ -115,107 +112,121 @@ class _CompletedPokrState extends State<CompletedPokr> {
             centerTitle: false,
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal:22.0),
+            padding: const EdgeInsets.symmetric(horizontal: 22.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              
-                  SizedBox(height: 4.h),
-                  onPress(
-                    ontap: (){
-                      Get.to(CompletePokerView());
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(13.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                text_widget("Johnson",
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white),
-                                    Spacer(),
-                                    
-                              ],
-                            ),
-                            SizedBox(height: 1.h),
-                             Row(
-                               children: [
-                               text_widget("31 DEC 2025, 02:02 PM",
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white.withOpacity(0.6)),
-                                        Spacer(),
-                                       Icon(Remix.arrow_right_s_line, color: Colors.white, size: 4.h,),
-                               ],
-                             ),
-                               SizedBox(height: 1.h),
-                             Row(
-                               children: [
-                                 text_widget("Winner: ",
-                                        fontSize: 15.5.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white),
-                                           text_widget("Sohaib Khan",
-                                        fontSize: 15.5.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.white),
-                                        Spacer(),
-                                         text_widget("Rank: ",
-                                        fontSize: 15.5.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white),
-                                           text_widget("Straight",
-                                        fontSize: 15.5.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.white),
-                               ],
-                             ),
-                          
-                            SizedBox(height: 2.h),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: onPress(
-                                    ontap: (){
-                                      showDialog(context: context, builder: (context) => const DeletePop1());
-                                    },
-                                    child: Container(
-                                          width: 22.w,
-                                          height: 4.8.h,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xffFF7A7A),
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Center(
-                                            child:  text_widget("Delete",
+                SizedBox(height: 4.h),
+                onPress(
+                  ontap: () {
+                    Get.to(CompletePokerView());
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(13.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              text_widget(
+                                "Johnson",
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                              Spacer(),
+                            ],
+                          ),
+                          SizedBox(height: 1.h),
+                          Row(
+                            children: [
+                              text_widget(
+                                "31 DEC 2025, 02:02 PM",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withOpacity(0.6),
+                              ),
+                              Spacer(),
+                              Icon(
+                                Remix.arrow_right_s_line,
+                                color: Colors.white,
+                                size: 4.h,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 1.h),
+                          Row(
+                            children: [
+                              text_widget(
+                                "Winner: ",
+                                fontSize: 15.5.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                              text_widget(
+                                "Sohaib Khan",
+                                fontSize: 15.5.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                              ),
+                              Spacer(),
+                              text_widget(
+                                "Rank: ",
+                                fontSize: 15.5.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                              text_widget(
+                                "Straight",
+                                fontSize: 15.5.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 2.h),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: onPress(
+                                  ontap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => const DeletePop1(),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 22.w,
+                                    height: 4.8.h,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffFF7A7A),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Center(
+                                      child: text_widget(
+                                        "Delete",
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                          ),
-                                        ),
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                             
-                              ],
-                            ),
-
-                    
-                                   ],
-                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
-
-
-                    ],
+                ),
+              ],
             ),
           ),
         ),

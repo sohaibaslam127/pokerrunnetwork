@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
+import 'package:pokerrunnetwork/page/auth/profile.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
@@ -55,7 +56,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   void editProfile() {
-    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
+    Get.to(() => const ProfilePage());
   }
 
   void helpLine() {
@@ -83,11 +84,8 @@ class _SettingPageState extends State<SettingPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leadingWidth: 14.w,
+            backgroundColor: Colors.transparent.withValues(alpha: .2),
+            leadingWidth: 8.w,
             leading: Padding(
               padding: EdgeInsets.only(bottom: 3.5),
               child: onPress(
@@ -116,18 +114,18 @@ class _SettingPageState extends State<SettingPage> {
               SizedBox(height: 4.h),
               Row(
                 children: [
-                  // Expanded(
-                  //   child: onPress(
-                  //     ontap: editProfile,
-                  //     child: Image.asset(MenuActionButtons.editProfile),
-                  //   ),
-                  // ),
-                  // Expanded(
-                  //   child: onPress(
-                  //     ontap: helpLine,
-                  //     child: Image.asset(MenuActionButtons.helpLine),
-                  //   ),
-                  // ),
+                  Expanded(
+                    child: onPress(
+                      ontap: editProfile,
+                      child: Image.asset(MenuActionButtons.editProfile),
+                    ),
+                  ),
+                  Expanded(
+                    child: onPress(
+                      ontap: helpLine,
+                      child: Image.asset(MenuActionButtons.helpLine),
+                    ),
+                  ),
                 ],
               ),
               Row(

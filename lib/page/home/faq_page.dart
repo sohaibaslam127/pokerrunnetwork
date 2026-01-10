@@ -73,7 +73,7 @@ class _FaqPageState extends State<FaqPage> {
     return Stack(
       children: [
         Image.asset(
-          "assets/icons/bbg.jpg",
+          "assets/background/darkbackground.jpg",
           fit: BoxFit.cover,
           width: double.infinity,
           height: double.infinity,
@@ -81,9 +81,8 @@ class _FaqPageState extends State<FaqPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.transparent.withValues(alpha: 0.08),
-            elevation: 0,
-            leadingWidth: 14.w,
+            backgroundColor: Colors.transparent.withValues(alpha: .2),
+            leadingWidth: 8.w,
             leading: Padding(
               padding: const EdgeInsets.only(left: 17),
               child: onPress(

@@ -2,14 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:pokerrunnetwork/page/auth/profile.dart';
-import 'package:pokerrunnetwork/page/auth/singup_page.dart';
 import 'package:pokerrunnetwork/page/auth/splash_screen.dart';
-import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
-import 'package:pokerrunnetwork/page/home/completed_pokr.dart';
-import 'package:pokerrunnetwork/page/home/game_view.dart';
-import 'package:pokerrunnetwork/page/home/home_page1.dart';
-import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 Future<void> main() async {
@@ -34,7 +27,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(fontFamily: "Calibri"),
           defaultTransition: Transition.noTransition,
-          home: HomePage1(),
+          home: SplashScreen(),
           builder: EasyLoading.init(),
         );
       },

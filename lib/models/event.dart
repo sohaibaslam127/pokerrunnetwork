@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_currency_pickers/utils/utils.dart';
-import 'package:intl/intl.dart';
 import 'package:country_currency_pickers/country.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';

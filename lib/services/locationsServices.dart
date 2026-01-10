@@ -43,7 +43,9 @@ class LocationServices {
         distanceFilter: miles * (1609.34 / 3),
       );
 
+      if (currentUser.id == "") return;
       await _locationSubscription?.cancel();
+
       _locationSubscription = _location.onLocationChanged.listen((
         locationData,
       ) async {

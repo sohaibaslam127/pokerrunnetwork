@@ -13,12 +13,10 @@ class AuthServices {
 
   Future<String> emailSignIn(String user, String password) async {
     try {
-      EasyLoading.show();
       UserCredential fbUser = await _auth.signInWithEmailAndPassword(
         email: user,
         password: password,
       );
-      EasyLoading.dismiss();
       if (fbUser.user != null) {
         currentUser.id = fbUser.user!.uid;
         currentUser.email = fbUser.user!.email!;
@@ -26,7 +24,6 @@ class AuthServices {
       }
       return "error";
     } on FirebaseAuthException catch (error) {
-      EasyLoading.dismiss();
       return error.message ?? error.code;
     }
   }
@@ -97,15 +94,11 @@ class AuthServices {
   }
 
   Future<void> logOut() async {
-    try {
-      if (currentUser.id != "") {
-        currentUser.isUser = null;
-        await FirestoreServices.I.updateUser();
-      }
-      await _auth.signOut();
-      currentUser = UserModel();
-    } catch (e) {
-      currentUser = UserModel();
+    if (currentUser.id != "") {
+      currentUser.isUser = null;
+      await FirestoreServices.I.updateUser();
     }
+    await _auth.signOut();
+    currentUser = UserModel();
   }
 }

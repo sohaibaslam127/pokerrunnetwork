@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -29,19 +30,20 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     init().then((appRun) {
       if (appRun) {
-        Timer(const Duration(seconds: 2), () async {
-          if (currentUser.id == "") {
-            Get.offAll(() => const LoginPage());
-          } else {
-            Get.offAll(() => const HomePage());
-          }
-        });
+        Widget destination;
+        if (currentUser.id.isEmpty) {
+          destination = LoginPage();
+        } else {
+          destination = const HomePage();
+        }
+        Get.offAll(() => destination);
       }
     });
   }
 
   Future<bool> init() async {
     WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
@@ -49,19 +51,19 @@ class _SplashScreenState extends State<SplashScreen> {
       buildNumber = packageInfo.buildNumber;
     });
 
-    // final bool isConnected =
-    //     await InternetConnectionChecker.instance.hasConnection;
-    // if (isConnected) {
-    //   log('Device is connected to the internet');
-    // } else {
-    //   Get.offAll(
-    //     CloseApp(
-    //       "No Internet Connection!",
-    //       "Pokerrun Network requires active internet connection to function. Please enable internet and restart the app.",
-    //     ),
-    //   );
-    //   return false;
-    // }
+    final bool isConnected =
+        await InternetConnectionChecker.instance.hasConnection;
+    if (isConnected) {
+      log('Device is connected to the internet');
+    } else {
+      Get.offAll(
+        CloseApp(
+          "No Internet Connection!",
+          "Pokerrun Player requires active internet connection to function. Please enable internet and restart the app.",
+        ),
+      );
+      return false;
+    }
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -69,7 +71,6 @@ class _SplashScreenState extends State<SplashScreen> {
     await FirestoreServices.I.init();
     await AuthServices.I.checkUser();
     LocationServices.I.getUserLocation();
-    log("ID: ${currentUser.id}");
     return true;
   }
 

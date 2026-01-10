@@ -1,12 +1,12 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/random.dart';
 import 'package:pokerrunnetwork/models/event.dart';
+import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
+import 'package:pokerrunnetwork/models/transaction.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
 
 class FirestoreServices {
@@ -233,7 +233,7 @@ class FirestoreServices {
         .orderBy('eventDate');
   }
 
-  Query getAllEvents() {
+  Query getMyEvents() {
     return _instance
         .collection('events')
         .where('ownerId', isEqualTo: currentUser.id)
@@ -623,5 +623,62 @@ class FirestoreServices {
       }
     }
     return videos;
+  }
+
+  Future<GameData> getCurrentGame() async {
+    GameData gameData = GameData();
+    try {
+      final pokers = await getCurrentEvents();
+      final now = DateTime.now();
+      for (final poker in pokers) {
+        if (now.compareTo(poker.eventDate) < 0) continue;
+        final gamePlayerModel = await getGamePlayer(poker.id, currentUser.id);
+        if (gamePlayerModel.currentStop < 6) {
+          gameData.latestEvent = poker;
+          gameData.game = gamePlayerModel;
+          gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
+          return gameData;
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    return gameData;
+  }
+
+  Future<List<EventModel>> getCurrentEvents() async {
+    try {
+      List<EventModel> events = [];
+      QuerySnapshot<Map<String, dynamic>> dsnaps;
+      dsnaps = await _instance
+          .collection('events')
+          .where("userIds", arrayContains: currentUser.id)
+          .where('status', whereIn: [1])
+          .orderBy('eventDate')
+          .get();
+      if (dsnaps.docs.isNotEmpty) {
+        for (QueryDocumentSnapshot<Map<String, dynamic>> item in dsnaps.docs) {
+          events.add(EventModel.toModel(item.data()));
+        }
+      }
+      return events;
+    } catch (e) {
+      print(e.toString());
+    }
+    return [];
+  }
+
+  Future<void> setTransaction(TransactionModel transactionModel) async {
+    transactionModel.id = _instance.collection('transaction').doc().id;
+    await _instance.collection('admin').doc('stats').set({
+      'transactionCount': FieldValue.increment(1),
+    }, SetOptions(merge: true));
+    await _instance.collection('admin').doc('stats').set({
+      'totalEarning': FieldValue.increment(transactionModel.totalAmount),
+    }, SetOptions(merge: true));
+    await _instance
+        .collection('transaction')
+        .doc(transactionModel.id)
+        .set(transactionModel.toJSON());
   }
 }

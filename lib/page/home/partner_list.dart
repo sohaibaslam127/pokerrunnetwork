@@ -50,7 +50,7 @@ class _PartnerListState extends State<PartnerList> {
             surfaceTintColor: Colors.transparent,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leadingWidth: 14.w,
+            leadingWidth: 8.w,
             leading: onPress(
               ontap: () {
                 Get.back();
