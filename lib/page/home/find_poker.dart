@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
@@ -58,10 +59,9 @@ class _FindPokerState extends State<FindPoker> {
             ),
             title: text_widget(
               "Find A Poker Run",
-            fontSize: 17.sp,
+              fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
-
             ),
             centerTitle: false,
           ),
@@ -76,6 +76,7 @@ class _FindPokerState extends State<FindPoker> {
                   fillColor: Colors.white.withValues(alpha: 0.1),
                   mainTxtColor: Colors.white,
                   showPrefix: true,
+                  textInputAction: TextInputAction.search,
                   controller: searchPokerRun,
                   onChange: (value) {
                     setState(() {});
@@ -87,7 +88,7 @@ class _FindPokerState extends State<FindPoker> {
                   hintColor: Color(0xff868686),
                   pColor: MyColors.primary,
                 ),
-                SizedBox(height: .5.h),
+                SizedBox(height: 2.h),
                 Expanded(
                   child: PaginateFirestore(
                     key: searchPokerRun.text.isEmpty
@@ -180,9 +181,11 @@ class _FindPokerState extends State<FindPoker> {
                                       SizedBox(width: 5),
                                       onPress(
                                         ontap: () async {
+                                          EasyLoading.show();
                                           GamePlayerModel coRider =
                                               await FirestoreServices.I
                                                   .isValidCorider(event.id);
+                                          EasyLoading.dismiss();
                                           Get.to(
                                             PokerDetailsView(event, coRider),
                                           );

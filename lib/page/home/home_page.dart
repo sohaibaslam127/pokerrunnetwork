@@ -36,8 +36,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void getCurrentPokerrun() {}
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -56,6 +54,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 1.h),
                 Center(
                   child: Image.asset("assets/logo/logo.png", height: 22.h),
                 ),

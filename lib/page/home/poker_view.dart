@@ -29,7 +29,6 @@ class PokerDetailsView extends StatefulWidget {
 }
 
 class _PokerDetailsViewState extends State<PokerDetailsView> {
-  // Logic variables from Old Design
   bool isExtraCard = false;
   bool isExtraCardCorider = false;
   bool isCorider = false;
@@ -96,192 +95,182 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
             ),
             title: text_widget(
               widget.event.pokerName,
-           fontSize: 17.sp,
+              fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
-
             ),
             centerTitle: false,
           ),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                child: SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 2.h),
-                      text_widget(
-                        widget.event.pokerName,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 0.3.h),
-              
-                      text_widget(
-                        "Starting date:  ${DateFormat("d MMM yyyy").format(widget.event.eventDate)}\n"
-                        "Starting time:  ${DateFormat("h:mm aaa").format(widget.event.eventDate)}\n"
-                        "Cost of this Poker Run:  \$${widget.event.joinFee.toStringAsFixed(2)}",
-                        fontSize: 14.5.sp,
-                        color: MyColors.white.withValues(alpha: 0.60),
-                        height: 1.7,
-                      ),
-                      SizedBox(height: 2.h),
-                      text_widget(
-                        "Description",
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 0.3.h),
-              
-                      text_widget(
-                        widget.event.description,
-                        fontSize: 14.5.sp,
-                        color: MyColors.white.withValues(alpha: 0.60),
-                        height: 1.7,
-                      ),
-                      SizedBox(height: 2.h),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                text_widget(
-                                  "Starting point: ${widget.event.stops[0].name}",
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                      SizedBox(height: 0.3.h),
-              
-                                text_widget(
-                                  "${widget.event.stops[0].address}\n${widget.event.stops[0].sponserName == "" ? widget.event.stops[0].sponserLink : widget.event.stops[0].sponserName}",
-                                  fontSize: 14.5.sp,
-                                  color: MyColors.white.withValues(alpha: 0.60),
-                                  height: 1.7,
-                                ),
-                              ],
-                            ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  children: [
+                    SizedBox(height: 2.h),
+                    text_widget(
+                      widget.event.pokerName,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 0.3.h),
+
+                    text_widget(
+                      "Starting date:  ${DateFormat("d MMM yyyy").format(widget.event.eventDate)}\n"
+                      "Starting time:  ${DateFormat("h:mm aaa").format(widget.event.eventDate)}\n"
+                      "Cost of this Poker Run:  \$${widget.event.joinFee.toStringAsFixed(2)}",
+                      fontSize: 14.5.sp,
+                      color: MyColors.white.withValues(alpha: 0.60),
+                      height: 1.7,
+                    ),
+                    SizedBox(height: 2.h),
+                    text_widget(
+                      "Description",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    SizedBox(height: 0.3.h),
+
+                    text_widget(
+                      widget.event.description,
+                      fontSize: 14.5.sp,
+                      color: MyColors.white.withValues(alpha: 0.60),
+                      height: 1.7,
+                    ),
+                    SizedBox(height: 2.h),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              text_widget(
+                                "Starting point: ${widget.event.stops[0].name}",
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                              SizedBox(height: 0.3.h),
+
+                              text_widget(
+                                "${widget.event.stops[0].address}\n${widget.event.stops[0].sponserName == "" ? widget.event.stops[0].sponserLink : widget.event.stops[0].sponserName}",
+                                fontSize: 14.5.sp,
+                                color: MyColors.white.withValues(alpha: 0.60),
+                                height: 1.7,
+                              ),
+                            ],
                           ),
-                          onPress(
-                            ontap: () => openMaps(
-                              context,
-                              widget.event.stops[0].name,
-                              widget.event.stops[0].stopLocation.latitude,
-                              widget.event.stops[0].stopLocation.longitude,
-                            ),
-                            child: Icon(
-                              RemixIcons.map_pin_line,
-                              color: Colors.white,
-                              size: 22.sp,
-                            ),
+                        ),
+                        onPress(
+                          ontap: () => openMaps(
+                            context,
+                            widget.event.stops[0].name,
+                            widget.event.stops[0].stopLocation.latitude,
+                            widget.event.stops[0].stopLocation.longitude,
                           ),
-                        ],
-                      ),
-                      if (isJoin &&
-                          widget.event.changeCardFee > 0 &&
-                          widget.iamCoRider.roadName.isEmpty &&
-                          (widget.event.isAdditionalCard ?? false)) ...[
-                        _buildCheckboxOption(
-                          "Do you want the option of changing your card at each stop for \$${widget.event.changeCardFee.toStringAsFixed(2)}?",
-                          isExtraCard,
-                          (val) => setState(() => isExtraCard = val),
+                          child: Icon(
+                            RemixIcons.map_pin_line,
+                            color: Colors.white,
+                            size: 22.sp,
+                          ),
                         ),
                       ],
-              
-                      if (isJoin &&
-                          !widget.iamCoRider.roadName.isNotEmpty &&
-                          (widget.event.coRider ?? false)) ...[
+                    ),
+                    if (isJoin &&
+                        widget.event.changeCardFee > 0 &&
+                        widget.iamCoRider.roadName.isEmpty &&
+                        (widget.event.isAdditionalCard ?? false)) ...[
+                      _buildCheckboxOption(
+                        "Do you want the option of changing your card at each stop for \$${widget.event.changeCardFee.toStringAsFixed(2)}?",
+                        isExtraCard,
+                        (val) => setState(() => isExtraCard = val),
+                      ),
+                    ],
+
+                    if (isJoin &&
+                        !widget.iamCoRider.roadName.isNotEmpty &&
+                        (widget.event.coRider ?? false)) ...[
+                      SizedBox(height: 2.h),
+                      _buildCheckboxOption(
+                        "Do you want to add a co-rider for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
+                        isCorider,
+                        (val) => setState(() => isCorider = val),
+                      ),
+                      if (isCorider) ...[
+                        SizedBox(height: 1.h),
+                        textFieldWithPrefixSuffuxIconAndHintText(
+                          "Enter Co-rider Road Name",
+                          radius: 12,
+                          textInputAction: TextInputAction.search,
+                          textInputType: TextInputType.name,
+                          controller: friendName,
+                        ),
                         SizedBox(height: 2.h),
                         _buildCheckboxOption(
-                          "Do you want to add a co-rider for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
-                          isCorider,
-                          (val) => setState(() => isCorider = val),
+                          "Option for co-rider to change cards for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
+                          isExtraCardCorider,
+                          (val) => setState(() => isExtraCardCorider = val),
                         ),
-                        if (isCorider) ...[
-                          SizedBox(height: 1.h),
-                          textFieldWithPrefixSuffuxIconAndHintText(
-                            "Enter Co-rider Road Name",
-                            radius: 12,
-                            textInputAction: TextInputAction.done,
-                            textInputType: TextInputType.name,
-                            controller: friendName,
+                      ],
+                    ],
+                    if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
+                      SizedBox(height: 2.h),
+                      _priceRow("Rider", widget.event.joinFee),
+                      if (isCorider)
+                        _priceRow("Co-rider", widget.event.coRiderFee),
+                      if (isExtraCard)
+                        _priceRow(
+                          "Rider Extra Cards",
+                          widget.event.changeCardFee,
+                        ),
+                      if (isExtraCardCorider && isCorider)
+                        _priceRow(
+                          "Co-rider Extra Cards",
+                          widget.event.changeCardFee,
+                        ),
+                      SizedBox(height: 1.3.h),
+                      Divider(thickness: 0.2, color: Colors.white54),
+                      SizedBox(height: 1.3.h),
+                      Row(
+                        children: [
+                          text_widget(
+                            "Total Paid to Organizer",
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
-                          SizedBox(height: 2.h),
-                          _buildCheckboxOption(
-                            "Option for co-rider to change cards for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
-                            isExtraCardCorider,
-                            (val) => setState(() => isExtraCardCorider = val),
+                          Spacer(),
+                          text_widget(
+                            "\$${getAmount().toStringAsFixed(2)}",
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
                         ],
-                      ],
-              
-                      // --- Price Summary Table ---
-                      SizedBox(height: 3.h),
-                      if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
-                        _priceRow("Rider", widget.event.joinFee),
-                        if (isCorider)
-                          _priceRow("Co-rider", widget.event.coRiderFee),
-                        if (isExtraCard)
-                          _priceRow(
-                            "Rider Extra Cards",
-                            widget.event.changeCardFee,
-                          ),
-                        if (isExtraCardCorider && isCorider)
-                          _priceRow(
-                            "Co-rider Extra Cards",
-                            widget.event.changeCardFee,
-                          ),
-                        SizedBox(height: 1.3.h),
-                        Divider(thickness: 0.2, color: Colors.white54),
-                        SizedBox(height: 1.3.h),
-                        Row(
-                          children: [
-                            text_widget(
-                              "Total Paid to Organizer",
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                            Spacer(),
-                            text_widget(
-                              "\$${getAmount().toStringAsFixed(2)}",
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ],
-              
-                      SizedBox(height: 2.h),
-                      text_widget(
-                        _getFooterText(),
-                        fontSize: 15.sp,
-                        color: MyColors.white.withValues(alpha: 0.60),
-                        height: 1.7,
                       ),
-                     
                     ],
-                  ),
+                    text_widget(
+                      _getFooterText(),
+                      fontSize: 15.sp,
+                      color: MyColors.white.withValues(alpha: 0.60),
+                      height: 1.7,
+                    ),
+                  ],
                 ),
               ),
-               SizedBox(height: 2.h),
-                  onPress(
-                    ontap: () => handlePrimaryAction(),
-                    child: Image.asset(
-                      // width: 50.w,
-                      // fit: BoxFit.fill,
-                      isJoin
-                          ? OtherButtons.joinThisPokerRun
-                          : OtherButtons.leaveThisPokerRun,
-                    ),
-                  ),
+              SizedBox(height: 2.h),
+              onPress(
+                ontap: () => handlePrimaryAction(),
+                child: Image.asset(
+                  isJoin
+                      ? OtherButtons.joinThisPokerRun
+                      : OtherButtons.leaveThisPokerRun,
+                ),
+              ),
+              SizedBox(height: 4.h),
             ],
           ),
         ),
@@ -350,7 +339,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
           ? "The registration fee for this event is \$${serviceFee.toStringAsFixed(2)} per participant.\n"
           : "";
       msg += isJoin
-          ? "Would you like to continue?"
+          ? "\nWould you like to continue?"
           : "Would you like to leave the Event?";
       return msg;
     } else {
@@ -401,136 +390,106 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
       showLeaveConfirmation();
     }
   }
-  
 
   void showJoinConfirmation() {
     showDialog(
+      barrierDismissible: false,
       context: context,
-      builder: (context) =>
-      //  CupertinoAlertDialog(
-      //   title: Text(widget.event.pokerName),
-      //   content: Column(
-      //     children: [
-      //       Text("\nDo you want to join this Poker Run?"),
-      //       if (serviceFee != 0) ...[
-      //         SizedBox(height: 1.h),
-      //         Row(
-      //           children: [
-      //             Text("Registration Fee"),
-      //             Spacer(),
-      //             Text("\$${serviceFee.toStringAsFixed(2)}"),
-      //           ],
-      //         ),
-      //         Divider(),
-      //         Row(
-      //           children: [
-      //             Text("Total"),
-      //             Spacer(),
-      //             Text("\$${serviceFee.toStringAsFixed(2)}"),
-      //           ],
-      //         ),
-      //       ],
-      //     ],
-      //   ),
-      //   actions: [
-      //     CupertinoDialogAction(
-      //       child: Text("Cancel"),
-      //       onPressed: () => Get.back(),
-      //     ),
-      //     CupertinoDialogAction(
-      //       isDefaultAction: true,
-      //       child: Text("Join"),
-      //       onPressed: () => processPaymentAndJoin(),
-      //     ),
-      //   ],
-      // ),
-      Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Title
-            const Text(
-              'Join',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A3B70), // Deep Navy Blue
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Join',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A3B70),
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            
-            // Subtitle
-            const Text(
-              'Are You Sure You Want To Join\nThis Poker Run?',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-                height: 1.4,
+              const SizedBox(height: 12),
+              const Text(
+                'Are You Sure You Want To Join\nThis Poker Run?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                  height: 1.4,
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-
-            // Inner Info Card
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-                border: Border.all(color: Colors.grey.shade200),
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                child: Column(
+                  children: [
+                    _buildPriceRow('Rider', '\$3.40'),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Divider(thickness: 0.8),
+                    ),
+                    _buildPriceRow(
+                      'Total Paid To Organizer At Start',
+                      '\$3.40',
+                      isBold: true,
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
+              const SizedBox(height: 15),
+              Row(
                 children: [
-                  _buildPriceRow('Rider', '\$3.40'),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Divider(thickness: 0.8),
+                  Expanded(
+                    child: onPress(
+                      ontap: () {
+                        Get.back();
+                      },
+                      child: Image.asset(
+                        PopupActionsButtons.no,
+                        height: 9.h,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  _buildPriceRow('Total Paid To Organizer At Start', '\$3.40', isBold: true),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: onPress(
+                      ontap: () {
+                        processPaymentAndJoin();
+                      },
+                      child: Image.asset(
+                        PopupActionsButtons.yes,
+                        height: 9.h,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(height: 15),
-
-            // Buttons
-            Row(
-              children: [
-                // Cancel Button
-                Expanded(child: onPress(
-                  ontap: (){
-                    Get.back();
-                  },
-                  child: Image.asset( PopupActionsButtons.no,height: 9.h,fit: BoxFit.cover,))),
-                    const SizedBox(width: 10),
-                
-                // Yes Button (Gradient)
-                Expanded(child: onPress(
-                  ontap: (){
-                    processPaymentAndJoin();
-                  },
-                  child: Image.asset( PopupActionsButtons.yes,height: 9.h,fit: BoxFit.cover,))),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    )
     );
   }
 
@@ -608,108 +567,107 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
   void showLeaveConfirmation() {
     showDialog(
       context: context,
-      builder: (context) =>Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Title
-            const Text(
-              'Leave',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1A3B70), // Deep Navy Blue
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Leave',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A3B70),
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            
-            // Subtitle
-            const Text(
-              'Are You Sure You Want To Leave\nThis Poker Run?',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-                height: 1.4,
+              const SizedBox(height: 12),
+              const Text(
+                'Are You Sure You Want To Leave\nThis Poker Run?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                  height: 1.4,
+                ),
               ),
-            ),
-            // const SizedBox(height: 24),
-  // const SizedBox(height: 15),
-
-            // Buttons
-            Row(
-              children: [
-                // Cancel Button
-                Expanded(child: Image.asset( PopupActionsButtons.no,height: 9.h,fit: BoxFit.cover,)),
-                    const SizedBox(width: 10),
-                
-                // Yes Button (Gradient)
-                Expanded(child: onPress(
-                  ontap: () async {
-                     Get.back();
-              EasyLoading.show(status: "Leaving...");
-              widget.event.userIds.remove(currentUser.id);
-              await FirestoreServices.I.updateEvent(
-                context,
-                widget.event,
-                false,
-                false,
-              );
-              EasyLoading.dismiss();
-              Get.back();
-                  },
-                  child: Image.asset( PopupActionsButtons.yes,height: 9.h,fit: BoxFit.cover,))),
-              ],
-            ),
-           
-          ],
+              Row(
+                children: [
+                  Expanded(
+                    child: onPress(
+                      ontap: () {
+                        Get.back();
+                      },
+                      child: Image.asset(
+                        PopupActionsButtons.no,
+                        height: 9.h,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: onPress(
+                      ontap: () async {
+                        Get.back();
+                        EasyLoading.show(status: "Leaving...");
+                        widget.event.userIds.remove(currentUser.id);
+                        await FirestoreServices.I.updateEvent(
+                          context,
+                          widget.event,
+                          false,
+                          false,
+                        );
+                        EasyLoading.dismiss();
+                        Get.back();
+                      },
+                      child: Image.asset(
+                        PopupActionsButtons.yes,
+                        height: 9.h,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-    
     );
   }
 }
 
-
-
-
-
-
-
-
-
-  Widget _buildPriceRow(String label, String price, {bool isBold = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
-              color: Colors.black87,
-            ),
+Widget _buildPriceRow(String label, String price, {bool isBold = false}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Expanded(
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+            color: Colors.black87,
           ),
         ),
-        Text(
-          price,
-          style:  TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+      ),
+      Text(
+        price,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}

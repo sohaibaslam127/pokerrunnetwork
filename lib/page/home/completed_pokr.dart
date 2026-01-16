@@ -52,7 +52,7 @@ class _FindPokerState extends State<CompletedPokr> {
             ),
             title: text_widget(
               "Completed Poker Run",
-               fontSize: 17.sp,
+              fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
@@ -117,11 +117,6 @@ class _FindPokerState extends State<CompletedPokr> {
                                         color: Colors.white,
                                       ),
                                       Spacer(),
-                                    ],
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Row(
-                                    children: [
                                       text_widget(
                                         DateFormat(
                                           "d MMM yyyy",
@@ -132,55 +127,67 @@ class _FindPokerState extends State<CompletedPokr> {
                                           alpha: 0.6,
                                         ),
                                       ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.h),
+                                  Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 1.h),
+                                          if (event.eventWinner?.userId ==
+                                              currentUser.id)
+                                            Text(
+                                              "Congratulation's シ ${event.eventWinner?.roadName.capitalizeFirst}",
+                                              style: GoogleFonts.bungee(
+                                                textStyle: TextStyle(
+                                                  color: Colors.green.shade300,
+                                                  fontSize: 16.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            )
+                                          else
+                                            Text(
+                                              "Winner is A ${event.eventWinner?.roadName.capitalizeFirst}",
+                                              maxLines: 2,
+                                              style: GoogleFonts.bungee(
+                                                textStyle: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16.sp,
+                                                ),
+                                              ),
+                                            ),
+                                          if ((event.eventWinner?.rank ?? "") !=
+                                              "")
+                                            Row(
+                                              children: [
+                                                text_widget(
+                                                  "Rank: ",
+                                                  fontSize: 15.5.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                                text_widget(
+                                                  event.eventWinner?.rank ?? "",
+                                                  fontSize: 15.5.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.white,
+                                                ),
+                                              ],
+                                            ),
+                                        ],
+                                      ),
                                       Spacer(),
                                       Icon(
                                         Remix.arrow_right_s_line,
                                         color: Colors.white,
-                                        size: 4.h,
+                                        size: 3.h,
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 1.h),
-                                  if (event.eventWinner?.userId ==
-                                      currentUser.id)
-                                    Text(
-                                      "Congratulation's シ ${event.eventWinner?.roadName.capitalizeFirst}",
-                                      style: GoogleFonts.bungee(
-                                        textStyle: TextStyle(
-                                          color: Colors.green.shade300,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    )
-                                  else
-                                    Text(
-                                      "Winner is A ${event.eventWinner?.roadName.capitalizeFirst}",
-                                      maxLines: 2,
-                                      style: GoogleFonts.bungee(
-                                        textStyle: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16.sp,
-                                        ),
-                                      ),
-                                    ),
-                                  if ((event.eventWinner?.rank ?? "") != "")
-                                    Row(
-                                      children: [
-                                        text_widget(
-                                          "Rank: ",
-                                          fontSize: 15.5.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                        text_widget(
-                                          event.eventWinner?.rank ?? "",
-                                          fontSize: 15.5.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.white,
-                                        ),
-                                      ],
-                                    ),
                                   SizedBox(height: 1.h),
                                   Row(
                                     mainAxisAlignment:

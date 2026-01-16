@@ -223,6 +223,7 @@ class _SingupPageState extends State<SingupPage> {
                               "Confirm Password".tr,
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
+                              textInputAction: TextInputAction.done,
                               radius: 12,
                               textInputType: TextInputType.visiblePassword,
                               bColor: Color(0xffEDF1F3),

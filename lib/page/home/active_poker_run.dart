@@ -12,6 +12,7 @@ import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
 import 'package:pokerrunnetwork/page/home/participant_list.dart';
 import 'package:pokerrunnetwork/page/home/poker_view.dart';
+import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
@@ -63,7 +64,6 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
-
             ),
             centerTitle: false,
           ),
@@ -77,6 +77,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                   'Search by event name'.tr,
                   fillColor: Colors.white.withValues(alpha: 0.1),
                   mainTxtColor: Colors.white,
+                  textInputAction: TextInputAction.search,
                   showPrefix: true,
                   controller: searchPokerRun,
                   onChange: (value) {
@@ -174,49 +175,49 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                     ],
                                   ),
                                   if (event.coRider != null && event.coRider!)
-                                  SizedBox(height: 0.4.h),
+                                    SizedBox(height: 0.4.h),
 
-                                    Row(
-                                      children: [
-                                        text_widget(
-                                          "Co-Rider",
-                                          fontSize: 15.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.6,
-                                          ),
+                                  Row(
+                                    children: [
+                                      text_widget(
+                                        "Co-Rider",
+                                        fontSize: 15.5.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.6,
                                         ),
-                                        Spacer(),
-                                        text_widget(
-                                          "\$${event.coRiderFee}",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                      Spacer(),
+                                      text_widget(
+                                        "\$${event.coRiderFee}",
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
                                   if (event.isAdditionalCard != null &&
                                       event.isAdditionalCard!)
-                                             SizedBox(height: 0.4.h),
-                                    Row(
-                                      children: [
-                                        text_widget(
-                                          "Extra card",
-                                          fontSize: 15.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.6,
-                                          ),
+                                    SizedBox(height: 0.4.h),
+                                  Row(
+                                    children: [
+                                      text_widget(
+                                        "Extra card",
+                                        fontSize: 15.5.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.6,
                                         ),
-                                        Spacer(),
-                                        text_widget(
-                                          "\$${event.changeCardFee}",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                      Spacer(),
+                                      text_widget(
+                                        "\$${event.changeCardFee}",
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
                                   SizedBox(height: 2.h),
                                   if (event.userIds.contains(currentUser.id))
                                     FutureBuilder(
@@ -385,6 +386,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                     Expanded(
                                                       child: onPress(
                                                         ontap: () async {
+                                                          EasyLoading.show();
                                                           currentGame =
                                                               await FirestoreServices
                                                                   .I
@@ -393,8 +395,9 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                                     currentUser
                                                                         .id,
                                                                   );
-                                                          EasyLoading.showSuccess(
-                                                            "Marked as current poker run",
+                                                          EasyLoading.dismiss();
+                                                          Get.off(
+                                                            SchedulePokerN(),
                                                           );
                                                         },
                                                         child: Container(

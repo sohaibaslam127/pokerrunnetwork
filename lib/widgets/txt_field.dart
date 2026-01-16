@@ -8,14 +8,14 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
   String hintText, {
   suffixIcon,
   prefixIcon,
-  bool showPrefix = false, // ✅ control prefix visibility
-  String? prefixImage, // ✅ image path for prefix
+  bool showPrefix = false,
+  String? prefixImage,
   TextEditingController? controller,
   int line = 1,
   bool isSuffix = false,
   bool enable = true,
   TextInputType textInputType = TextInputType.text,
-  TextInputAction textInputAction = TextInputAction.done,
+  TextInputAction textInputAction = TextInputAction.next,
   double? radius,
   bool isTextSuffix = false,
   suffText,

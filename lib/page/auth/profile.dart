@@ -181,7 +181,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               mainTxtColor: Colors.black,
                               radius: 12,
                               textInputType: TextInputType.name,
-                              textInputAction: TextInputAction.done,
                               bColor: Color(0xffEDF1F3),
                               hintColor: Color(0xff868686),
                               pColor: MyColors.primary,

@@ -15,11 +15,9 @@ class MyApp extends StatelessWidget {
     return ResponsiveSizer(
       builder: (_, orientation, screenType) {
         return GetMaterialApp(
-          // debugShowCheckedModeBanner: false,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(fontFamily: "Calibri"),
           defaultTransition: Transition.noTransition,
-          // defaultTransition: Transition.noTransition,
           home: SplashScreen(),
           builder: EasyLoading.init(),
         );
