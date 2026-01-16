@@ -60,6 +60,17 @@ flutter_native_splash:
   android_12:
     color: "#0000FF"
     image: assets/background/splashscreen.jpg 
+  fonts:
+    - family: Calibri
+      fonts:
+        - asset: assets/font/calibri-regular.ttf
+        - asset: assets/font/calibri-bold.ttf
+          weight: 700
+        - asset: assets/font/calibri-italic.ttf
+          style: italic
+        - asset: assets/font/calibri-bold-italic.ttf
+          weight: 700
+          style: italic
 
 flutter:
   uses-material-design: true

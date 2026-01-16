@@ -321,7 +321,7 @@ class _SingupPageState extends State<SingupPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 4.h),
                 ],
               ),
             ),

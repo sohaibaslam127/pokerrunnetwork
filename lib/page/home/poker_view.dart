@@ -96,182 +96,193 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
             ),
             title: text_widget(
               widget.event.pokerName,
-              letterSpacing: 1.5,
-              maxline: 2,
-              fontSize: 20.sp,
-              color: MyColors.white,
+           fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
+
             ),
             centerTitle: false,
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22.0),
-            child: SafeArea(
-              child: ListView(
-                children: [
-                  SizedBox(height: 2.h),
-                  text_widget(
-                    widget.event.pokerName,
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                  text_widget(
-                    "Starting date:  ${DateFormat("d MMM yyyy").format(widget.event.eventDate)}\n"
-                    "Starting time:  ${DateFormat("h:mm aaa").format(widget.event.eventDate)}\n"
-                    "Cost of this Poker Run:  \$${widget.event.joinFee.toStringAsFixed(2)}",
-                    fontSize: 15.sp,
-                    color: MyColors.white.withValues(alpha: 0.60),
-                    height: 1.7,
-                  ),
-                  SizedBox(height: 2.h),
-                  text_widget(
-                    "Description",
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                  text_widget(
-                    widget.event.description,
-                    fontSize: 15.sp,
-                    color: MyColors.white.withValues(alpha: 0.60),
-                    height: 1.7,
-                  ),
-                  SizedBox(height: 2.h),
-                  Row(
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                child: SafeArea(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      SizedBox(height: 2.h),
+                      text_widget(
+                        widget.event.pokerName,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: 0.3.h),
+              
+                      text_widget(
+                        "Starting date:  ${DateFormat("d MMM yyyy").format(widget.event.eventDate)}\n"
+                        "Starting time:  ${DateFormat("h:mm aaa").format(widget.event.eventDate)}\n"
+                        "Cost of this Poker Run:  \$${widget.event.joinFee.toStringAsFixed(2)}",
+                        fontSize: 14.5.sp,
+                        color: MyColors.white.withValues(alpha: 0.60),
+                        height: 1.7,
+                      ),
+                      SizedBox(height: 2.h),
+                      text_widget(
+                        "Description",
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: 0.3.h),
+              
+                      text_widget(
+                        widget.event.description,
+                        fontSize: 14.5.sp,
+                        color: MyColors.white.withValues(alpha: 0.60),
+                        height: 1.7,
+                      ),
+                      SizedBox(height: 2.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                text_widget(
+                                  "Starting point: ${widget.event.stops[0].name}",
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                      SizedBox(height: 0.3.h),
+              
+                                text_widget(
+                                  "${widget.event.stops[0].address}\n${widget.event.stops[0].sponserName == "" ? widget.event.stops[0].sponserLink : widget.event.stops[0].sponserName}",
+                                  fontSize: 14.5.sp,
+                                  color: MyColors.white.withValues(alpha: 0.60),
+                                  height: 1.7,
+                                ),
+                              ],
+                            ),
+                          ),
+                          onPress(
+                            ontap: () => openMaps(
+                              context,
+                              widget.event.stops[0].name,
+                              widget.event.stops[0].stopLocation.latitude,
+                              widget.event.stops[0].stopLocation.longitude,
+                            ),
+                            child: Icon(
+                              RemixIcons.map_pin_line,
+                              color: Colors.white,
+                              size: 22.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (isJoin &&
+                          widget.event.changeCardFee > 0 &&
+                          widget.iamCoRider.roadName.isEmpty &&
+                          (widget.event.isAdditionalCard ?? false)) ...[
+                        _buildCheckboxOption(
+                          "Do you want the option of changing your card at each stop for \$${widget.event.changeCardFee.toStringAsFixed(2)}?",
+                          isExtraCard,
+                          (val) => setState(() => isExtraCard = val),
+                        ),
+                      ],
+              
+                      if (isJoin &&
+                          !widget.iamCoRider.roadName.isNotEmpty &&
+                          (widget.event.coRider ?? false)) ...[
+                        SizedBox(height: 2.h),
+                        _buildCheckboxOption(
+                          "Do you want to add a co-rider for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
+                          isCorider,
+                          (val) => setState(() => isCorider = val),
+                        ),
+                        if (isCorider) ...[
+                          SizedBox(height: 1.h),
+                          textFieldWithPrefixSuffuxIconAndHintText(
+                            "Enter Co-rider Road Name",
+                            radius: 12,
+                            textInputAction: TextInputAction.done,
+                            textInputType: TextInputType.name,
+                            controller: friendName,
+                          ),
+                          SizedBox(height: 2.h),
+                          _buildCheckboxOption(
+                            "Option for co-rider to change cards for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
+                            isExtraCardCorider,
+                            (val) => setState(() => isExtraCardCorider = val),
+                          ),
+                        ],
+                      ],
+              
+                      // --- Price Summary Table ---
+                      SizedBox(height: 3.h),
+                      if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
+                        _priceRow("Rider", widget.event.joinFee),
+                        if (isCorider)
+                          _priceRow("Co-rider", widget.event.coRiderFee),
+                        if (isExtraCard)
+                          _priceRow(
+                            "Rider Extra Cards",
+                            widget.event.changeCardFee,
+                          ),
+                        if (isExtraCardCorider && isCorider)
+                          _priceRow(
+                            "Co-rider Extra Cards",
+                            widget.event.changeCardFee,
+                          ),
+                        SizedBox(height: 1.3.h),
+                        Divider(thickness: 0.2, color: Colors.white54),
+                        SizedBox(height: 1.3.h),
+                        Row(
                           children: [
                             text_widget(
-                              "Starting point: ${widget.event.stops[0].name}",
+                              "Total Paid to Organizer",
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
+                            Spacer(),
                             text_widget(
-                              "${widget.event.stops[0].address}\n${widget.event.stops[0].sponserName == "" ? widget.event.stops[0].sponserLink : widget.event.stops[0].sponserName}",
-                              fontSize: 15.sp,
-                              color: MyColors.white.withValues(alpha: 0.60),
-                              height: 1.7,
+                              "\$${getAmount().toStringAsFixed(2)}",
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ],
                         ),
-                      ),
-                      onPress(
-                        ontap: () => openMaps(
-                          context,
-                          widget.event.stops[0].name,
-                          widget.event.stops[0].stopLocation.latitude,
-                          widget.event.stops[0].stopLocation.longitude,
-                        ),
-                        child: Icon(
-                          RemixIcons.map_pin_line,
-                          color: Colors.white,
-                          size: 22.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (isJoin &&
-                      widget.event.changeCardFee > 0 &&
-                      widget.iamCoRider.roadName.isEmpty &&
-                      (widget.event.isAdditionalCard ?? false)) ...[
-                    _buildCheckboxOption(
-                      "Do you want the option of changing your card at each stop for \$${widget.event.changeCardFee.toStringAsFixed(2)}?",
-                      isExtraCard,
-                      (val) => setState(() => isExtraCard = val),
-                    ),
-                  ],
-
-                  if (isJoin &&
-                      !widget.iamCoRider.roadName.isNotEmpty &&
-                      (widget.event.coRider ?? false)) ...[
-                    SizedBox(height: 2.h),
-                    _buildCheckboxOption(
-                      "Do you want to add a co-rider for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
-                      isCorider,
-                      (val) => setState(() => isCorider = val),
-                    ),
-                    if (isCorider) ...[
-                      SizedBox(height: 1.h),
-                      textFieldWithPrefixSuffuxIconAndHintText(
-                        "Enter Co-rider Road Name",
-                        radius: 12,
-                        textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.name,
-                        controller: friendName,
-                      ),
-                      SizedBox(height: 2.h),
-                      _buildCheckboxOption(
-                        "Option for co-rider to change cards for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
-                        isExtraCardCorider,
-                        (val) => setState(() => isExtraCardCorider = val),
-                      ),
-                    ],
-                  ],
-
-                  // --- Price Summary Table ---
-                  SizedBox(height: 3.h),
-                  if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
-                    _priceRow("Rider", widget.event.joinFee),
-                    if (isCorider)
-                      _priceRow("Co-rider", widget.event.coRiderFee),
-                    if (isExtraCard)
-                      _priceRow(
-                        "Rider Extra Cards",
-                        widget.event.changeCardFee,
-                      ),
-                    if (isExtraCardCorider && isCorider)
-                      _priceRow(
-                        "Co-rider Extra Cards",
-                        widget.event.changeCardFee,
-                      ),
-                    SizedBox(height: 1.3.h),
-                    Divider(thickness: 0.2, color: Colors.white54),
-                    SizedBox(height: 1.3.h),
-                    Row(
-                      children: [
-                        text_widget(
-                          "Total Paid to Organizer",
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                        Spacer(),
-                        text_widget(
-                          "\$${getAmount().toStringAsFixed(2)}",
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
                       ],
-                    ),
-                  ],
-
-                  SizedBox(height: 2.h),
-                  text_widget(
-                    _getFooterText(),
-                    fontSize: 15.sp,
-                    color: MyColors.white.withValues(alpha: 0.60),
-                    height: 1.7,
+              
+                      SizedBox(height: 2.h),
+                      text_widget(
+                        _getFooterText(),
+                        fontSize: 15.sp,
+                        color: MyColors.white.withValues(alpha: 0.60),
+                        height: 1.7,
+                      ),
+                     
+                    ],
                   ),
-                  SizedBox(height: 2.h),
+                ),
+              ),
+               SizedBox(height: 2.h),
                   onPress(
                     ontap: () => handlePrimaryAction(),
                     child: Image.asset(
-                      width: 50.w,
-                      fit: BoxFit.fitWidth,
+                      // width: 50.w,
+                      // fit: BoxFit.fill,
                       isJoin
                           ? OtherButtons.joinThisPokerRun
                           : OtherButtons.leaveThisPokerRun,
                     ),
                   ),
-                ],
-              ),
-            ),
+            ],
           ),
         ),
       ],

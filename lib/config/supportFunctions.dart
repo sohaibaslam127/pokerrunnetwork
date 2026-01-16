@@ -42,7 +42,7 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
     position: SnackPosition.top,
   );
   Future.delayed(const Duration(seconds: 3), () {
-    Snackify.close();
+    // Snackify.close();
   });
 }
 

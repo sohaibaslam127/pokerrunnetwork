@@ -58,10 +58,10 @@ class _FindPokerState extends State<FindPoker> {
             ),
             title: text_widget(
               "Find A Poker Run",
-              letterSpacing: 1.5,
-              fontSize: 20.sp,
-              color: MyColors.white,
+            fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
+
             ),
             centerTitle: false,
           ),
@@ -141,7 +141,7 @@ class _FindPokerState extends State<FindPoker> {
                                       Expanded(
                                         child: text_widget(
                                           event.pokerName,
-                                          fontSize: 16.5.sp,
+                                          fontSize: 15.sp,
                                           maxline: 2,
                                           fontWeight: FontWeight.w500,
                                           color: Colors.white,
@@ -152,8 +152,8 @@ class _FindPokerState extends State<FindPoker> {
                                         DateFormat(
                                           'dd MMM, hh:mm a',
                                         ).format(event.eventDate),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500,
                                         color: Colors.white.withValues(
                                           alpha: 0.6,
                                         ),
@@ -162,7 +162,7 @@ class _FindPokerState extends State<FindPoker> {
                                   ),
                                   text_widget(
                                     event.description,
-                                    fontSize: 15.5.sp,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white.withValues(alpha: 0.6),
                                   ),

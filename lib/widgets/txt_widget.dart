@@ -23,7 +23,7 @@ Text text_widget(
     maxLines: maxline,
     textAlign: textAlign,
     textDirection: txtDirection,
-    style: GoogleFonts.abel(
+    style: TextStyle(
       height: height,
       color: color ?? Colors.black,
       fontSize: fontSize ?? 16.sp,

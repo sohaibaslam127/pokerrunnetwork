@@ -60,10 +60,10 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
             ),
             title: text_widget(
               "Active Poker Run List",
-              letterSpacing: 1.5,
-              fontSize: 20.sp,
-              color: MyColors.white,
+              fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
+
             ),
             centerTitle: false,
           ),
@@ -145,7 +145,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                         DateFormat(
                                           'dd MMM, hh:mm a',
                                         ).format(event.eventDate),
-                                        fontSize: 13.sp,
+                                        fontSize: 12.5.sp,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white.withValues(
                                           alpha: 0.6,
@@ -167,13 +167,15 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                       Spacer(),
                                       text_widget(
                                         "\$${event.joinFee}",
-                                        fontSize: 17.sp,
+                                        fontSize: 16.sp,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white,
                                       ),
                                     ],
                                   ),
                                   if (event.coRider != null && event.coRider!)
+                                  SizedBox(height: 0.4.h),
+
                                     Row(
                                       children: [
                                         text_widget(
@@ -187,7 +189,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                         Spacer(),
                                         text_widget(
                                           "\$${event.coRiderFee}",
-                                          fontSize: 17.sp,
+                                          fontSize: 16.sp,
                                           fontWeight: FontWeight.w500,
                                           color: Colors.white,
                                         ),
@@ -195,6 +197,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                     ),
                                   if (event.isAdditionalCard != null &&
                                       event.isAdditionalCard!)
+                                             SizedBox(height: 0.4.h),
                                     Row(
                                       children: [
                                         text_widget(
@@ -208,7 +211,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                         Spacer(),
                                         text_widget(
                                           "\$${event.changeCardFee}",
-                                          fontSize: 17.sp,
+                                          fontSize: 16.sp,
                                           fontWeight: FontWeight.w500,
                                           color: Colors.white,
                                         ),
@@ -284,7 +287,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                             : Colors
                                                                   .green
                                                                   .shade200,
-                                                        fontSize: 16.sp,
+                                                        fontSize: 14.5.sp,
                                                         letterSpacing: 2,
                                                         fontWeight:
                                                             FontWeight.w600,
@@ -307,7 +310,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                             style: GoogleFonts.abel(
                                                               color: Colors
                                                                   .transparent,
-                                                              fontSize: 15.sp,
+                                                              fontSize: 14.5.sp,
                                                               decoration:
                                                                   TextDecoration
                                                                       .underline,
@@ -408,7 +411,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                           child: Center(
                                                             child: text_widget(
                                                               "Mark as a current poker run",
-                                                              fontSize: 14.5.sp,
+                                                              fontSize: 14.sp,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -443,7 +446,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                         child: Center(
                                                           child: text_widget(
                                                             "Leave",
-                                                            fontSize: 14.5.sp,
+                                                            fontSize: 14.sp,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             color: Colors.white,
