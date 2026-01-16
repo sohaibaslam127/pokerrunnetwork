@@ -392,7 +392,6 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
           return;
         }
       }
-
       if (widget.iamCoRider.roadName == "") {
         showJoinConfirmation();
       } else {
@@ -402,47 +401,136 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
       showLeaveConfirmation();
     }
   }
+  
 
   void showJoinConfirmation() {
     showDialog(
       context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text(widget.event.pokerName),
-        content: Column(
+      builder: (context) =>
+      //  CupertinoAlertDialog(
+      //   title: Text(widget.event.pokerName),
+      //   content: Column(
+      //     children: [
+      //       Text("\nDo you want to join this Poker Run?"),
+      //       if (serviceFee != 0) ...[
+      //         SizedBox(height: 1.h),
+      //         Row(
+      //           children: [
+      //             Text("Registration Fee"),
+      //             Spacer(),
+      //             Text("\$${serviceFee.toStringAsFixed(2)}"),
+      //           ],
+      //         ),
+      //         Divider(),
+      //         Row(
+      //           children: [
+      //             Text("Total"),
+      //             Spacer(),
+      //             Text("\$${serviceFee.toStringAsFixed(2)}"),
+      //           ],
+      //         ),
+      //       ],
+      //     ],
+      //   ),
+      //   actions: [
+      //     CupertinoDialogAction(
+      //       child: Text("Cancel"),
+      //       onPressed: () => Get.back(),
+      //     ),
+      //     CupertinoDialogAction(
+      //       isDefaultAction: true,
+      //       child: Text("Join"),
+      //       onPressed: () => processPaymentAndJoin(),
+      //     ),
+      //   ],
+      // ),
+      Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text("\nDo you want to join this Poker Run?"),
-            if (serviceFee != 0) ...[
-              SizedBox(height: 1.h),
-              Row(
+            // Title
+            const Text(
+              'Join',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1A3B70), // Deep Navy Blue
+              ),
+            ),
+            const SizedBox(height: 12),
+            
+            // Subtitle
+            const Text(
+              'Are You Sure You Want To Join\nThis Poker Run?',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Inner Info Card
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Column(
                 children: [
-                  Text("Registration Fee"),
-                  Spacer(),
-                  Text("\$${serviceFee.toStringAsFixed(2)}"),
+                  _buildPriceRow('Rider', '\$3.40'),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Divider(thickness: 0.8),
+                  ),
+                  _buildPriceRow('Total Paid To Organizer At Start', '\$3.40', isBold: true),
                 ],
               ),
-              Divider(),
-              Row(
-                children: [
-                  Text("Total"),
-                  Spacer(),
-                  Text("\$${serviceFee.toStringAsFixed(2)}"),
-                ],
-              ),
-            ],
+            ),
+            const SizedBox(height: 15),
+
+            // Buttons
+            Row(
+              children: [
+                // Cancel Button
+                Expanded(child: onPress(
+                  ontap: (){
+                    Get.back();
+                  },
+                  child: Image.asset( PopupActionsButtons.no,height: 9.h,fit: BoxFit.cover,))),
+                    const SizedBox(width: 10),
+                
+                // Yes Button (Gradient)
+                Expanded(child: onPress(
+                  ontap: (){
+                    processPaymentAndJoin();
+                  },
+                  child: Image.asset( PopupActionsButtons.yes,height: 9.h,fit: BoxFit.cover,))),
+              ],
+            ),
           ],
         ),
-        actions: [
-          CupertinoDialogAction(
-            child: Text("Cancel"),
-            onPressed: () => Get.back(),
-          ),
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: Text("Join"),
-            onPressed: () => processPaymentAndJoin(),
-          ),
-        ],
       ),
+    )
     );
   }
 
@@ -520,18 +608,54 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
   void showLeaveConfirmation() {
     showDialog(
       context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text("Leave ${widget.event.pokerName}"),
-        content: Text("Are you sure you want to leave this Poker Run?"),
-        actions: [
-          CupertinoDialogAction(
-            child: Text("Cancel"),
-            onPressed: () => Get.back(),
-          ),
-          CupertinoDialogAction(
-            child: Text("Leave", style: TextStyle(color: Colors.redAccent)),
-            onPressed: () async {
-              Get.back();
+      builder: (context) =>Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Title
+            const Text(
+              'Leave',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1A3B70), // Deep Navy Blue
+              ),
+            ),
+            const SizedBox(height: 12),
+            
+            // Subtitle
+            const Text(
+              'Are You Sure You Want To Leave\nThis Poker Run?',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+                height: 1.4,
+              ),
+            ),
+            // const SizedBox(height: 24),
+  // const SizedBox(height: 15),
+
+            // Buttons
+            Row(
+              children: [
+                // Cancel Button
+                Expanded(child: Image.asset( PopupActionsButtons.no,height: 9.h,fit: BoxFit.cover,)),
+                    const SizedBox(width: 10),
+                
+                // Yes Button (Gradient)
+                Expanded(child: onPress(
+                  ontap: () async {
+                     Get.back();
               EasyLoading.show(status: "Leaving...");
               widget.event.userIds.remove(currentUser.id);
               await FirestoreServices.I.updateEvent(
@@ -542,10 +666,50 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
               );
               EasyLoading.dismiss();
               Get.back();
-            },
-          ),
-        ],
+                  },
+                  child: Image.asset( PopupActionsButtons.yes,height: 9.h,fit: BoxFit.cover,))),
+              ],
+            ),
+           
+          ],
+        ),
       ),
+    ),
+    
     );
   }
 }
+
+
+
+
+
+
+
+
+
+  Widget _buildPriceRow(String label, String price, {bool isBold = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        Text(
+          price,
+          style:  TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      ],
+    );
+  }

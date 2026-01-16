@@ -58,9 +58,8 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
             ),
             title: text_widget(
               currentGame.latestEvent.pokerName,
-              letterSpacing: 1.5,
-              fontSize: 20.sp,
-              color: MyColors.white,
+             fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.8),
               fontWeight: FontWeight.w600,
             ),
             // actions: [

@@ -83,8 +83,9 @@ class _FaqPageState extends State<FaqPage> {
           appBar: AppBar(
             backgroundColor: Colors.transparent.withValues(alpha: .2),
             leadingWidth: 8.w,
+            automaticallyImplyLeading: false,
             leading: Padding(
-              padding: const EdgeInsets.only(left: 17),
+              padding: const EdgeInsets.only(left: 0),
               child: onPress(
                 ontap: () => Get.back(),
                 child: Icon(

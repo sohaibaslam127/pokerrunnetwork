@@ -33,9 +33,9 @@ void showPopup(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: Text(
                       title.capitalize!,
-                      textAlign: TextAlign.center,
+                     textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -75,7 +75,7 @@ void showPopup(
                     ],
                   ),
                 ),
-                SizedBox(height: 10),
+                // SizedBox(height: 10),
               ],
             ),
           ),

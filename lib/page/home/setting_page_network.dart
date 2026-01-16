@@ -101,9 +101,8 @@ class _SettingPageState extends State<SettingPage> {
             ),
             title: text_widget(
               "Setting",
-              letterSpacing: 1.5,
-              fontSize: 20.sp,
-              color: MyColors.white,
+               fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -111,7 +110,7 @@ class _SettingPageState extends State<SettingPage> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 4.h),
+              // SizedBox(height: 2.h),
               Row(
                 children: [
                   Expanded(

@@ -52,9 +52,8 @@ class _FindPokerState extends State<CompletedPokr> {
             ),
             title: text_widget(
               "Completed Poker Run",
-              letterSpacing: 1.5,
-              fontSize: 20.sp,
-              color: MyColors.white,
+               fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -64,7 +63,7 @@ class _FindPokerState extends State<CompletedPokr> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: .5.h),
+                SizedBox(height: 2.h),
                 Expanded(
                   child: PaginateFirestore(
                     key: Key("completed_poker: ${currentUser.id}"),
