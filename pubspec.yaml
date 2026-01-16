@@ -14,6 +14,7 @@ dependencies:
   get: ^4.7.3
   custom_check_box: ^0.0.4
   url_launcher: ^6.3.2
+  google_fonts: ^7.0.2
   package_info_plus: ^9.0.0
   cloud_firestore: ^6.1.1
   intl: ^0.20.2
@@ -70,15 +71,8 @@ flutter:
     - assets/buttons/popup/
     - assets/icons/
     - assets/background/
-
-  fonts:
-    - family: Calibri
-      fonts:
-        - asset: assets/font/calibri-regular.ttf
-        - asset: assets/font/calibri-bold.ttf
-          weight: 700
-        - asset: assets/font/calibri-italic.ttf
-          style: italic
-        - asset: assets/font/calibri-bold-italic.ttf
-          weight: 700
-          style: italic
+    - assets/images/
+    - assets/images/diamond/
+    - assets/images/club/
+    - assets/images/heart/
+    - assets/images/spades/

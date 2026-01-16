@@ -15,27 +15,20 @@ import 'package:snackify/snackify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void toast(BuildContext context, String title, String message, {int type = 3}) {
-  // success, 0
-  // error, 1
   EasyLoading.dismiss();
   final topInset = MediaQuery.of(context).padding.top;
 
   Snackify.show(
     context: context,
     type: SnackType.values[type],
-    title: Text(
-      title,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 16.sp,
-        fontWeight: FontWeight.bold,
-      ),
+    title: text_widget(
+      title.toUpperCase(),
+      color: Colors.white,
+      fontSize: 16.5.sp,
+      fontWeight: FontWeight.bold,
     ),
     offset: Offset(3.w, topInset > 44 ? 3.h : 0),
-    subtitle: Text(
-      message,
-      style: TextStyle(color: Colors.white, fontSize: 16.sp),
-    ),
+    subtitle: text_widget(message, color: Colors.white, fontSize: 16.sp),
     duration: const Duration(seconds: 2),
     backgroundGradient: LinearGradient(
       colors: type == 0
@@ -230,6 +223,14 @@ Future<File?> getImage() async {
 
 Future<void> openMaps(BuildContext context, name, lat, lng) async {
   final availableMaps = await MapLauncher.installedMaps;
+  if (availableMaps.isEmpty) {
+    toast(context, "No Maps", "Install a map app from a store");
+    return;
+  }
+  if (availableMaps.length == 1) {
+    await availableMaps.first.showMarker(coords: Coords(lat, lng), title: name);
+    return;
+  }
   await showCupertinoModalPopup(
     context: context,
     builder: (context) => Padding(
@@ -237,20 +238,20 @@ Future<void> openMaps(BuildContext context, name, lat, lng) async {
       child: CupertinoActionSheet(
         actions: availableMaps
             .map(
-              (e) => e.mapName == "Waze"
-                  ? Container()
-                  : Container(
-                      color: Color(0xffaa6c39),
-                      child: CupertinoActionSheetAction(
-                        onPressed: () async {
-                          await e.showMarker(
-                            coords: Coords(lat, lng),
-                            title: name,
-                          );
-                        },
-                        child: text_widget("Open in ${e.mapName}"),
-                      ),
-                    ),
+              (e) => Container(
+                color: MyColors.black,
+                child: CupertinoActionSheetAction(
+                  onPressed: () async {
+                    await e.showMarker(coords: Coords(lat, lng), title: name);
+                  },
+                  child: text_widget(
+                    "Open in ${e.mapName}",
+                    color: MyColors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18.sp,
+                  ),
+                ),
+              ),
             )
             .toList(),
         cancelButton: Container(
@@ -263,7 +264,12 @@ Future<void> openMaps(BuildContext context, name, lat, lng) async {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: text_widget('Cancel'),
+            child: text_widget(
+              'Cancel',
+              color: MyColors.black,
+              fontWeight: FontWeight.w700,
+              fontSize: 18.sp,
+            ),
           ),
         ),
       ),

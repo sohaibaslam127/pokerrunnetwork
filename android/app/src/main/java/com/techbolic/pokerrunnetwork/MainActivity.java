@@ -1,6 +1,4 @@
-package com.techbolic.pokernetwork;
-
+package com.techbolic.pokerplayer;
 import io.flutter.embedding.android.FlutterActivity;
-
 public class MainActivity extends FlutterActivity {
 }

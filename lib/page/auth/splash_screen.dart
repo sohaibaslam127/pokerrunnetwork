@@ -14,6 +14,7 @@ import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/services/locationsServices.dart';
+import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -43,7 +44,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<bool> init() async {
     WidgetsFlutterBinding.ensureInitialized();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+    );
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
@@ -91,15 +99,11 @@ class _SplashScreenState extends State<SplashScreen> {
           left: 0,
           right: 0,
           child: Center(
-            child: Text(
+            child: text_widget(
               "Version $version+$buildNumber".toUpperCase(),
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.25),
-                fontSize: 17.sp,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.8,
-                wordSpacing: 5,
-              ),
+              color: Colors.white38,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),

@@ -1414,6 +1414,8 @@ PODS:
   - leveldb-library (1.22.6)
   - location (0.0.1):
     - Flutter
+  - map_launcher (0.0.1):
+    - Flutter
   - nanopb (3.30910.0):
     - nanopb/decode (= 3.30910.0)
     - nanopb/encode (= 3.30910.0)
@@ -1498,6 +1500,7 @@ DEPENDENCIES:
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - location (from `.symlinks/plugins/location/ios`)
+  - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
@@ -1564,6 +1567,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
+  map_launcher:
+    :path: ".symlinks/plugins/map_launcher/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
@@ -1607,6 +1612,7 @@ SPEC CHECKSUMS:
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   leveldb-library: cc8b8f8e013647a295ad3f8cd2ddf49a6f19be19
   location: 155caecf9da4f280ab5fe4a55f94ceccfab838f8
+  map_launcher: 8051ad5783913cafce93f2414c6858f2904fd8df
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499

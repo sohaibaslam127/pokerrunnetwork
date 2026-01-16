@@ -14,6 +14,8 @@ class FirestoreServices {
   static final FirestoreServices I = FirestoreServices._();
   FirestoreServices._();
 
+  /// User Functions
+
   Future<void> init() async {
     DocumentSnapshot dsnap = await _instance
         .collection('admin')
@@ -112,12 +114,6 @@ class FirestoreServices {
     }
   }
 
-  void updateOrganizerCount() {
-    _instance.collection('admin').doc('stats').update({
-      'organizerCount': FieldValue.increment(1),
-    });
-  }
-
   Future<bool> updateLocation() async {
     if (currentUser.id == "") return false;
     try {
@@ -169,6 +165,110 @@ class FirestoreServices {
     }
   }
 
+  Future<void> deleteAccount() async {
+    await _instance.collection('userProfiles').doc(currentUser.id).delete();
+  }
+
+  /// End User Functions
+
+  /// Event Functions
+
+  Query getActiveEvents() {
+    return _instance
+        .collection('events')
+        .where('status', whereIn: [1])
+        .orderBy('eventDate');
+  }
+
+  Query searchActiveEvents(String key) {
+    return _instance
+        .collection('events')
+        .where('status', whereIn: [1])
+        .where("searchParameter", arrayContains: key.toLowerCase())
+        .orderBy('eventDate');
+  }
+
+  Query getCompletedEvents() {
+    return _instance
+        .collection('events')
+        .where("userIds", arrayContains: currentUser.id)
+        .where('status', whereIn: [2, 3, 4])
+        .orderBy('status')
+        .orderBy('eventDate');
+  }
+
+  Future<bool> updateEvent(
+    BuildContext context,
+    EventModel post,
+    bool? isJoin,
+    bool changeCard, {
+    bool mycoRider = false,
+    String mycoRiderName = "",
+    bool iamcoRider = false,
+    bool isExtraCardCorider = false,
+  }) async {
+    try {
+      if (isJoin == null) {
+        await _instance
+            .collection('events')
+            .doc(post.id)
+            .update(await post.toSaveJSON());
+      } else if (isJoin) {
+        await _instance.collection('userProfiles').doc(post.ownerId).update({
+          "riderCount": FieldValue.increment(1),
+        });
+        await _instance.collection('events').doc(post.id).update({
+          'userIds': FieldValue.arrayUnion([currentUser.id]),
+        });
+
+        GamePlayerModel gamePlayer = GamePlayerModel();
+        gamePlayer.userId = currentUser.id;
+        gamePlayer.roadName = currentUser.roadName;
+        gamePlayer.userName = currentUser.name;
+        gamePlayer.userImage = currentUser.image;
+        gamePlayer.currentLocation = currentUser.location;
+        gamePlayer.changeCard = changeCard;
+        gamePlayer.pokerId = post.id;
+        gamePlayer.approved = !needApproval;
+        gamePlayer.mycoRiderName = mycoRiderName;
+        gamePlayer.mycoRider = mycoRider;
+        gamePlayer.iamCoRider = iamcoRider;
+        gamePlayer.isExtraCardCorider = isExtraCardCorider;
+
+        await _instance
+            .collection('events')
+            .doc(post.id)
+            .collection("participants")
+            .doc(currentUser.id)
+            .set(gamePlayer.toSaveJSON());
+      } else {
+        await _instance.collection('events').doc(post.id).update({
+          'userIds': FieldValue.arrayRemove([currentUser.id]),
+        });
+
+        final participantRef = _instance
+            .collection('events')
+            .doc(post.id)
+            .collection('participants')
+            .doc(currentUser.id);
+
+        final messagesRef = participantRef.collection('messages');
+        final messagesSnapshot = await messagesRef.get();
+        for (final doc in messagesSnapshot.docs) {
+          await doc.reference.delete();
+        }
+
+        await participantRef.delete();
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// End Event Functions
+
   Future<GamePlayerModel> isValidCorider(String eventId) async {
     try {
       final snapshot = await _instance
@@ -205,41 +305,6 @@ class FirestoreServices {
     }
   }
 
-  Future<void> deleteAccount() async {
-    await _instance.collection('userProfiles').doc(currentUser.id).delete();
-  }
-
-  Query getEvents() {
-    return _instance
-        .collection('events')
-        //        .where('countryCode', isEqualTo: countryCode)
-        .where('status', whereIn: [1])
-        .orderBy('eventDate');
-  }
-
-  Query getScheduleEvents() {
-    return _instance
-        .collection('events')
-        .where('ownerId', isEqualTo: currentUser.id)
-        .where('status', whereIn: [0, 1])
-        .orderBy('eventDate');
-  }
-
-  Query getCompletedEvents() {
-    return _instance
-        .collection('events')
-        .where('ownerId', isEqualTo: currentUser.id)
-        .where('status', whereIn: [2, 3])
-        .orderBy('eventDate');
-  }
-
-  Query getMyEvents() {
-    return _instance
-        .collection('events')
-        .where('ownerId', isEqualTo: currentUser.id)
-        .orderBy('eventDate');
-  }
-
   Query getCoAffiliateEvents() {
     return _instance
         .collection('events')
@@ -247,14 +312,6 @@ class FirestoreServices {
           'coManagers',
           arrayContains: currentUser.email.toLowerCase().trim(),
         )
-        .orderBy('eventDate');
-  }
-
-  Query getEventsResults() {
-    return _instance
-        .collection('events')
-        .where('ownerId', isEqualTo: currentUser.id)
-        .where('status', whereIn: [2, 3])
         .orderBy('eventDate');
   }
 
@@ -284,7 +341,7 @@ class FirestoreServices {
     return _instance
         .collection('events')
         .where("userIds", arrayContains: currentUser.id)
-        .where('status', whereIn: [1, 2])
+        .where('status', whereIn: [1])
         .orderBy('status')
         .orderBy('eventDate');
   }
@@ -296,26 +353,6 @@ class FirestoreServices {
         .where('status', whereIn: [1])
         .orderBy('status')
         .orderBy('eventDate');
-  }
-
-  Future<List<EventModel>> getAllMyEvents() async {
-    List<EventModel> events = [];
-    try {
-      QuerySnapshot<Map<String, dynamic>> dsnap = await _instance
-          .collection('events')
-          .where('ownerId', isEqualTo: currentUser.id)
-          .where('status', whereIn: [0, 1])
-          .get();
-      for (QueryDocumentSnapshot<Map<String, dynamic>> item in dsnap.docs) {
-        if (item.exists) {
-          EventModel post = EventModel.toModel(item.data());
-          events.add(post);
-        }
-      }
-    } catch (e) {
-      return [];
-    }
-    return events;
   }
 
   Future<List<EventModel>> getAllJoinEvents() async {
@@ -336,121 +373,6 @@ class FirestoreServices {
       print(e);
     }
     return events;
-  }
-
-  Query searchEvents(String key) {
-    return _instance
-        .collection('events')
-        .where('countryCode', isEqualTo: countryCode)
-        .where('status', whereIn: [1])
-        .where("searchParameter", arrayContains: key.toLowerCase())
-        .orderBy('eventDate');
-  }
-
-  Future<bool> setEvent(
-    BuildContext context,
-    EventModel post,
-    bool? isJoin,
-    bool changeCard, {
-    bool mycoRider = false,
-    String mycoRiderName = "",
-    bool iamcoRider = false,
-    bool isExtraCardCorider = false,
-  }) async {
-    try {
-      if (post.id == "") {
-        // New Event
-        post.id = _instance.collection('events').doc().id;
-        post.ownerId = currentUser.id;
-        post.ownerImage = currentUser.image;
-        post.ownerName = currentUser.name;
-        post.countryCode = countryCode;
-
-        if (currentUser.pokerRunCount == 0) {
-          updateOrganizerCount();
-        }
-
-        await _instance.collection('admin').doc('stats').update({
-          'pokerRunCount': FieldValue.increment(1),
-        });
-
-        await _instance
-            .collection('admin')
-            .doc('stats')
-            .collection('location')
-            .doc('countries')
-            .set({
-              countryCode: FieldValue.increment(1),
-            }, SetOptions(merge: true));
-
-        currentUser.pokerRunCount += 1;
-
-        await _instance.collection('userProfiles').doc(currentUser.id).update({
-          "pokerRunCount": FieldValue.increment(1),
-        });
-
-        await _instance
-            .collection('events')
-            .doc(post.id)
-            .set(await post.toSaveJSON(), SetOptions(merge: true));
-      } else {
-        if (isJoin == null) {
-          await _instance
-              .collection('events')
-              .doc(post.id)
-              .update(await post.toSaveJSON());
-        } else if (isJoin) {
-          await _instance.collection('userProfiles').doc(post.ownerId).update({
-            "riderCount": FieldValue.increment(1),
-          });
-          await _instance.collection('events').doc(post.id).update({
-            'userIds': FieldValue.arrayUnion([currentUser.id]),
-          });
-
-          GamePlayerModel gamePlayer = GamePlayerModel();
-          gamePlayer.userId = currentUser.id;
-          gamePlayer.roadName = currentUser.roadName;
-          gamePlayer.userName = currentUser.name;
-          gamePlayer.userImage = currentUser.image;
-          gamePlayer.currentLocation = currentUser.location;
-          gamePlayer.changeCard = changeCard;
-          gamePlayer.pokerId = post.id;
-          gamePlayer.approved = !needApproval;
-          gamePlayer.mycoRiderName = mycoRiderName;
-          gamePlayer.mycoRider = mycoRider;
-          gamePlayer.iamCoRider = iamcoRider;
-          gamePlayer.isExtraCardCorider = isExtraCardCorider;
-
-          await _instance
-              .collection('events')
-              .doc(post.id)
-              .collection("participants")
-              .doc(currentUser.id)
-              .set(gamePlayer.toSaveJSON());
-        } else {
-          await _instance.collection('events').doc(post.id).update({
-            'userIds': FieldValue.arrayRemove([currentUser.id]),
-          });
-
-          final participantRef = _instance
-              .collection('events')
-              .doc(post.id)
-              .collection('participants')
-              .doc(currentUser.id);
-
-          final messagesRef = participantRef.collection('messages');
-          final messagesSnapshot = await messagesRef.get();
-          for (final doc in messagesSnapshot.docs) {
-            await doc.reference.delete();
-          }
-
-          await participantRef.delete();
-        }
-      }
-      return true;
-    } catch (e) {
-      return false;
-    }
   }
 
   Future<bool> updateGamePlayer(GamePlayerModel game) async {
@@ -508,14 +430,12 @@ class FirestoreServices {
           .collection('events')
           .doc(pokerId)
           .collection("participants")
-          .where('rankValue', isEqualTo: 0)
           .orderBy('roadName');
     } else {
       return _instance
           .collection('events')
           .doc(pokerId)
           .collection("participants")
-          .where('rankValue', isEqualTo: 0)
           .where("searchParameter", arrayContains: search.toLowerCase())
           .orderBy('roadName');
     }
@@ -643,6 +563,26 @@ class FirestoreServices {
     } catch (e) {
       print(e.toString());
     }
+    return gameData;
+  }
+
+  Future<GameData> getGamebyEventId(String eventId, String userId) async {
+    GameData gameData = GameData();
+    try {
+      DocumentSnapshot<Map<String, dynamic>> event = await _instance
+          .collection('events')
+          .doc(eventId)
+          .get();
+      if (event.exists) {
+        final gamePlayerModel = await getGamePlayer(event.id, currentUser.id);
+        if (gamePlayerModel.currentStop < 6) {
+          gameData.latestEvent = EventModel.toModel(event.data()!);
+          gameData.game = gamePlayerModel;
+          gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
+          return gameData;
+        }
+      }
+    } catch (e) {}
     return gameData;
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/page/home/stop_view.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
@@ -38,22 +39,36 @@ class _GameViewState extends State<GameView> {
             foregroundColor: Colors.transparent,
             surfaceTintColor: Colors.transparent,
             backgroundColor: Colors.transparent,
-
             elevation: 0,
             leadingWidth: 8.w,
-            leading: Padding(
-              padding: EdgeInsets.only(bottom: 3.5),
-              child: onPress(
+            actions: [
+              onPress(
                 ontap: () {
-                  Get.back();
+                  showPopup(
+                    context,
+                    "Are You Sure, You Want To Exit This Game?",
+                    PopupActionsButtons.cancel,
+                    PopupActionsButtons.logout,
+                    () {
+                      Get.back();
+                    },
+                    () async {
+                      Get.back();
+                      Get.offAll(HomePage());
+                    },
+                  );
                 },
-                child: Icon(
-                  RemixIcons.arrow_left_s_line,
-                  size: 25.sp,
-                  color: MyColors.white,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 3.w),
+                  child: text_widget(
+                    "Exit",
+                    fontSize: 16.sp,
+                    color: Colors.red,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
-            ),
+            ],
             title: text_widget(
               "The Poker Run App",
               letterSpacing: 1.5,

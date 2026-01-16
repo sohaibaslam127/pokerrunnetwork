@@ -27,59 +27,7 @@ class FindPoker extends StatefulWidget {
 }
 
 class _FindPokerState extends State<FindPoker> {
-  Future<void> logout() async {
-    showPopup(
-      context,
-      "Are You Sure, You Want To Logout?",
-      PopupActionsButtons.cancel,
-      PopupActionsButtons.logout,
-      () {
-        Get.back();
-      },
-      () async {
-        Get.back();
-        await AuthServices.I.logOut();
-        Get.offAll(() => const LoginPage());
-      },
-    );
-  }
-
-  Future<void> deleteAccount() async {
-    showPopup(
-      context,
-      "Are You Sure, You Want To Delete Your Account, You Will Not Be Able To Undo This Action?",
-      PopupActionsButtons.deleteAccount,
-      PopupActionsButtons.cancel,
-      () async {
-        Get.back();
-        await FirestoreServices.I.deleteAccount();
-        await AuthServices.I.logOut();
-        Get.offAll(() => const LoginPage());
-      },
-      () {
-        Get.back();
-      },
-    );
-  }
-
-  void editProfile() {
-    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
-  }
-
-  void helpLine() {
-    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
-  }
-
-  void termsAndConditions() {
-    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
-  }
-
-  void reportProblem() {
-    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
-  }
-
   TextEditingController searchPokerRun = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -126,7 +74,7 @@ class _FindPokerState extends State<FindPoker> {
                 textFieldWithPrefixSuffuxIconAndHintText(
                   'Search by event name'.tr,
                   fillColor: Colors.white.withValues(alpha: 0.1),
-                  mainTxtColor: Colors.black,
+                  mainTxtColor: Colors.white,
                   showPrefix: true,
                   controller: searchPokerRun,
                   onChange: (value) {
@@ -143,8 +91,8 @@ class _FindPokerState extends State<FindPoker> {
                 Expanded(
                   child: PaginateFirestore(
                     key: searchPokerRun.text.isEmpty
-                        ? Key("all_events")
-                        : Key(searchPokerRun.text),
+                        ? Key("find_poker")
+                        : Key("find_poker: ${searchPokerRun.text}"),
                     isLive: true,
                     onEmpty: Center(
                       child: Padding(
@@ -269,8 +217,10 @@ class _FindPokerState extends State<FindPoker> {
                       return Container();
                     },
                     query: searchPokerRun.text.isEmpty
-                        ? FirestoreServices.I.getEvents()
-                        : FirestoreServices.I.searchEvents(searchPokerRun.text),
+                        ? FirestoreServices.I.getActiveEvents()
+                        : FirestoreServices.I.searchActiveEvents(
+                            searchPokerRun.text,
+                          ),
                     itemBuilderType: PaginateBuilderType.listView,
                   ),
                 ),

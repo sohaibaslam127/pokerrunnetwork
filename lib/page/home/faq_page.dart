@@ -241,10 +241,28 @@ class _FaqPageState extends State<FaqPage> {
                               initiallyExpanded: faqExpanded[index],
                               onExpansionChanged: (v) =>
                                   setState(() => faqExpanded[index] = v),
-                              title: text_widget(
-                                "${index + 1}. ${faqs[index]['question']}",
-                                color: Colors.white,
-                                fontSize: 15.5.sp,
+                              title: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "${index + 1}. ",
+                                      style: TextStyle(
+                                        color: MyColors.primary,
+                                        fontSize: 15.5.sp,
+                                        height: 2,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: "${faqs[index]['question']}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        height: 1.5,
+                                        fontSize: 15.5.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               trailing: Icon(
                                 faqExpanded[index]
@@ -259,7 +277,8 @@ class _FaqPageState extends State<FaqPage> {
                                   ),
                                   child: text_widget(
                                     faqs[index]['answer'],
-                                    color: Colors.white.withValues(alpha: 0.7),
+                                    height: 1.3,
+                                    color: Colors.white.withValues(alpha: 1),
                                     fontSize: 15.sp,
                                   ),
                                 ),

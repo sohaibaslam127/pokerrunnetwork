@@ -23,7 +23,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  GameData currentGame = GameData();
   @override
   void initState() {
     super.initState();
@@ -62,13 +61,40 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: 3.h),
                 Center(
-                  child: text_widget(
-                    "Join and Play,\nPoker Run Events",
+                  child: RichText(
                     textAlign: TextAlign.center,
-                    fontSize: 23.sp,
-                    height: 1.1,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Welcome Back, ",
+                          style: TextStyle(
+                            fontSize: 22.sp,
+                            height: 1.1,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        TextSpan(
+                          text: currentUser.name,
+                          style: TextStyle(
+                            fontSize: 22.sp,
+                            height: 1.1,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        TextSpan(
+                          text: " (${currentUser.roadName})",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            height: 1.1,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white54,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 2.h),
@@ -154,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                           "Video’s and FAQ’s",
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.sp,
+                          fontSize: 14.sp,
                         ),
                       ),
                     ),

@@ -117,7 +117,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                     color: Colors.white,
                   ),
                   text_widget(
-                    "Starting date:  ${DateFormat("d MMM yy").format(widget.event.eventDate)}\n"
+                    "Starting date:  ${DateFormat("d MMM yyyy").format(widget.event.eventDate)}\n"
                     "Starting time:  ${DateFormat("h:mm aaa").format(widget.event.eventDate)}\n"
                     "Cost of this Poker Run:  \$${widget.event.joinFee.toStringAsFixed(2)}",
                     fontSize: 15.sp,
@@ -473,7 +473,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
     widget.event.userIds.add(currentUser.id);
 
     // Update Firestore
-    await FirestoreServices.I.setEvent(
+    await FirestoreServices.I.updateEvent(
       context,
       widget.event,
       true,
@@ -523,7 +523,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
               Get.back();
               EasyLoading.show(status: "Leaving...");
               widget.event.userIds.remove(currentUser.id);
-              await FirestoreServices.I.setEvent(
+              await FirestoreServices.I.updateEvent(
                 context,
                 widget.event,
                 false,

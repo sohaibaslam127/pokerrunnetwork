@@ -15,7 +15,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
   bool isSuffix = false,
   bool enable = true,
   TextInputType textInputType = TextInputType.text,
-  TextInputAction textInputAction = TextInputAction.next,
+  TextInputAction textInputAction = TextInputAction.done,
   double? radius,
   bool isTextSuffix = false,
   suffText,
@@ -287,18 +287,15 @@ class DeletePop extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Title
             const Text(
               'Leave',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A3B70), // Deep Navy Blue
+                color: Color(0xFF1A3B70),
               ),
             ),
             const SizedBox(height: 12),
-
-            // Subtitle
             const Text(
               'Are You Sure You Want To Leave\nThis Poker Run?',
               textAlign: TextAlign.center,
@@ -308,13 +305,8 @@ class DeletePop extends StatelessWidget {
                 height: 1.4,
               ),
             ),
-            // const SizedBox(height: 24),
-            // const SizedBox(height: 15),
-
-            // Buttons
             Row(
               children: [
-                // Cancel Button
                 Expanded(
                   child: Image.asset(
                     PopupActionsButtons.no,
@@ -323,8 +315,6 @@ class DeletePop extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-
-                // Yes Button (Gradient)
                 Expanded(
                   child: Image.asset(
                     PopupActionsButtons.yes,
@@ -359,18 +349,15 @@ class CautionPop extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Title
             const Text(
               'Caution',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Color(0xffFF7A7A), // Deep Navy Blue
+                color: Color(0xffFF7A7A),
               ),
             ),
             const SizedBox(height: 12),
-
-            // Subtitle
             const Text(
               'go to the final destination and select complete your poke rrun\nor\nyour poker hnd will not be registered with the organizer, ranked, or saved',
               textAlign: TextAlign.center,
@@ -380,15 +367,8 @@ class CautionPop extends StatelessWidget {
                 height: 1.4,
               ),
             ),
-            // const SizedBox(height: 24),
-            // const SizedBox(height: 15),
-
-            // Buttons
             Row(
               children: [
-                // Cancel Button
-
-                // Yes Button (Gradient)
                 Expanded(
                   child: Image.asset(
                     "assets/icons/cont.png",
