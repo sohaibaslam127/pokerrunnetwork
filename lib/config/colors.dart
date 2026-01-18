@@ -50,6 +50,7 @@ class OtherButtons {
   static String changeThisCard = "assets/buttons/other/changethiscard.png";
   static String completeYourPokerRun =
       "assets/buttons/other/completeyourpokerrun.png";
+
   static String currentPokerRun = "assets/buttons/other/currentpokerrun.png";
   static String finalDestination = "assets/buttons/other/finaldestination.png";
   static String joinThisPokerRun = "assets/buttons/other/jointhispokerrun.png";

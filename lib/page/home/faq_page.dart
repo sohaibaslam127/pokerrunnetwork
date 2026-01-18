@@ -81,30 +81,38 @@ class _FaqPageState extends State<FaqPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.transparent.withValues(alpha: .2),
-            leadingWidth: 8.w,
-            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white10,
+            elevation: 0,
+            leadingWidth: 9.w,
             leading: Padding(
-              padding: const EdgeInsets.only(left: 0),
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
               child: onPress(
-                ontap: () => Get.back(),
+                ontap: () {
+                  Get.back();
+                },
                 child: Icon(
                   RemixIcons.arrow_left_s_line,
-                  size: 24.sp,
-                  color: Colors.white.withValues(alpha: 0.8),
+                  size: 25.sp,
+                  color: MyColors.white,
                 ),
               ),
             ),
             title: text_widget(
               "FAQ’s & Videos",
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.8),
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
+            ),
+            centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
             ),
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(height: 1.5.h),
                 Center(
                   child: onPress(
                     ontap: () => setState(() => isFaqs = !isFaqs),

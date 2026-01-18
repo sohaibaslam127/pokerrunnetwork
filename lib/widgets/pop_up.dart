@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/get_utils.dart';
+import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -33,7 +36,7 @@ void showPopup(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: Text(
                       title.capitalize!,
-                     textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
@@ -85,8 +88,6 @@ void showPopup(
   );
 }
 
-
-
 class PokerResultDialog extends StatelessWidget {
   const PokerResultDialog({super.key});
 
@@ -98,10 +99,9 @@ class PokerResultDialog extends StatelessWidget {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
-          // 1. The Main White Card
           Container(
-            margin: const EdgeInsets.only(top: 60), // Space for the CircleAvatar
-            padding: const EdgeInsets.fromLTRB(20, 70, 20, 10),
+            margin: const EdgeInsets.only(top: 60),
+            padding: const EdgeInsets.fromLTRB(20, 80, 20, 10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(30),
@@ -109,12 +109,20 @@ class PokerResultDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // 2. The Playing Cards Row
-              Image.asset("assets/icons/cards.png"),
-                const SizedBox(height: 25),
-
-                // 3. Status Text
-                const Text(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(
+                    currentGame.game.cards.length > 5
+                        ? 5
+                        : currentGame.game.cards.length,
+                    (index) => Image.asset(
+                      pokerCards[currentGame.game.cards[index]],
+                      height: 88,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
                   'Winners Will Be Continue After The Poker Run.\nSee Result In My Poker Run List',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -123,9 +131,7 @@ class PokerResultDialog extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 20),
-
-                // 4. Hand Info Row
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -137,36 +143,67 @@ class PokerResultDialog extends StatelessWidget {
                         color: Colors.black54,
                       ),
                     ),
+                    SizedBox(width: 5),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF50C878), // Green badge
-                        borderRadius: BorderRadius.circular(20),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 5,
                       ),
-                      child: const Text(
-                        'High Card King',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF50C878),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        currentGame.game.rank.capitalize!,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 35),
-
-                // 5. The "Got It" Button with Shadow and Gradient
-                Image.asset("assets/icons/gotit.png")
+                SizedBox(height: 5),
+                onPress(
+                  ontap: () {
+                    Get.back();
+                  },
+                  child: Image.asset("assets/icons/gotit.png"),
+                ),
               ],
             ),
           ),
 
-          // 6. The Floating CircleAvatar
           Positioned(
             top: 0,
-            child: CircleAvatar(
-              radius: 60,
-              backgroundColor: const Color(0xFF0A1231), // Deep navy background
-              backgroundImage:
-                AssetImage("assets/logo/appicon.jpg"), // Replace with your logo asset
-              
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: MyColors.secondaryDark,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ClipOval(
+                      child: Image.asset(
+                        "assets/background/lightbackground.jpg",
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Image.asset(
+                      "assets/logo/logo.png",
+                      width: 85,
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -182,7 +219,9 @@ class PokerResultDialog extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         image: const DecorationImage(
-          image: NetworkImage('https://placeholder.com/card'), // Replace with your card asset
+          image: NetworkImage(
+            'https://placeholder.com/card',
+          ), // Replace with your card asset
           fit: BoxFit.cover,
         ),
         boxShadow: [

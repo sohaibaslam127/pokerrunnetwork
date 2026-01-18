@@ -200,7 +200,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                   }
                   click = true;
                   currentGame.game.currentStop = 0;
-                  if (currentGame.game.approved) {
+                  if (!currentGame.game.approved) {
                     click = false;
                     toast(
                       context,
@@ -226,13 +226,11 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                           currentUser.location.longitude,
                         ) <=
                         miles) {
-                      currentGame.game.currentStop =
-                          currentGame.game.currentStop + 1;
+                      currentGame.game.currentStop = 1;
                       await FirestoreServices.I.updateGamePlayer(
                         currentGame.game,
                       );
                       click = false;
-                      currentGame.gameStage = 1;
                       Get.off(GameView());
                     } else {
                       click = false;

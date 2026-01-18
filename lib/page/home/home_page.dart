@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
-import 'package:pokerrunnetwork/models/gameData.dart';
-import 'package:pokerrunnetwork/page/auth/profile.dart';
 import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
 import 'package:pokerrunnetwork/page/home/completed_pokr.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
 import 'package:pokerrunnetwork/page/home/find_poker.dart';
+import 'package:pokerrunnetwork/page/home/game_view.dart';
 import 'package:pokerrunnetwork/page/home/schedule_poker.dart';
 import 'package:pokerrunnetwork/page/home/setting_page_network.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
@@ -33,6 +32,9 @@ class _HomePageState extends State<HomePage> {
     final gameData = await FirestoreServices.I.getCurrentGame();
     setState(() {
       currentGame = gameData;
+      if (currentGame.game.currentStop > 0) {
+        Get.off(GameView());
+      }
     });
   }
 
@@ -54,11 +56,12 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 1.h),
+                Spacer(),
                 Center(
                   child: Image.asset("assets/logo/logo.png", height: 22.h),
                 ),
                 SizedBox(height: 3.h),
+                Spacer(),
                 Center(
                   child: RichText(
                     textAlign: TextAlign.center,
@@ -168,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                       width: 37.w,
                       height: 4.7.h,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.20),
+                        color: Colors.white.withValues(alpha: 0.18),
                         border: Border.all(
                           color: Colors.white.withValues(alpha: 0.30),
                         ),

@@ -42,37 +42,33 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
     position: SnackPosition.top,
   );
   Future.delayed(const Duration(seconds: 3), () {
-    // Snackify.close();
+    Snackify.close();
   });
 }
 
-// Future<LocationResult> showPlacePicker(BuildContext context) async {
-//   LocationResult? result = await Navigator.of(context).push(
-//     MaterialPageRoute(
-//       builder: (_) => Theme(
-//         data: ThemeData(
-//           appBarTheme: AppBarTheme(backgroundColor: MyColors.secondaryDark),
-//         ),
-//         child: PlacePicker(
-//           mapApiKey,
-//           displayLocation: LatLng(
-//             currentUser.location.latitude,
-//             currentUser.location.longitude,
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-//   return result ?? LocationResult();
-// }
-
-void launchMyUrl(String url) async {
+Future<void> launchMyUrl(String url) async {
   final Uri uri = Uri.parse(url);
   try {
     await launchUrl(uri, mode: LaunchMode.platformDefault);
   } catch (e) {
     debugPrint("Error launching URL: $e");
   }
+}
+
+String normalizeUrl(String url) {
+  if (url.trim().isEmpty) return "";
+  String trimmed = url.trim();
+  if (trimmed.startsWith("http://")) {
+    trimmed = trimmed.replaceFirst("http://", "https://");
+    return trimmed;
+  }
+  if (trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  if (trimmed.contains(".")) {
+    return "https://$trimmed";
+  }
+  return "https://$trimmed.com";
 }
 
 List<String> generateArray(String name, [bool subSearch = false]) {

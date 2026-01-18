@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/config/random.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
+import 'package:pokerrunnetwork/models/analysis.dart';
+import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
+import 'package:pokerrunnetwork/models/stops.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/page/home/stop_view.dart';
+import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
-import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -21,8 +27,36 @@ class GameView extends StatefulWidget {
 class _GameViewState extends State<GameView> {
   InAppWebViewController? webViewController;
   bool isLoading = true;
+  StopsModel stopsModel = StopsModel();
+  int stopNumber = 0;
+  String finalUrl = "";
+  double distance = 0;
+
+  NRandom ran = NRandom(52, 4);
+  void randomCard() {
+    int number = ran.getNextIndex();
+    if (currentGame.game.cards.contains(number)) {
+      randomCard();
+    } else {
+      currentGame.game.cards.add(number);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    stopsModel = currentGame.latestEvent.stops[currentGame.game.currentStop];
+    stopNumber = currentGame.game.currentStop;
+    finalUrl = normalizeUrl(
+      stopsModel.sponserLink.isNotEmpty
+          ? stopsModel.sponserLink
+          : defaultSponsor,
+    );
+    distance = calculateDistance(
+      currentUser.location.latitude,
+      currentUser.location.longitude,
+      stopsModel.stopLocation.latitude,
+      stopsModel.stopLocation.longitude,
+    );
     return Stack(
       children: [
         Image.asset(
@@ -31,176 +65,243 @@ class _GameViewState extends State<GameView> {
           width: double.infinity,
           height: double.infinity,
         ),
-
         Scaffold(
           backgroundColor: Colors.transparent,
-
           appBar: AppBar(
-            foregroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white10,
             elevation: 0,
             leadingWidth: 8.w,
-            actions: [
-              onPress(
-                ontap: () {
-                  showPopup(
-                    context,
-                    "Are You Sure, You Want To Exit This Game?",
-                    PopupActionsButtons.cancel,
-                    PopupActionsButtons.logout,
-                    () {
-                      Get.back();
-                    },
-                    () async {
-                      Get.back();
-                      Get.offAll(HomePage());
-                    },
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(right: 3.w),
-                  child: text_widget(
-                    "Exit",
-                    fontSize: 16.sp,
-                    color: Colors.red,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ],
             title: text_widget(
-              "The Poker Run App",
-              letterSpacing: 1.5,
-              fontSize: 20.sp,
-              color: MyColors.white,
+              currentGame.latestEvent.pokerName.capitalize!,
+              fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
-
-            centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 3.h),
-                      text_widget(
-                        "P-36 Mian Zulfiqar Ali Road,\nCanal Block Shadman Town, Faisalabad, 38000",
-                        color: Colors.white.withOpacity(0.8),
-                        textAlign: TextAlign.center,
-                        fontWeight: FontWeight.w600,
-                      ),
-
-                      SizedBox(height: 3.h),
-                      SizedBox(
-                        height: 45.h,
-                        child: Stack(
-                          children: [
-                            InAppWebView(
-                              initialUrlRequest: URLRequest(
-                                url: WebUri("https://thepokerrunapp.com/"),
-                              ),
-                              initialSettings: InAppWebViewSettings(
-                                javaScriptEnabled: true,
-                                mediaPlaybackRequiresUserGesture: false,
-                                useHybridComposition: true,
-                              ),
-                              onWebViewCreated: (controller) {
-                                webViewController = controller;
-                              },
-                              onLoadStop: (controller, url) {
-                                setState(() => isLoading = false);
-                              },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 2.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: text_widget(
+                              "Stop $stopNumber: ${stopsModel.name}",
+                              color: Colors.white.withValues(alpha: 0.8),
+                              maxline: 1,
+                              textAlign: TextAlign.center,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17.5.sp,
                             ),
-
-                            /// 🔹 Loader
-                            if (isLoading)
-                              const Center(child: CircularProgressIndicator()),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3.w),
+                      child: onPress(
+                        ontap: () {
+                          launchMyUrl(finalUrl);
+                        },
+                        child: Row(
+                          children: [
+                            text_widget(
+                              "Sponsored: ${stopsModel.sponserName.capitalize}",
+                              color: Colors.white.withValues(alpha: 0.8),
+                              maxline: 1,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15.sp,
+                            ),
+                            Spacer(),
+                            Icon(
+                              RemixIcons.link,
+                              color: Colors.white.withValues(alpha: 0.8),
+                            ),
                           ],
                         ),
                       ),
-                      SizedBox(height: 3.h),
-
-                      Container(
-                        width: Get.width,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.30),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.40),
+                    ),
+                    SizedBox(height: 1.h),
+                    SizedBox(
+                      height: 52.h,
+                      child: Stack(
+                        children: [
+                          InAppWebView(
+                            key: Key(finalUrl),
+                            initialUrlRequest: URLRequest(
+                              url: WebUri(finalUrl),
+                            ),
+                            initialSettings: InAppWebViewSettings(
+                              javaScriptEnabled: true,
+                              mediaPlaybackRequiresUserGesture: false,
+                              useHybridComposition: true,
+                            ),
+                            onWebViewCreated: (controller) {
+                              webViewController = controller;
+                            },
+                            onLoadStop: (controller, url) {
+                              setState(() => isLoading = false);
+                            },
                           ),
-                          borderRadius: BorderRadius.circular(10),
+                          if (isLoading)
+                            Center(
+                              child: CircularProgressIndicator(
+                                color: MyColors.primary,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: .5.h),
+                    Container(
+                      padding: EdgeInsets.all(2.w),
+                      margin: EdgeInsets.all(2.w),
+                      width: Get.width,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.30),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.40),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0,
-                            vertical: 15,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
+                              Expanded(
+                                child: text_widget(
+                                  stopsModel.address,
+                                  color: Colors.white,
+                                  maxline: 2,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(width: 3.w),
                               Container(
-                                width: 23.w,
-                                height: 3.4.h,
                                 decoration: BoxDecoration(
                                   color: Colors.green,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(1.5.w),
                                   child: text_widget(
-                                    "0.00 Miles",
+                                    "${distance.toStringAsFixed(2)}\nMiles",
+                                    textAlign: TextAlign.center,
                                     fontSize: 14.4.sp,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 1.5.h),
-                              text_widget(
-                                "P-36 Mian Zulfiqar Ali Road,\nCanal Block Shadman Town, Faisalabad, 38000",
-                                color: Colors.white,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
                             ],
                           ),
-                        ),
+                        ],
                       ),
-                      SizedBox(height: 2.h),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 Row(
                   children: [
                     Expanded(
                       child: onPress(
                         ontap: () {
-                          showDialog(
-                            context: context,
-                            // This ensures the area behind the dialog is dimmed
-                            barrierDismissible: true,
-                            builder: (BuildContext context) {
-                              return const PokerResultDialog();
-                            },
+                          openMaps(
+                            context,
+                            currentGame.latestEvent.stops.first.name,
+                            currentGame
+                                .latestEvent
+                                .stops
+                                .first
+                                .stopLocation
+                                .latitude,
+                            currentGame
+                                .latestEvent
+                                .stops
+                                .first
+                                .stopLocation
+                                .longitude,
                           );
                         },
-                        child: Image.asset(OtherButtons.navigate1),
+                        child: Image.asset(
+                          stopNumber == 1
+                              ? OtherButtons.navigate1
+                              : stopNumber == 2
+                              ? OtherButtons.navigate2
+                              : stopNumber == 3
+                              ? OtherButtons.navigate3
+                              : stopNumber == 4
+                              ? OtherButtons.navigate4
+                              : stopNumber == 5
+                              ? OtherButtons.navigate5
+                              : OtherButtons.finalDestination,
+                        ),
                       ),
                     ),
                     Expanded(
                       child: onPress(
-                        ontap: () {
-                          Get.to(StopView());
+                        ontap: () async {
+                          if (distance < miles) {
+                            if (currentGame.game.currentStop != 6) {
+                              randomCard();
+                              await Get.to(StopView());
+                              setState(() {});
+                            } else {
+                              HandResult myHand = Analysis().converter(
+                                List<int>.from(currentGame.game.cards),
+                              );
+                              currentGame.game.rank = myHand.rank;
+                              currentGame.game.rankValue = myHand.score;
+                              FirestoreServices.I.updateGamePlayer(
+                                currentGame.game,
+                              );
+                              await showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (BuildContext context) {
+                                  return const PokerResultDialog();
+                                },
+                              );
+                              currentGame.game = GamePlayerModel();
+                              Get.offAll(HomePage());
+                            }
+                          } else {
+                            toast(
+                              context,
+                              "Next Location",
+                              "Navigate to the Next Location, By using the Navigate Button",
+                            );
+                          }
                         },
-                        child: Image.asset(OtherButtons.card1),
+                        child: Image.asset(
+                          stopNumber == 1
+                              ? OtherButtons.card1
+                              : stopNumber == 2
+                              ? OtherButtons.card2
+                              : stopNumber == 3
+                              ? OtherButtons.card3
+                              : stopNumber == 4
+                              ? OtherButtons.card4
+                              : stopNumber == 5
+                              ? OtherButtons.card5
+                              : OtherButtons.completeYourPokerRun,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 3.h),
               ],
             ),
           ),

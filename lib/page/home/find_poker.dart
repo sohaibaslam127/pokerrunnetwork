@@ -42,10 +42,11 @@ class _FindPokerState extends State<FindPoker> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.transparent.withValues(alpha: .2),
-            leadingWidth: 8.w,
+            backgroundColor: Colors.white10,
+            elevation: 0,
+            leadingWidth: 9.w,
             leading: Padding(
-              padding: EdgeInsets.only(bottom: 3.5),
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
               child: onPress(
                 ontap: () {
                   Get.back();
@@ -64,6 +65,10 @@ class _FindPokerState extends State<FindPoker> {
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22.0),

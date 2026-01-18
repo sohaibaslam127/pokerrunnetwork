@@ -556,7 +556,6 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
       if (player.currentStop < 6) {
         gameData.latestEvent = poker;
         gameData.game = player;
-        gameData.gameStage = 1;
         break;
       }
     }

@@ -100,10 +100,10 @@ class _SplashScreenState extends State<SplashScreen> {
           right: 0,
           child: Center(
             child: text_widget(
-              "Version $version+$buildNumber".toUpperCase(),
+              "Version   $version+$buildNumber".toUpperCase(),
               color: Colors.white38,
               fontSize: 15.sp,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),

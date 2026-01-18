@@ -92,10 +92,11 @@ class _ProfilePageState extends State<ProfilePage> {
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              backgroundColor: Colors.transparent.withValues(alpha: .2),
-              leadingWidth: 8.w,
+              backgroundColor: Colors.white10,
+              elevation: 0,
+              leadingWidth: 9.w,
               leading: Padding(
-                padding: EdgeInsets.only(bottom: 3.5),
+                padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
                 child: onPress(
                   ontap: () {
                     Get.back();
@@ -109,12 +110,15 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               title: text_widget(
                 "Profile",
-                letterSpacing: 1.5,
-                fontSize: 20.sp,
-                color: MyColors.white,
+                fontSize: 17.sp,
+                color: Colors.white.withValues(alpha: 0.80),
                 fontWeight: FontWeight.w600,
               ),
               centerTitle: false,
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(0),
+                child: Container(height: 2, color: Colors.white12),
+              ),
             ),
             body: SafeArea(
               bottom: false,
@@ -138,17 +142,19 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height: 1.h),
                             Row(
                               children: [
                                 text_widget(
                                   "Edit Profile",
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
                                 ),
                                 Spacer(),
                               ],
                             ),
-                            SizedBox(height: 2.5.h),
+                            SizedBox(height: 2.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               'sohaibaslam@gmail.com'.tr,
                               controller: emailController,

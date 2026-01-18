@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/random.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
@@ -128,7 +129,7 @@ class FirestoreServices {
     }
   }
 
-  Future<UserModel> getUser(String userId) async {
+  Future<UserModel> getUser(BuildContext context, String userId) async {
     if (userId == "") return UserModel();
     UserModel user = UserModel();
     try {
@@ -139,8 +140,12 @@ class FirestoreServices {
       if (dsnap.exists) {
         user = UserModel.toModel(dsnap.data() as Map<String, dynamic>);
       }
+      if (user.id == "") {
+        toast(context, "Account Deleted", "This account has been deleted.");
+        return UserModel();
+      }
       if (!user.enable) {
-        EasyLoading.showInfo("This account has been disabled.");
+        toast(context, "Account Banned", "This account has been banned.");
         return UserModel();
       }
     } catch (e) {
@@ -551,14 +556,13 @@ class FirestoreServices {
       final pokers = await getCurrentEvents();
       final now = DateTime.now();
       for (final poker in pokers) {
-        if (now.compareTo(poker.eventDate) < 0) continue;
+        if (now.isBefore(poker.eventDate)) continue;
         final gamePlayerModel = await getGamePlayer(poker.id, currentUser.id);
-        if (gamePlayerModel.currentStop < 6) {
-          gameData.latestEvent = poker;
-          gameData.game = gamePlayerModel;
-          gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
-          return gameData;
-        }
+        if (gamePlayerModel.currentStop >= 6) continue;
+        gameData.latestEvent = poker;
+        gameData.game = gamePlayerModel;
+//        gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
+        return gameData;
       }
     } catch (e) {
       print(e.toString());
@@ -578,7 +582,7 @@ class FirestoreServices {
         if (gamePlayerModel.currentStop < 6) {
           gameData.latestEvent = EventModel.toModel(event.data()!);
           gameData.game = gamePlayerModel;
-          gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
+//          gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
           return gameData;
         }
       }
