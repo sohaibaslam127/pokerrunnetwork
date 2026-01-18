@@ -70,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 2.h),
                 Center(
                   child: Image.asset("assets/logo/logo.png", height: 19.h),
                 ),
@@ -78,10 +79,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: text_widget(
                     "Welcome Back To\nThe Poker Run\nPlayer.",
                     textAlign: TextAlign.center,
-                      fontSize: 24.sp,
-                      height: 1.1,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    fontSize: 24.sp,
+                    height: 1.1,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(height: 3.h),
@@ -133,8 +134,8 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 child: text_widget(
                                   "Forgot Password?",
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
                                   color: MyColors.secondary,
                                 ),
                               ),
@@ -167,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: MyColors.secondary,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ],
@@ -191,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: 32.w,
                       height: 4.7.h,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.20),
+                        color: Colors.white.withValues(alpha: 0.15),
                         border: Border.all(
                           color: Colors.white.withValues(alpha: 0.30),
                         ),
@@ -201,8 +202,8 @@ class _LoginPageState extends State<LoginPage> {
                         child: text_widget(
                           "About Us",
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15.sp,
                         ),
                       ),
                     ),
