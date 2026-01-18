@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Get.offAll(
         CloseApp(
           "No Internet Connection!",
-          "Pokerrun Player requires active internet connection to function. Please enable internet and restart the app.",
+          "Poker Run Player requires active internet connection to function. Please enable internet and restart the app.",
         ),
       );
       return false;

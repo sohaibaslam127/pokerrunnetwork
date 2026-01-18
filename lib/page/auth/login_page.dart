@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/page/auth/forget_page.dart';
 import 'package:pokerrunnetwork/page/auth/singup_page.dart';
@@ -33,10 +34,13 @@ class _LoginPageState extends State<LoginPage> {
       EasyLoading.show();
       AuthServices.I
           .emailSignIn(emailContoller.text, passwordContoller.text)
-          .then((result) {
+          .then((result) async {
             EasyLoading.dismiss();
             if (result.isEmpty) {
-              Get.offAll(const HomePage());
+              await AuthServices.I.checkUser();
+              if (currentUser.id != "") {
+                Get.offAll(const HomePage());
+              }
             } else {
               toast(context, "Login Error", result.toString(), type: 1);
             }
