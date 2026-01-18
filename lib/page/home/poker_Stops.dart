@@ -57,11 +57,12 @@ class _PokerStopsState extends State<PokerStops> {
     thirdStop.dispose();
     fourthStop.dispose();
     fifthStop.dispose();
-    fifthStopAddress.dispose();
+
+    firstStopAddress.dispose();
     secondStopAddress.dispose();
     thirdStopAddress.dispose();
     fourthStopAddress.dispose();
-    firstStopAddress.dispose();
+    fifthStopAddress.dispose();
   }
 
   @override
@@ -170,7 +171,11 @@ class _PokerStopsState extends State<PokerStops> {
                                           FocusManager.instance.primaryFocus
                                               ?.unfocus();
                                           showPlacePicker(context).then(
-                                            (loc) => loc.latLng == null
+                                            (loc) =>
+                                                loc.latLng == null ||
+                                                    loc.latLng?.latitude ==
+                                                        0.0 ||
+                                                    loc.latLng?.latitude == 0
                                                 ? toast(
                                                     context,
                                                     "Location",
@@ -201,7 +206,7 @@ class _PokerStopsState extends State<PokerStops> {
                                                     }
                                                     widget
                                                             .eventModel
-                                                            .stops[index]
+                                                            .stops[index + 1]
                                                             .stopLocation =
                                                         GeoPoint(
                                                           loc.latLng!.latitude,
@@ -274,7 +279,67 @@ class _PokerStopsState extends State<PokerStops> {
                                       secondStop.text.trim().isEmpty ||
                                       thirdStop.text.trim().isEmpty ||
                                       fourthStop.text.trim().isEmpty ||
-                                      fifthStop.text.trim().isEmpty) {
+                                      fifthStop.text.trim().isEmpty ||
+                                      widget
+                                              .eventModel
+                                              .stops[1]
+                                              .stopLocation
+                                              .latitude ==
+                                          0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[2]
+                                              .stopLocation
+                                              .latitude ==
+                                          0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[3]
+                                              .stopLocation
+                                              .latitude ==
+                                          0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[4]
+                                              .stopLocation
+                                              .latitude ==
+                                          0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[5]
+                                              .stopLocation
+                                              .latitude ==
+                                          0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[1]
+                                              .stopLocation
+                                              .latitude ==
+                                          0.0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[2]
+                                              .stopLocation
+                                              .latitude ==
+                                          0.0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[3]
+                                              .stopLocation
+                                              .latitude ==
+                                          0.0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[4]
+                                              .stopLocation
+                                              .latitude ==
+                                          0.0 ||
+                                      widget
+                                              .eventModel
+                                              .stops[5]
+                                              .stopLocation
+                                              .latitude ==
+                                          0.0) {
                                     toast(
                                       context,
                                       "Info",
@@ -303,7 +368,6 @@ class _PokerStopsState extends State<PokerStops> {
                                       fourthStopAddress.text;
                                   widget.eventModel.stops[5].address =
                                       fifthStopAddress.text;
-
                                   Get.to(PokerSponsers(widget.eventModel));
                                 },
                               ),
