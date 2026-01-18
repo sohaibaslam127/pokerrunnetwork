@@ -50,7 +50,7 @@ class _StopViewState extends State<StopView> {
             elevation: 0,
             leadingWidth: 8.w,
             title: text_widget(
-              "Card for stop ${currentGame.game.currentStop}",
+              "Card for stop ${currentGame.game.currentStop}".capitalize!,
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,

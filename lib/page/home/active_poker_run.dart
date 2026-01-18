@@ -61,7 +61,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
               ),
             ),
             title: text_widget(
-              "Active Poker Run List",
+              "My Poker Run List".capitalize!,
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,

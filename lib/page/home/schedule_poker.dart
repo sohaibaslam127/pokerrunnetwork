@@ -38,12 +38,9 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
           backgroundColor: Colors.transparent,
 
           appBar: AppBar(
-            foregroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
-
+            backgroundColor: Colors.white10,
             elevation: 0,
-            leadingWidth: 8.w,
+            leadingWidth: 9.w,
             leading: Padding(
               padding: EdgeInsets.only(bottom: 3.5),
               child: onPress(
@@ -58,9 +55,9 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
               ),
             ),
             title: text_widget(
-              currentGame.latestEvent.pokerName,
+              currentGame.latestEvent.pokerName.capitalize!,
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.8),
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             actions: [
@@ -73,6 +70,10 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
               SizedBox(width: 4.w),
             ],
             centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
           ),
           body: Column(
             children: [
@@ -94,14 +95,19 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                         ),
                         child: Row(
                           children: [
-                            text_widget(
-                              "Use the drop down menu to switch\nbetween Active poker runs",
-                              fontSize: 16.5.sp,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                            Expanded(
+                              child: text_widget(
+                                "Use the drop down menu to switch\nbetween Active poker runs",
+                                fontSize: 16.5.sp,
+                                color: MyColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                            Spacer(),
-                            Image.asset("assets/icons/up.png", height: 4.5.h),
+                            Image.asset(
+                              "assets/icons/up.png",
+                              height: 4.5.h,
+                              color: MyColors.primary,
+                            ),
                           ],
                         ),
                       ),

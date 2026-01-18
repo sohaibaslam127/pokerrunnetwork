@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               title: text_widget(
-                "Profile",
+                "Profile".capitalize!,
                 fontSize: 17.sp,
                 color: Colors.white.withValues(alpha: 0.80),
                 fontWeight: FontWeight.w600,

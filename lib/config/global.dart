@@ -22,10 +22,9 @@ double miles = 0.062137;
 String helpLineNumber = "";
 String helpLineEmail = "";
 String website = "";
-double coriderFee = -1.0; // -1.0 mean same as service fee
+double coriderFee = -1.0;
 
-// Not on the admin panel, only set from remote config
-String defaultSponsor = "";
+String defaultSponsor = "https://thepokerrunapp.com";
 bool enableAds = false;
 String latestAppVersion = "";
 bool needApproval = true;

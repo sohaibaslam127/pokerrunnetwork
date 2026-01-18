@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
@@ -70,6 +71,7 @@ class _GameViewState extends State<GameView> {
           appBar: AppBar(
             backgroundColor: Colors.white10,
             elevation: 0,
+            automaticallyImplyLeading: false,
             leadingWidth: 8.w,
             title: text_widget(
               currentGame.latestEvent.pokerName.capitalize!,
@@ -81,6 +83,45 @@ class _GameViewState extends State<GameView> {
               preferredSize: Size.fromHeight(0),
               child: Container(height: 2, color: Colors.white12),
             ),
+            actions: [
+              onPress(
+                ontap: () {
+                  showPopup(
+                    context,
+                    "If you exit this game, you will lose all progress and must re-register to play this event?",
+                    PopupActionsButtons.cancel,
+                    PopupActionsButtons.exit,
+                    () {
+                      Get.back();
+                    },
+                    () async {
+                      Get.back();
+                      EasyLoading.show(status: "Leaving...");
+                      currentGame.latestEvent.userIds.remove(currentUser.id);
+                      await FirestoreServices.I.updateEvent(
+                        context,
+                        currentGame.latestEvent,
+                        false,
+                        false,
+                      );
+                      EasyLoading.dismiss();
+                      Get.offAll(HomePage());
+                    },
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(right: 2.w),
+                  child: text_widget(
+                    "EXIT  ",
+                    color: Colors.redAccent,
+                    maxline: 1,
+                    textAlign: TextAlign.center,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.sp,
+                  ),
+                ),
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             child: Column(

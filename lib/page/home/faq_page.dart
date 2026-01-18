@@ -98,7 +98,7 @@ class _FaqPageState extends State<FaqPage> {
               ),
             ),
             title: text_widget(
-              "FAQ’s & Videos",
+              "FAQ’s & Videos".capitalize!,
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,

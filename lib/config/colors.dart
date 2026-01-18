@@ -20,6 +20,7 @@ class PopupActionsButtons {
   static String remove = "assets/buttons/popup/remove.png";
   static String disable = "assets/buttons/popup/disable.png";
   static String logout = "assets/buttons/popup/logout.png";
+  static String exit = "assets/buttons/popup/exit.png";
 }
 
 class MenuActionButtons {

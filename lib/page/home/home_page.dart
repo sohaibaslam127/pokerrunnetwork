@@ -30,11 +30,12 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _initializeGameData() async {
     final gameData = await FirestoreServices.I.getCurrentGame();
-    setState(() {
+    setState(() async {
       currentGame = gameData;
       if (currentGame.game.currentStop > 0) {
-        Get.off(GameView());
+        await Get.off(GameView());
       }
+      setState(() {});
     });
   }
 
@@ -102,8 +103,9 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 2.h),
                 if (currentGame.latestEvent.id != "") ...[
                   onPress(
-                    ontap: () {
-                      Get.to(SchedulePokerN());
+                    ontap: () async {
+                      await Get.to(SchedulePokerN());
+                      _initializeGameData();
                     },
                     child: Image.asset(
                       OtherButtons.currentPokerRun,
@@ -124,8 +126,9 @@ class _HomePageState extends State<HomePage> {
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     onPress(
-                      ontap: () {
-                        Get.to(FindPoker());
+                      ontap: () async {
+                        await Get.to(FindPoker());
+                        _initializeGameData();
                       },
                       child: Image.asset(
                         MenuActionButtons.findAPokerrun,
@@ -133,8 +136,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPress(
-                      ontap: () {
-                        Get.to(ActivePokerRun());
+                      ontap: () async {
+                        await Get.to(ActivePokerRun());
+                        _initializeGameData();
                       },
                       child: Image.asset(
                         MenuActionButtons.activePokerrun,
@@ -142,8 +146,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPress(
-                      ontap: () {
-                        Get.to(CompletedPokr());
+                      ontap: () async {
+                        await Get.to(CompletedPokr());
+                        _initializeGameData();
                       },
                       child: Image.asset(
                         MenuActionButtons.completedPokerrun,
@@ -151,8 +156,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onPress(
-                      ontap: () {
-                        Get.to(SettingPage());
+                      ontap: () async {
+                        await Get.to(SettingPage());
+                        _initializeGameData();
                       },
                       child: Image.asset(
                         MenuActionButtons.settingPokerrun,
@@ -164,8 +170,9 @@ class _HomePageState extends State<HomePage> {
                 Spacer(),
                 Center(
                   child: onPress(
-                    ontap: () {
-                      Get.to(FaqPage());
+                    ontap: () async {
+                      await Get.to(FaqPage());
+                      _initializeGameData();
                     },
                     child: Container(
                       width: 37.w,

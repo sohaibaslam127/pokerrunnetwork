@@ -77,15 +77,16 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
           backgroundColor: Colors.transparent,
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
-
           appBar: AppBar(
-            backgroundColor: Colors.transparent.withValues(alpha: .2),
+            backgroundColor: Colors.white10,
             elevation: 0,
-            leadingWidth: 8.w,
+            leadingWidth: 9.w,
             leading: Padding(
-              padding: EdgeInsets.only(bottom: 3.5),
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
               child: onPress(
-                ontap: () => Get.back(),
+                ontap: () {
+                  Get.back();
+                },
                 child: Icon(
                   RemixIcons.arrow_left_s_line,
                   size: 25.sp,
@@ -94,12 +95,16 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
               ),
             ),
             title: text_widget(
-              widget.event.pokerName,
+              widget.event.pokerName.capitalize!,
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
           ),
           body: Column(
             children: [
@@ -252,6 +257,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                         ],
                       ),
                     ],
+                    SizedBox(height: 1.h),
                     text_widget(
                       _getFooterText(),
                       fontSize: 15.sp,
@@ -409,14 +415,14 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Join',
+                'Join This Poker Run',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF1A3B70),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 18),
               const Text(
                 'Are You Sure You Want To Join\nThis Poker Run?',
                 textAlign: TextAlign.center,
@@ -426,37 +432,37 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                   height: 1.4,
                 ),
               ),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                  border: Border.all(color: Colors.grey.shade200),
-                ),
-                child: Column(
-                  children: [
-                    _buildPriceRow('Rider', '\$3.40'),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Divider(thickness: 0.8),
-                    ),
-                    _buildPriceRow(
-                      'Total Paid To Organizer At Start',
-                      '\$3.40',
-                      isBold: true,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 15),
+              // const SizedBox(height: 24),
+              // Container(
+              //   padding: const EdgeInsets.all(16),
+              //   decoration: BoxDecoration(
+              //     color: Colors.white,
+              //     borderRadius: BorderRadius.circular(12),
+              //     boxShadow: [
+              //       BoxShadow(
+              //         color: Colors.black.withOpacity(0.08),
+              //         blurRadius: 15,
+              //         offset: const Offset(0, 5),
+              //       ),
+              //     ],
+              //     border: Border.all(color: Colors.grey.shade200),
+              //   ),
+              //   child: Column(
+              //     children: [
+              //       _buildPriceRow('Rider', '\$3.40'),
+              //       const Padding(
+              //         padding: EdgeInsets.symmetric(vertical: 8),
+              //         child: Divider(thickness: 0.8),
+              //       ),
+              //       _buildPriceRow(
+              //         'Total Paid To Organizer At Start',
+              //         '\$3.40',
+              //         isBold: true,
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(

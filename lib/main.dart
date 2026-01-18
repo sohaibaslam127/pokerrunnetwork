@@ -28,3 +28,7 @@ class MyApp extends StatelessWidget {
 
 // Heysarge@rocketmail.com
 // Calcutta1313$
+
+// 5th stop location is alawys of the pakistan
+// exit button on the poker run
+// user don't need to go to final stop, he can register on the 5th stope

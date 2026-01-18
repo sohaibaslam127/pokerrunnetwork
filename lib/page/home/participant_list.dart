@@ -34,13 +34,11 @@ class _ParticipantListState extends State<ParticipantList> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white10,
             elevation: 0,
-            leadingWidth: 8.w,
+            leadingWidth: 9.w,
             leading: Padding(
-              padding: EdgeInsets.only(bottom: 3.5),
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
               child: onPress(
                 ontap: () {
                   Get.back();
@@ -53,13 +51,18 @@ class _ParticipantListState extends State<ParticipantList> {
               ),
             ),
             title: text_widget(
-              widget.event.pokerName.capitalizeFirst!,
+              widget.event.pokerName.capitalize!,
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
           ),
+
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22.0),
             child: Column(

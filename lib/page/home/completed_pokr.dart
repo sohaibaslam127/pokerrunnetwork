@@ -52,7 +52,7 @@ class _FindPokerState extends State<CompletedPokr> {
               ),
             ),
             title: text_widget(
-              "Completed Poker Run",
+              "Completed Poker Run".capitalize!,
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
