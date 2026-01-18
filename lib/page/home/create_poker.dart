@@ -1,5 +1,6 @@
 import 'package:custom_check_box/custom_check_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide SnackPosition;
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
@@ -8,6 +9,7 @@ import 'package:pokerrunnetwork/page/home/poker_route.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CreatePoker extends StatefulWidget {
@@ -105,7 +107,9 @@ class _CreatePokerState extends State<CreatePoker> {
                                   ),
                                   SizedBox(width: 3.w),
                                   text_widget(
-                                    "Create a new Poker Run",
+                                    widget.eventModel.id == ""
+                                        ? "Create a new Poker Run"
+                                        : "Edit Poker Run",
                                     fontSize: 20.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -188,12 +192,17 @@ class _CreatePokerState extends State<CreatePoker> {
                               textFieldWithPrefixSuffuxIconAndHintText(
                                 'Poker Run Cost'.tr,
                                 fillColor: Colors.white,
+                                inputFormatters: [
+                                  DecimalTextInputFormatter(decimalRange: 2),
+                                ],
                                 mainTxtColor: Colors.black,
                                 controller: pokerRunCostController,
                                 textInputType: TextInputType.numberWithOptions(
                                   decimal: true,
                                 ),
                                 radius: 12,
+                                prefixIcon: Icons.attach_money,
+                                showPrefix: true,
                                 bColor: Color(0xffEDF1F3),
                                 hintColor: Color(0xff868686),
                                 pColor: MyColors.primary,
@@ -271,6 +280,11 @@ class _CreatePokerState extends State<CreatePoker> {
                                   "If Yes, what is the cost for the Co-rider? ",
                                   fillColor: Colors.white,
                                   mainTxtColor: Colors.black,
+                                  inputFormatters: [
+                                    DecimalTextInputFormatter(decimalRange: 2),
+                                  ],
+                                  prefixIcon: Icons.attach_money,
+                                  showPrefix: true,
                                   controller: coRiderCostController,
                                   textInputType:
                                       TextInputType.numberWithOptions(
@@ -361,6 +375,11 @@ class _CreatePokerState extends State<CreatePoker> {
                                 textFieldWithPrefixSuffuxIconAndHintText(
                                   "What is the cost of Additional Cards?",
                                   fillColor: Colors.white,
+                                  prefixIcon: Icons.attach_money,
+                                  inputFormatters: [
+                                    DecimalTextInputFormatter(decimalRange: 2),
+                                  ],
+                                  showPrefix: true,
                                   mainTxtColor: Colors.black,
                                   controller: additionalCostController,
                                   textInputType:

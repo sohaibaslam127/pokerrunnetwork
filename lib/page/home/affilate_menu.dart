@@ -7,6 +7,7 @@ import 'package:pokerrunnetwork/page/home/faq_page.dart';
 import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class AffilateMenuPage extends StatefulWidget {
@@ -22,6 +23,35 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
     return Stack(
       children: [
         Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white10,
+            elevation: 0,
+            leadingWidth: 9.w,
+            leading: Padding(
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
+              child: onPress(
+                ontap: () {
+                  Get.back();
+                },
+                child: Icon(
+                  RemixIcons.arrow_left_s_line,
+                  size: 25.sp,
+                  color: MyColors.white,
+                ),
+              ),
+            ),
+            title: text_widget(
+              "Back",
+              fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
+              fontWeight: FontWeight.w600,
+            ),
+            centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
+          ),
           backgroundColor: Color(0xff000435),
           body: SafeArea(
             child: Padding(
@@ -29,17 +59,11 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  onPress(
-                    ontap: () {
-                      Get.back();
-                    },
-                    child: Image.asset("assets/icons/bb.png", height: 3.h),
-                  ),
-                  SizedBox(height: 2.h),
-                  Center(
-                    child: Image.asset("assets/logo/logo.png", height: 24.h),
-                  ),
                   Spacer(flex: 2),
+                  Center(
+                    child: Image.asset("assets/logo/logo.png", height: 22.h),
+                  ),
+                  Spacer(),
                   Center(
                     child: text_widget(
                       "Poker Run Network\nAffiliate Management Page",
@@ -50,7 +74,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                       color: Colors.white,
                     ),
                   ),
-                  Spacer(flex: 3),
+                  Spacer(flex: 2),
                   SizedBox(
                     height: 40.h,
                     child: Column(
@@ -115,7 +139,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                     ),
                   ),
 
-                  Spacer(flex: 2),
+                  Spacer(),
                   Center(
                     child: onPress(
                       ontap: () {

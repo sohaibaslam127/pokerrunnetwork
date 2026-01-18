@@ -49,19 +49,20 @@ class _SchedulePokerState extends State<PokerRunList> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white10,
             elevation: 0,
-            leadingWidth: 14.w,
-            leading: onPress(
-              ontap: () {
-                Get.back();
-              },
-              child: Icon(
-                RemixIcons.arrow_left_s_line,
-                size: 24.sp,
-                color: Colors.white.withValues(alpha: 0.80),
+            leadingWidth: 9.w,
+            leading: Padding(
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
+              child: onPress(
+                ontap: () {
+                  Get.back();
+                },
+                child: Icon(
+                  RemixIcons.arrow_left_s_line,
+                  size: 25.sp,
+                  color: MyColors.white,
+                ),
               ),
             ),
             title: text_widget(
@@ -77,6 +78,10 @@ class _SchedulePokerState extends State<PokerRunList> {
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
           ),
           body: Padding(
             padding: EdgeInsets.all(20.0),

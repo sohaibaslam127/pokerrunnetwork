@@ -147,6 +147,7 @@ class _PokerStopsState extends State<PokerStops> {
                                       SizedBox(height: 0.5.h),
                                       textFieldWithPrefixSuffuxIconAndHintText(
                                         "Name of $number$suffix Poker Run Stop",
+                                        textInputAction: TextInputAction.done,
                                         fillColor: Colors.white,
                                         mainTxtColor: Colors.black,
                                         radius: 12,

@@ -202,8 +202,9 @@ class _PokerSponsersState extends State<PokerSponsers> {
                             SizedBox(height: .5.h),
                             customButon(
                               isIcon: false,
-                              btnText: "Create Poker Run",
-                              icon: "assets/icons/p1.png",
+                              btnText: widget.eventModel.id == ""
+                                  ? "Create Poker Run"
+                                  : "Update Poker Run",
                               onTap: () async {
                                 FocusManager.instance.primaryFocus?.unfocus();
                                 widget.eventModel.stops[1].sponserName =
@@ -238,12 +239,21 @@ class _PokerSponsersState extends State<PokerSponsers> {
                                 EasyLoading.dismiss();
                                 if (result) {
                                   Get.close(4);
-                                  toast(
-                                    context,
-                                    "Event Created",
-                                    "Event created successfully",
-                                    type: 0,
-                                  );
+                                  if (widget.eventModel.id.isEmpty) {
+                                    toast(
+                                      context,
+                                      "Event Created",
+                                      "Event created successfully",
+                                      type: 0,
+                                    );
+                                  } else {
+                                    toast(
+                                      context,
+                                      "Event Update",
+                                      "Event updated successfully",
+                                      type: 0,
+                                    );
+                                  }
                                 } else {
                                   toast(
                                     context,

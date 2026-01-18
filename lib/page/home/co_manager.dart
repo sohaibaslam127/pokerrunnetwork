@@ -36,22 +36,19 @@ class _CoManagerPageState extends State<CoManagerPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.transparent.withValues(alpha: 0.08),
-            surfaceTintColor: Colors.transparent.withValues(alpha: 0.08),
-            backgroundColor: Colors.transparent.withValues(alpha: 0.08),
-
+            backgroundColor: Colors.white10,
             elevation: 0,
-            leadingWidth: 14.w,
+            leadingWidth: 9.w,
             leading: Padding(
-              padding: EdgeInsets.only(left: 17.0),
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
               child: onPress(
                 ontap: () {
                   Get.back();
                 },
                 child: Icon(
                   RemixIcons.arrow_left_s_line,
-                  size: 24.sp,
-                  color: Colors.white.withValues(alpha: 0.80),
+                  size: 25.sp,
+                  color: MyColors.white,
                 ),
               ),
             ),
@@ -61,7 +58,6 @@ class _CoManagerPageState extends State<CoManagerPage> {
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
-            centerTitle: false,
             actions: [
               onPress(
                 key: UniqueKey(),
@@ -71,6 +67,11 @@ class _CoManagerPageState extends State<CoManagerPage> {
                 child: Image.asset("assets/icons/addc.png", height: 5.5.h),
               ),
             ],
+            centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
           ),
           body: Padding(
             padding: const EdgeInsets.all(20),

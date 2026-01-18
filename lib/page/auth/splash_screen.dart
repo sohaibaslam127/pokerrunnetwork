@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -13,6 +14,7 @@ import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/services/locationsServices.dart';
+import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -29,19 +31,27 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     init().then((appRun) {
       if (appRun) {
-        Timer(const Duration(seconds: 2), () async {
-          if (currentUser.id == "") {
-            Get.offAll(() => const LoginPage());
-          } else {
-            Get.offAll(() => const HomePage());
-          }
-        });
+        Widget destination;
+        if (currentUser.id.isEmpty) {
+          destination = LoginPage();
+        } else {
+          destination = const HomePage();
+        }
+        Get.offAll(() => destination);
       }
     });
   }
 
   Future<bool> init() async {
     WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+    );
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
@@ -57,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Get.offAll(
         CloseApp(
           "No Internet Connection!",
-          "Pokerrun Network requires active internet connection to function. Please enable internet and restart the app.",
+          "Poker Run Network requires active internet connection to function. Please enable internet and restart the app.",
         ),
       );
       return false;
@@ -69,7 +79,6 @@ class _SplashScreenState extends State<SplashScreen> {
     await FirestoreServices.I.init();
     await AuthServices.I.checkUser();
     LocationServices.I.getUserLocation();
-    log("ID: ${currentUser.id}");
     return true;
   }
 
@@ -90,15 +99,11 @@ class _SplashScreenState extends State<SplashScreen> {
           left: 0,
           right: 0,
           child: Center(
-            child: Text(
-              "Version $version+$buildNumber".toUpperCase(),
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.25),
-                fontSize: 17.sp,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.8,
-                wordSpacing: 5,
-              ),
+            child: text_widget(
+              "Version   $version+$buildNumber".toUpperCase(),
+              color: Colors.white38,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),

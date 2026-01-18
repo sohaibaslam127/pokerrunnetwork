@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/page/home/affilate_menu.dart';
 import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
 import 'package:pokerrunnetwork/page/home/setting_page.dart';
@@ -34,7 +35,6 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Spacer(),
-
                 Center(
                   child: text_widget(
                     "Welcome To The\nPoker Run Network.",
@@ -48,7 +48,36 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Spacer(),
                 Center(
-                  child: Image.asset("assets/logo/logo.png", height: 26.h),
+                  child: Image.asset("assets/logo/logo.png", height: 22.h),
+                ),
+                Spacer(),
+                Center(
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Hi, ${currentUser.name}\n',
+                          style: TextStyle(
+                            fontSize: 22.sp,
+                            height: 1.2,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "(${currentUser.roadName})",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            height: 1.3,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 Spacer(),
                 Padding(

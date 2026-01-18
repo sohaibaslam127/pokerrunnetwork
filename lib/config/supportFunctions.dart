@@ -1,36 +1,32 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:place_picker/place_picker.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:snackify/enums/snack_enums.dart';
 import 'package:snackify/snackify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void toast(BuildContext context, String title, String message, {int type = 3}) {
-  // success, 0
-  // error, 1
+  EasyLoading.dismiss();
   final topInset = MediaQuery.of(context).padding.top;
   Snackify.show(
     context: context,
     type: SnackType.values[type],
-    title: Text(
-      title,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 16.sp,
-        fontWeight: FontWeight.bold,
-      ),
+    title: text_widget(
+      title.toUpperCase(),
+      color: Colors.white,
+      fontSize: 16.5.sp,
+      fontWeight: FontWeight.bold,
     ),
     offset: Offset(3.w, topInset > 44 ? 3.h : 0),
-    subtitle: Text(
-      message,
-      style: TextStyle(color: Colors.white, fontSize: 16.sp),
-    ),
+    subtitle: text_widget(message, color: Colors.white, fontSize: 16.sp),
     duration: const Duration(seconds: 2),
     backgroundGradient: LinearGradient(
       colors: type == 0
@@ -43,6 +39,9 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
     ),
     position: SnackPosition.top,
   );
+  Future.delayed(const Duration(seconds: 3), () {
+    Snackify.close();
+  });
 }
 
 Future<LocationResult> showPlacePicker(BuildContext context) async {
@@ -104,7 +103,7 @@ Future<void> openStore(bool playStoreId, bool appStoreId) async {
 }
 
 Future<DateTime?> pickDate(BuildContext context) async {
-  final primaryColor = MyColors.secondary;
+  final primaryColor = MyColors.secondaryDark;
   final DateTime? picked = await showDatePicker(
     context: context,
     initialDate: DateTime.now(),
@@ -145,15 +144,19 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
 }
 
 Future<TimeOfDay?> pickTime(BuildContext context) async {
-  final primaryColor = MyColors.secondary;
+  final primaryColor = MyColors.secondaryDark;
   final TimeOfDay? picked = await showTimePicker(
+    initialEntryMode: TimePickerEntryMode.input,
     context: context,
     initialTime: TimeOfDay.now(),
+    confirmText: "Done",
+    cancelText: "Cancel",
     builder: (_, child) {
       return Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
             primary: primaryColor,
+            secondary: MyColors.primary,
             onPrimary: Colors.white,
             onSurface: Colors.black,
           ),

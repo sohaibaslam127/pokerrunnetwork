@@ -129,12 +129,10 @@ class _SingupPageState extends State<SingupPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 1.h),
-
                   Center(
-                    child: Image.asset("assets/logo/logo.png", height: 10.h),
+                    child: Image.asset("assets/logo/logo.png", height: 16.h),
                   ),
                   SizedBox(height: 3.h),
-
                   Center(
                     child: Container(
                       width: 88.w,
@@ -147,17 +145,19 @@ class _SingupPageState extends State<SingupPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height: 1.h),
                             Row(
                               children: [
                                 text_widget(
                                   "Register",
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
                                 ),
                                 Spacer(),
                               ],
                             ),
-                            SizedBox(height: 2.5.h),
+                            SizedBox(height: 2.h),
                             textFieldWithPrefixSuffuxIconAndHintText(
                               'Username'.tr,
                               fillColor: Colors.white,
@@ -211,6 +211,8 @@ class _SingupPageState extends State<SingupPage> {
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
                               controller: passwordController,
+                              textInputAction: TextInputAction.done,
+                              obsecure: true,
                               radius: 12,
                               textInputType: TextInputType.visiblePassword,
                               bColor: Color(0xffEDF1F3),
@@ -223,6 +225,8 @@ class _SingupPageState extends State<SingupPage> {
                               "Confirm Password".tr,
                               fillColor: Colors.white,
                               mainTxtColor: Colors.black,
+                              textInputAction: TextInputAction.done,
+                              obsecure: true,
                               radius: 12,
                               textInputType: TextInputType.visiblePassword,
                               bColor: Color(0xffEDF1F3),
@@ -249,10 +253,9 @@ class _SingupPageState extends State<SingupPage> {
                                     });
                                   },
                                 ),
-                                SizedBox(width: .5.w),
                                 RichText(
                                   text: TextSpan(
-                                    text: 'I Accept ',
+                                    text: 'I Accept  ',
                                     style: TextStyle(
                                       fontSize: 15,
                                       color: MyColors.black,
@@ -268,7 +271,7 @@ class _SingupPageState extends State<SingupPage> {
                                             );
                                           },
                                         style: TextStyle(
-                                          fontSize: 15,
+                                          fontSize: 14,
                                           color: MyColors.secondary,
                                           fontWeight: FontWeight.bold,
                                           decoration: TextDecoration.underline,
@@ -280,7 +283,7 @@ class _SingupPageState extends State<SingupPage> {
                                 Spacer(),
                               ],
                             ),
-                            SizedBox(height: 2.h),
+                            SizedBox(height: 1.h),
                             customButon(
                               isIcon: false,
                               btnText: "Sign Up",
@@ -305,7 +308,7 @@ class _SingupPageState extends State<SingupPage> {
                                       TextSpan(
                                         text: 'Sign In',
                                         style: TextStyle(
-                                          fontSize: 15,
+                                          fontSize: 14,
                                           color: MyColors.secondary,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -321,7 +324,7 @@ class _SingupPageState extends State<SingupPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 4.h),
                 ],
               ),
             ),

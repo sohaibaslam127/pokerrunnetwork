@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
+import 'package:pokerrunnetwork/page/auth/profile_page.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
@@ -55,7 +56,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   void editProfile() {
-    launchMyUrl('https://thepokerrunapp.com/contact-us%2Fprivacy-policy');
+    Get.to(() => const ProfilePage());
   }
 
   void helpLine() {
@@ -75,7 +76,7 @@ class _SettingPageState extends State<SettingPage> {
     return Stack(
       children: [
         Image.asset(
-          "assets/icons/bbg.jpg",
+          "assets/background/darkbackground.jpg",
           fit: BoxFit.cover,
           width: double.infinity,
           height: double.infinity,
@@ -83,13 +84,11 @@ class _SettingPageState extends State<SettingPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            foregroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white10,
             elevation: 0,
-            leadingWidth: 14.w,
+            leadingWidth: 9.w,
             leading: Padding(
-              padding: EdgeInsets.only(bottom: 3.5),
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
               child: onPress(
                 ontap: () {
                   Get.back();
@@ -103,31 +102,34 @@ class _SettingPageState extends State<SettingPage> {
             ),
             title: text_widget(
               "Setting",
-              letterSpacing: 1.5,
-              fontSize: 20.sp,
-              color: MyColors.white,
+              fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 4.h),
+              SizedBox(height: 2.h),
               Row(
                 children: [
-                  // Expanded(
-                  //   child: onPress(
-                  //     ontap: editProfile,
-                  //     child: Image.asset(MenuActionButtons.editProfile),
-                  //   ),
-                  // ),
-                  // Expanded(
-                  //   child: onPress(
-                  //     ontap: helpLine,
-                  //     child: Image.asset(MenuActionButtons.helpLine),
-                  //   ),
-                  // ),
+                  Expanded(
+                    child: onPress(
+                      ontap: editProfile,
+                      child: Image.asset(MenuActionButtons.editProfile),
+                    ),
+                  ),
+                  Expanded(
+                    child: onPress(
+                      ontap: helpLine,
+                      child: Image.asset(MenuActionButtons.helpLine),
+                    ),
+                  ),
                 ],
               ),
               Row(
@@ -146,7 +148,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 3.h),
+              SizedBox(height: 2.h),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Container(

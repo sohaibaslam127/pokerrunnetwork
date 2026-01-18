@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-Widget text_widget(
+Text text_widget(
   String text, {
   fontSize,
   color,
@@ -25,7 +26,7 @@ Widget text_widget(
     style: TextStyle(
       height: height,
       color: color ?? Colors.black,
-      fontSize: fontSize ?? 17.sp,
+      fontSize: fontSize ?? 16.sp,
       fontWeight: fontWeight ?? FontWeight.w500,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
       decoration: decoration ?? TextDecoration.none,

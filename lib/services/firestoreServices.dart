@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/random.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
@@ -132,7 +133,7 @@ class FirestoreServices {
     }
   }
 
-  Future<UserModel> getUser(String userId) async {
+  Future<UserModel> getUser(BuildContext context, String userId) async {
     if (userId == "") return UserModel();
     UserModel user = UserModel();
     try {
@@ -143,8 +144,12 @@ class FirestoreServices {
       if (dsnap.exists) {
         user = UserModel.toModel(dsnap.data() as Map<String, dynamic>);
       }
+      if (user.id == "") {
+        toast(context, "Account Deleted", "This account has been deleted.");
+        return UserModel();
+      }
       if (!user.enable) {
-        EasyLoading.showInfo("This account has been disabled.");
+        toast(context, "Account Banned", "This account has been banned.");
         return UserModel();
       }
     } catch (e) {

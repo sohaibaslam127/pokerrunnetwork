@@ -73,7 +73,7 @@ class _FaqPageState extends State<FaqPage> {
     return Stack(
       children: [
         Image.asset(
-          "assets/icons/bbg.jpg",
+          "assets/background/darkbackground.jpg",
           fit: BoxFit.cover,
           width: double.infinity,
           height: double.infinity,
@@ -81,30 +81,38 @@ class _FaqPageState extends State<FaqPage> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
-            backgroundColor: Colors.transparent.withValues(alpha: 0.08),
+            backgroundColor: Colors.white10,
             elevation: 0,
-            leadingWidth: 14.w,
+            leadingWidth: 9.w,
             leading: Padding(
-              padding: const EdgeInsets.only(left: 17),
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
               child: onPress(
-                ontap: () => Get.back(),
+                ontap: () {
+                  Get.back();
+                },
                 child: Icon(
                   RemixIcons.arrow_left_s_line,
-                  size: 24.sp,
-                  color: Colors.white.withValues(alpha: 0.8),
+                  size: 25.sp,
+                  color: MyColors.white,
                 ),
               ),
             ),
             title: text_widget(
               "FAQ’s & Videos",
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.8),
+              color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
+            ),
+            centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
             ),
           ),
           body: SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(height: 1.5.h),
                 Center(
                   child: onPress(
                     ontap: () => setState(() => isFaqs = !isFaqs),
@@ -242,10 +250,28 @@ class _FaqPageState extends State<FaqPage> {
                               initiallyExpanded: faqExpanded[index],
                               onExpansionChanged: (v) =>
                                   setState(() => faqExpanded[index] = v),
-                              title: text_widget(
-                                "${index + 1}. ${faqs[index]['question']}",
-                                color: Colors.white,
-                                fontSize: 15.5.sp,
+                              title: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "${index + 1}. ",
+                                      style: TextStyle(
+                                        color: MyColors.primary,
+                                        fontSize: 15.5.sp,
+                                        height: 2,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: "${faqs[index]['question']}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        height: 1.5,
+                                        fontSize: 15.5.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               trailing: Icon(
                                 faqExpanded[index]
@@ -260,7 +286,8 @@ class _FaqPageState extends State<FaqPage> {
                                   ),
                                   child: text_widget(
                                     faqs[index]['answer'],
-                                    color: Colors.white.withValues(alpha: 0.7),
+                                    height: 1.3,
+                                    color: Colors.white.withValues(alpha: 1),
                                     fontSize: 15.sp,
                                   ),
                                 ),

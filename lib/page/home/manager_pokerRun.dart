@@ -12,6 +12,7 @@ import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ManagerPokerRun extends StatefulWidget {
@@ -42,20 +43,44 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
       children: [
         Scaffold(
           backgroundColor: Color(0xff000435),
+          appBar: AppBar(
+            backgroundColor: Colors.white10,
+            elevation: 0,
+            leadingWidth: 9.w,
+            leading: Padding(
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
+              child: onPress(
+                ontap: () {
+                  Get.back();
+                },
+                child: Icon(
+                  RemixIcons.arrow_left_s_line,
+                  size: 25.sp,
+                  color: MyColors.white,
+                ),
+              ),
+            ),
+            title: text_widget(
+              "Back",
+              fontSize: 17.sp,
+              color: Colors.white.withValues(alpha: 0.80),
+              fontWeight: FontWeight.w600,
+            ),
+            centerTitle: false,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0),
+              child: Container(height: 2, color: Colors.white12),
+            ),
+          ),
           body: SafeArea(
+            bottom: false,
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    onPress(
-                      ontap: () {
-                        Get.back();
-                      },
-                      child: Image.asset("assets/icons/bb.png", height: 3.h),
-                    ),
-                    SizedBox(height: 1.h),
+                    SizedBox(height: 2.5.h),
                     Center(
                       child: Image.asset("assets/logo/logo.png", height: 22.h),
                     ),
@@ -263,7 +288,6 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                           ),
                       ],
                     ),
-                    SizedBox(height: 2.5.h),
                   ],
                 ),
               ),
