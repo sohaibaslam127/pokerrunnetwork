@@ -135,11 +135,13 @@ class _SchedulePokerState extends State<PokerRunList> {
                             },
                             () {
                               Get.back();
-                              eventModel.id = "";
-                              eventModel.status = 1;
-                              eventModel.eventWinner = null;
-                              eventModel.userIds = [];
-                              Get.to(CreatePoker(eventModel));
+                              EventModel copyEvent = eventModel.copyWith(
+                                id: "",
+                                status: 1,
+                                eventWinner: null,
+                                userIds: [],
+                              );
+                              Get.to(CreatePoker(copyEvent));
                             },
                           );
                         }
@@ -149,117 +151,156 @@ class _SchedulePokerState extends State<PokerRunList> {
                           Get.to(ManagerPokerRun(eventModel));
                         }
                       },
-                      title: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: text_widget(
-                              eventModel.pokerName.capitalize!,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(width: 2.w),
-                          if (widget.type == 2) ...[
-                            onPress(
-                              child: Icon(
-                                RemixIcons.arrow_right_up_line,
-                                size: 18.sp,
-                                color: Colors.white.withValues(alpha: 0.60),
+                      title: Padding(
+                        padding: EdgeInsets.only(left: 4.w, right: 2.w),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: text_widget(
+                                eventModel.pokerName.capitalize!,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
                             ),
+                            SizedBox(width: 2.w),
+                            if (widget.type == 2) ...[
+                              Icon(
+                                RemixIcons.arrow_right_up_line,
+                                size: 18.sp,
+                                color: MyColors.primary,
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                      contentPadding: EdgeInsets.only(left: 4.w, right: 4.w),
+                      contentPadding: EdgeInsets.zero,
                       subtitle: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          text_widget(
-                            DateFormat(
-                              'dd MMMM, hh:mm a',
-                            ).format(eventModel.eventDate),
-                            fontSize: 14.7.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white.withValues(alpha: 0.60),
+                          Padding(
+                            padding: EdgeInsets.only(left: 4.w, right: 4.w),
+                            child: text_widget(
+                              DateFormat(
+                                'dd MMMM, hh:mm a',
+                              ).format(eventModel.eventDate),
+                              fontSize: 14.7.sp,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white.withValues(alpha: 0.60),
+                            ),
                           ),
                           if (widget.type == 2) ...[
                             SizedBox(height: 0.5.h),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (eventModel.status == 2) ...[
-                                  text_widget(
-                                    "Winner:",
-                                    fontSize: 14.7.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(width: 1.3.w),
-                                  Expanded(
-                                    child: text_widget(
+                            Padding(
+                              padding: EdgeInsets.only(left: 4.w, right: 4.w),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (eventModel.status == 2) ...[
+                                    text_widget(
+                                      "Winner:",
+                                      fontSize: 14.7.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 1.3.w),
+                                    Expanded(
+                                      child: text_widget(
+                                        eventModel
+                                                .eventWinner
+                                                ?.roadName
+                                                .capitalizeFirst! ??
+                                            "No One Join The Game",
+                                        fontSize: 14.7.sp,
+                                        maxline: 1,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.60,
+                                        ),
+                                      ),
+                                    ),
+                                  ] else if (eventModel.status == 3) ...[
+                                    text_widget(
+                                      "Cancelled: ",
+                                      fontSize: 14.7.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 1.3.w),
+                                    Expanded(
+                                      child: text_widget(
+                                        eventModel.cancelReason,
+                                        fontSize: 14.7.sp,
+                                        maxline: 3,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.60,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  if (eventModel.status == 2 &&
+                                      eventModel.eventWinner?.rank != null &&
+                                      eventModel.eventWinner?.rank != "") ...[
+                                    Spacer(),
+                                    text_widget(
+                                      "Rank:",
+                                      fontSize: 14.7.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 1.3.w),
+                                    text_widget(
                                       eventModel
                                               .eventWinner
-                                              ?.roadName
-                                              .capitalizeFirst! ??
-                                          "No One Join The Game",
+                                              ?.rank
+                                              .capitalize! ??
+                                          "",
                                       fontSize: 14.7.sp,
-                                      maxline: 1,
                                       fontWeight: FontWeight.w400,
                                       color: Colors.white.withValues(
                                         alpha: 0.60,
                                       ),
                                     ),
-                                  ),
-                                ] else if (eventModel.status == 3) ...[
-                                  text_widget(
-                                    "Cancelled: ",
-                                    fontSize: 14.7.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(width: 1.3.w),
-                                  Expanded(
-                                    child: text_widget(
-                                      eventModel.cancelReason,
-                                      fontSize: 14.7.sp,
-                                      maxline: 3,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white.withValues(
-                                        alpha: 0.60,
+                                  ],
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 0.8.h),
+                            Padding(
+                              padding: EdgeInsets.only(left: 1.w, right: 1.w),
+                              child: SizedBox(
+                                height: 9.h,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: List.generate(5, (index) {
+                                    if (index <
+                                        eventModel.eventWinner!.cards.length) {
+                                      final cardKey =
+                                          eventModel.eventWinner!.cards[index];
+                                      return Expanded(
+                                        child: Image.asset(pokerCards[cardKey]),
+                                      );
+                                    }
+                                    return Expanded(
+                                      child: Image.asset(
+                                        pokerCards[0],
+                                        color: Colors.grey,
                                       ),
-                                    ),
-                                  ),
-                                ],
-                                if (eventModel.status == 2 &&
-                                    eventModel.eventWinner?.rank != null &&
-                                    eventModel.eventWinner?.rank != "") ...[
-                                  Spacer(),
-                                  text_widget(
-                                    "Rank:",
-                                    fontSize: 14.7.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(width: 1.3.w),
-                                  text_widget(
-                                    eventModel.eventWinner?.rank.capitalize! ??
-                                        "",
-                                    fontSize: 14.7.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white.withValues(alpha: 0.60),
-                                  ),
-                                ],
-                              ],
+                                    );
+                                  }),
+                                ),
+                              ),
                             ),
                           ],
                         ],
                       ),
                       trailing: widget.type == 1 || widget.type == 4
                           ? SizedBox(
-                              width: 17.5.w,
+                              width: 20.w,
                               child: Row(
                                 children: [
                                   onPress(
@@ -318,17 +359,19 @@ class _SchedulePokerState extends State<PokerRunList> {
                                   Icon(
                                     RemixIcons.arrow_right_up_line,
                                     size: 18.sp,
-                                    color: Colors.white.withValues(alpha: 0.60),
+                                    color: MyColors.primary,
                                   ),
+                                  Spacer(),
                                 ],
                               ),
                             )
                           : widget.type == 3
-                          ? onPress(
+                          ? SizedBox(
+                              width: 13.w,
                               child: Icon(
                                 Icons.copy_all_outlined,
                                 size: 18.sp,
-                                color: Colors.white.withValues(alpha: 0.60),
+                                color: MyColors.primary,
                               ),
                             )
                           : null,

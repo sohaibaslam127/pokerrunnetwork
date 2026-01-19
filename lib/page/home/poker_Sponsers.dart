@@ -34,6 +34,22 @@ class _PokerSponsersState extends State<PokerSponsers> {
   TextEditingController fifthStopWeb = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    firstStop.text = widget.eventModel.stops[1].sponserName;
+    secondStop.text = widget.eventModel.stops[2].sponserName;
+    thirdStop.text = widget.eventModel.stops[3].sponserName;
+    fourthStop.text = widget.eventModel.stops[4].sponserName;
+    fifthStop.text = widget.eventModel.stops[5].sponserName;
+
+    firstStopWeb.text = widget.eventModel.stops[1].sponserLink;
+    secondStopWeb.text = widget.eventModel.stops[2].sponserLink;
+    thirdStopWeb.text = widget.eventModel.stops[3].sponserLink;
+    fourthStopWeb.text = widget.eventModel.stops[4].sponserLink;
+    fifthStopWeb.text = widget.eventModel.stops[5].sponserLink;
+  }
+
+  @override
   void dispose() {
     super.dispose();
     firstStop.dispose();

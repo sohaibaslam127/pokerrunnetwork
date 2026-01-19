@@ -16,7 +16,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 class CreatePoker extends StatefulWidget {
   EventModel eventModel;
   CreatePoker(this.eventModel, {super.key});
-
   @override
   State<CreatePoker> createState() => _CreatePokerState();
 }
@@ -31,16 +30,30 @@ class _CreatePokerState extends State<CreatePoker> {
   TextEditingController coRiderCostController = TextEditingController();
   TextEditingController additionalCostController = TextEditingController();
 
+  void setCurrencyValue(TextEditingController controller, double? value) {
+    if (value == null) {
+      controller.text = '';
+      return;
+    }
+    controller.text = value.toStringAsFixed(2);
+  }
+
   @override
   void initState() {
     super.initState();
     if (widget.eventModel.pokerName.trim().isNotEmpty) {
       nameController.text = widget.eventModel.pokerName;
       descriptionController.text = widget.eventModel.description;
-      pokerRunCostController.text = widget.eventModel.joinFee.toString();
-      coRiderCostController.text = widget.eventModel.coRiderFee.toString();
+
+      pokerRunCostController.text = widget.eventModel.joinFee.toStringAsFixed(
+        2,
+      );
+      coRiderCostController.text = widget.eventModel.coRiderFee.toStringAsFixed(
+        2,
+      );
       additionalCostController.text = widget.eventModel.changeCardFee
-          .toString();
+          .toStringAsFixed(2);
+
       selectedDate = widget.eventModel.eventDate;
       selectedTime = TimeOfDay.fromDateTime(widget.eventModel.eventDate);
     }

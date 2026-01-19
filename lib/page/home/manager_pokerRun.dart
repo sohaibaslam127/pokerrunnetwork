@@ -7,7 +7,6 @@ import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/page/home/partner_list.dart';
 import 'package:pokerrunnetwork/page/home/co_manager.dart';
 import 'package:pokerrunnetwork/page/home/create_poker.dart';
-import 'package:pokerrunnetwork/page/home/progress_poker.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
@@ -202,11 +201,14 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
                                 },
                                 () {
                                   Get.back();
-                                  widget.eventModel.id = "";
-                                  widget.eventModel.status = 1;
-                                  widget.eventModel.eventWinner = null;
-                                  widget.eventModel.userIds = [];
-                                  Get.to(CreatePoker(widget.eventModel));
+                                  EventModel copyEvent = widget.eventModel
+                                      .copyWith(
+                                        id: "",
+                                        status: 1,
+                                        eventWinner: null,
+                                        userIds: [],
+                                      );
+                                  Get.to(CreatePoker(copyEvent));
                                 },
                               );
                             },

@@ -112,4 +112,80 @@ class EventModel {
     jsonMap['createdAt'] = Timestamp.fromDate(createdAt);
     return jsonMap;
   }
+
+  EventModel copyWith({
+    String? id,
+    int? status,
+    String? ownerId,
+    List<String>? coManagers,
+    List<String>? coManagerNames,
+    String? ownerName,
+    String? ownerImage,
+    String? taxIdentificationNumber,
+    DateTime? eventDate,
+    double? changeCardFee,
+    double? joinFee,
+    String? countryCode,
+    Country? currency,
+    double? coRiderFee,
+    String? pokerName,
+    String? description,
+    String? cancelReason,
+    bool? isAdditionalCard,
+    bool? coRider,
+    DateTime? createdAt,
+    List<StopsModel>? stops,
+    List<String>? userIds,
+    GamePlayerModel? eventWinner,
+  }) {
+    EventModel model = EventModel();
+
+    model.id = id ?? this.id;
+    model.status = status ?? this.status;
+    model.ownerId = ownerId ?? this.ownerId;
+    model.ownerName = ownerName ?? this.ownerName;
+    model.ownerImage = ownerImage ?? this.ownerImage;
+    model.taxIdentificationNumber =
+        taxIdentificationNumber ?? this.taxIdentificationNumber;
+
+    model.countryCode = countryCode ?? this.countryCode;
+    model.currency = currency ?? this.currency;
+
+    model.eventDate = eventDate != null
+        ? DateTime.fromMillisecondsSinceEpoch(eventDate.millisecondsSinceEpoch)
+        : DateTime.fromMillisecondsSinceEpoch(
+            this.eventDate.millisecondsSinceEpoch,
+          );
+
+    model.createdAt = DateTime.now();
+
+    model.changeCardFee = changeCardFee ?? this.changeCardFee;
+    model.joinFee = joinFee ?? this.joinFee;
+    model.coRiderFee = coRiderFee ?? this.coRiderFee;
+
+    model.coRider = coRider ?? this.coRider;
+    model.isAdditionalCard = isAdditionalCard ?? this.isAdditionalCard;
+
+    model.pokerName = pokerName ?? this.pokerName;
+    model.description = description ?? this.description;
+    model.cancelReason = cancelReason ?? this.cancelReason;
+
+    model.coManagers = List<String>.from(coManagers ?? this.coManagers);
+    model.coManagerNames = List<String>.from(
+      coManagerNames ?? this.coManagerNames,
+    );
+    model.userIds = List<String>.from(userIds ?? this.userIds);
+
+    model.stops = (stops ?? this.stops)
+        .map((e) => StopsModel.toModel(e.toSaveJSON()))
+        .toList();
+
+    model.eventWinner = eventWinner != null
+        ? GamePlayerModel.toModel(eventWinner.toSaveJSON())
+        : this.eventWinner != null
+        ? GamePlayerModel.toModel(this.eventWinner!.toSaveJSON())
+        : null;
+
+    return model;
+  }
 }

@@ -250,6 +250,29 @@ class _PartnerListState extends State<PartnerList> {
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 1.w, right: 1.w),
+                          child: SizedBox(
+                            height: 9.h,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(5, (index) {
+                                if (index < game.cards.length) {
+                                  final cardKey = game.cards[index];
+                                  return Expanded(
+                                    child: Image.asset(pokerCards[cardKey]),
+                                  );
+                                }
+                                return Expanded(
+                                  child: Image.asset(
+                                    pokerCards[0],
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              }),
+                            ),
+                          ),
+                        ),
                         if (game.mycoRider ||
                             game.changeCard ||
                             game.iamCoRider) ...[
@@ -258,6 +281,7 @@ class _PartnerListState extends State<PartnerList> {
                               left: 18.0,
                               right: 18.0,
                               bottom: 8.0,
+                              top: 8.0,
                             ),
                             child: Obx(
                               () => isPaid.value == null
@@ -271,100 +295,111 @@ class _PartnerListState extends State<PartnerList> {
                                         ),
                                       ),
                                     )
-                                  : RichText(
-                                      text: TextSpan(
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 14.7.sp,
-                                          fontWeight: FontWeight.w400,
+                                  : Row(
+                                      children: [
+                                        RichText(
+                                          textAlign: TextAlign.start,
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 14.7.sp,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            children: [
+                                              if (game.changeCard &&
+                                                  game.iamCoRider) ...[
+                                                TextSpan(
+                                                  text: "Co-rider with ",
+                                                ),
+                                                TextSpan(
+                                                  text: game
+                                                      .mycoRiderName
+                                                      .capitalizeFirst,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      " and change card option.",
+                                                ),
+                                              ] else if (game.iamCoRider) ...[
+                                                TextSpan(
+                                                  text: "I am a co-rider of ",
+                                                ),
+                                                TextSpan(
+                                                  text: game
+                                                      .mycoRiderName
+                                                      .capitalizeFirst,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ] else if (game.mycoRider &&
+                                                  game.changeCard) ...[
+                                                const TextSpan(
+                                                  text:
+                                                      "Riding with Co-rider: ",
+                                                ),
+                                                TextSpan(
+                                                  text: game
+                                                      .mycoRiderName
+                                                      .capitalizeFirst,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                const TextSpan(
+                                                  text:
+                                                      " with change card option.",
+                                                ),
+                                              ] else if (game.mycoRider) ...[
+                                                const TextSpan(
+                                                  text:
+                                                      "Riding with Co-rider: ",
+                                                ),
+                                                TextSpan(
+                                                  text: game
+                                                      .mycoRiderName
+                                                      .capitalizeFirst,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                const TextSpan(text: "."),
+                                              ] else if (game.changeCard) ...[
+                                                const TextSpan(
+                                                  text:
+                                                      "Change card option included.",
+                                                ),
+                                              ],
+                                              if (game.iamCoRider &&
+                                                  isPaid.value == false) ...[
+                                                const TextSpan(
+                                                  text:
+                                                      "\nThe primary rider has not been",
+                                                ),
+                                                const TextSpan(
+                                                  text:
+                                                      " marked as paid/authorized by the organizer. ",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                const TextSpan(
+                                                  text:
+                                                      "Have the primary rider check in with the organizer at the starting location.",
+                                                ),
+                                              ],
+                                            ],
+                                          ),
                                         ),
-                                        children: [
-                                          if (game.changeCard &&
-                                              game.iamCoRider) ...[
-                                            TextSpan(text: "Co-rider with "),
-                                            TextSpan(
-                                              text: game
-                                                  .mycoRiderName
-                                                  .capitalizeFirst,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: " and change card option.",
-                                            ),
-                                          ] else if (game.iamCoRider) ...[
-                                            TextSpan(
-                                              text: "I am a co-rider of ",
-                                            ),
-                                            TextSpan(
-                                              text: game
-                                                  .mycoRiderName
-                                                  .capitalizeFirst,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ] else if (game.mycoRider &&
-                                              game.changeCard) ...[
-                                            const TextSpan(
-                                              text: "Riding with Co-rider: ",
-                                            ),
-                                            TextSpan(
-                                              text: game
-                                                  .mycoRiderName
-                                                  .capitalizeFirst,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            const TextSpan(
-                                              text: " with change card option.",
-                                            ),
-                                          ] else if (game.mycoRider) ...[
-                                            const TextSpan(
-                                              text: "Riding with Co-rider: ",
-                                            ),
-                                            TextSpan(
-                                              text: game
-                                                  .mycoRiderName
-                                                  .capitalizeFirst,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            const TextSpan(text: "."),
-                                          ] else if (game.changeCard) ...[
-                                            const TextSpan(
-                                              text:
-                                                  "Change card option included.",
-                                            ),
-                                          ],
-                                          if (game.iamCoRider &&
-                                              isPaid.value == false) ...[
-                                            const TextSpan(
-                                              text:
-                                                  "\nThe primary rider has not been",
-                                            ),
-                                            const TextSpan(
-                                              text:
-                                                  " marked as paid/authorized by the organizer. ",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            const TextSpan(
-                                              text:
-                                                  "Have the primary rider check in with the organizer at the starting location.",
-                                            ),
-                                          ],
-                                        ],
-                                      ),
+                                      ],
                                     ),
                             ),
                           ),

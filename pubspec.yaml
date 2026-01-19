@@ -65,6 +65,11 @@ flutter:
     - assets/background/
     - assets/buttons/menubuttons/
     - assets/buttons/popupbuttons/
+    - assets/images/
+    - assets/images/diamond/
+    - assets/images/club/
+    - assets/images/heart/
+    - assets/images/spades/
   fonts:
     - family: Calibri
       fonts:
