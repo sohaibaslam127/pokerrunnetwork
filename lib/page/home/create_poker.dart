@@ -2,6 +2,7 @@ import 'package:custom_check_box/custom_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide SnackPosition;
+import 'package:intl/intl.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
@@ -153,7 +154,9 @@ class _CreatePokerState extends State<CreatePoker> {
                                   enable: false,
                                   controller: TextEditingController(
                                     text: selectedDate != null
-                                        ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"
+                                        ? DateFormat(
+                                            "EEE, d MMMM, yyyy",
+                                          ).format(selectedDate!)
                                         : '',
                                   ),
                                   fillColor: Colors.white,
