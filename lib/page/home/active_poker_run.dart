@@ -134,96 +134,115 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(13.0),
+                              padding: EdgeInsets.symmetric(vertical: 1.h),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    children: [
-                                      text_widget(
-                                        event.pokerName,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
-                                      Spacer(),
-                                      text_widget(
-                                        DateFormat(
-                                          'dd MMM, hh:mm a',
-                                        ).format(event.eventDate),
-                                        fontSize: 12.5.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.6,
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 3.w,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        text_widget(
+                                          event.pokerName,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
                                         ),
-                                      ),
-                                    ],
+                                        Spacer(),
+                                        text_widget(
+                                          DateFormat(
+                                            'dd MMM, hh:mm a',
+                                          ).format(event.eventDate),
+                                          fontSize: 12.5.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   SizedBox(height: 1.h),
-                                  Row(
-                                    children: [
-                                      text_widget(
-                                        "Poker run",
-                                        fontSize: 15.5.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.6,
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 3.w,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        text_widget(
+                                          "Poker run",
+                                          fontSize: 15.5.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.6,
+                                          ),
                                         ),
-                                      ),
-                                      Spacer(),
-                                      text_widget(
-                                        "\$${event.joinFee}",
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      ),
-                                    ],
+                                        Spacer(),
+                                        text_widget(
+                                          "\$${event.joinFee}",
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   if (event.coRider != null && event.coRider!)
                                     SizedBox(height: 0.4.h),
-
-                                  Row(
-                                    children: [
-                                      text_widget(
-                                        "Co-Rider",
-                                        fontSize: 15.5.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.6,
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 3.w,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        text_widget(
+                                          "Co-Rider",
+                                          fontSize: 15.5.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.6,
+                                          ),
                                         ),
-                                      ),
-                                      Spacer(),
-                                      text_widget(
-                                        "\$${event.coRiderFee}",
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      ),
-                                    ],
+                                        Spacer(),
+                                        text_widget(
+                                          "\$${event.coRiderFee}",
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   if (event.isAdditionalCard != null &&
                                       event.isAdditionalCard!)
                                     SizedBox(height: 0.4.h),
-                                  Row(
-                                    children: [
-                                      text_widget(
-                                        "Extra card",
-                                        fontSize: 15.5.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.6,
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 3.w,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        text_widget(
+                                          "Extra card",
+                                          fontSize: 15.5.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.6,
+                                          ),
                                         ),
-                                      ),
-                                      Spacer(),
-                                      text_widget(
-                                        "\$${event.changeCardFee}",
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      ),
-                                    ],
+                                        Spacer(),
+                                        text_widget(
+                                          "\$${event.changeCardFee}",
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 2.h),
+                                  SizedBox(height: .5.h),
                                   if (event.userIds.contains(currentUser.id))
                                     FutureBuilder(
                                       future: FirestoreServices.I.getGamePlayer(
@@ -252,173 +271,226 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                   CrossAxisAlignment.start,
                                               spacing: 0,
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceAround,
-                                                  children: [
-                                                    Text(
-                                                      "Status: ${event.status == 0
-                                                          ? 'Disable'
-                                                          : event.status == 1
-                                                          ? 'Scheduled'
-                                                          : event.status == 2
-                                                          ? 'Completed'
-                                                          : event.status == 3
-                                                          ? 'Cancel'
-                                                          : event.status == 4
-                                                          ? 'Reshedule'
-                                                          : ''}",
-                                                      style: GoogleFonts.abel(
-                                                        color: event.status == 0
-                                                            ? Colors
-                                                                  .red
-                                                                  .shade200
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 3.w,
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Text(
+                                                        "Status: ${event.status == 0
+                                                            ? 'Disable'
                                                             : event.status == 1
-                                                            ? Colors
-                                                                  .green
-                                                                  .shade200
+                                                            ? 'Scheduled'
                                                             : event.status == 2
-                                                            ? Colors
-                                                                  .green
-                                                                  .shade200
+                                                            ? 'Completed'
                                                             : event.status == 3
-                                                            ? Colors
-                                                                  .red
-                                                                  .shade200
+                                                            ? 'Cancel'
                                                             : event.status == 4
-                                                            ? Colors
-                                                                  .red
-                                                                  .shade200
-                                                            : Colors
-                                                                  .green
-                                                                  .shade200,
-                                                        fontSize: 14.5.sp,
-                                                        letterSpacing: 2,
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                                            ? 'Reshedule'
+                                                            : ''}",
+                                                        style: GoogleFonts.abel(
+                                                          color:
+                                                              event.status == 0
+                                                              ? Colors
+                                                                    .red
+                                                                    .shade200
+                                                              : event.status ==
+                                                                    1
+                                                              ? Colors
+                                                                    .green
+                                                                    .shade200
+                                                              : event.status ==
+                                                                    2
+                                                              ? Colors
+                                                                    .green
+                                                                    .shade200
+                                                              : event.status ==
+                                                                    3
+                                                              ? Colors
+                                                                    .red
+                                                                    .shade200
+                                                              : event.status ==
+                                                                    4
+                                                              ? Colors
+                                                                    .red
+                                                                    .shade200
+                                                              : Colors
+                                                                    .green
+                                                                    .shade200,
+                                                          fontSize: 14.5.sp,
+                                                          letterSpacing: 2,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Spacer(),
-                                                    InkWell(
-                                                      onTap: () async {
-                                                        Get.to(
-                                                          ParticipantList(
-                                                            event,
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: SizedBox(
-                                                        height: 3.5.h,
-                                                        child: Center(
-                                                          child: Text(
-                                                            ' All Players Ranking ',
-                                                            style: GoogleFonts.abel(
-                                                              color: Colors
-                                                                  .transparent,
-                                                              fontSize: 14.5.sp,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
-                                                              decorationColor:
-                                                                  Colors.white,
-                                                              decorationStyle:
-                                                                  TextDecorationStyle
-                                                                      .solid,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              shadows: [
-                                                                Shadow(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  offset:
-                                                                      Offset(
-                                                                        0,
-                                                                        -3,
-                                                                      ),
-                                                                ),
-                                                              ],
+                                                      Spacer(),
+                                                      InkWell(
+                                                        onTap: () async {
+                                                          Get.to(
+                                                            ParticipantList(
+                                                              event,
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: SizedBox(
+                                                          height: 3.5.h,
+                                                          child: Center(
+                                                            child: Text(
+                                                              ' All Players Ranking ',
+                                                              style: GoogleFonts.abel(
+                                                                color: Colors
+                                                                    .transparent,
+                                                                fontSize:
+                                                                    14.5.sp,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .underline,
+                                                                decorationColor:
+                                                                    Colors
+                                                                        .white,
+                                                                decorationStyle:
+                                                                    TextDecorationStyle
+                                                                        .solid,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                shadows: [
+                                                                  Shadow(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    offset:
+                                                                        Offset(
+                                                                          0,
+                                                                          -3,
+                                                                        ),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                                 if (game.cards.isNotEmpty) ...[
-                                                  SizedBox(height: 1.5.h),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: List.generate(5, (
-                                                      index,
-                                                    ) {
-                                                      if (index <
-                                                          game.cards.length) {
-                                                        final cardKey =
-                                                            game.cards[index];
-                                                        return Image.asset(
-                                                          pokerCards[cardKey],
-                                                          height: 88,
-                                                        );
-                                                      }
-                                                      return Container(
-                                                        height: 88,
-                                                        width: 60,
-                                                        decoration: BoxDecoration(
-                                                          color: Colors
-                                                              .grey
-                                                              .shade600,
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                8,
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                      left: 1.w,
+                                                      right: 1.w,
+                                                      top: 1.h,
+                                                    ),
+                                                    child: SizedBox(
+                                                      height: 9.h,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: List.generate(5, (
+                                                          index,
+                                                        ) {
+                                                          if (index <
+                                                              game
+                                                                  .cards
+                                                                  .length) {
+                                                            final cardKey = game
+                                                                .cards[index];
+                                                            return Expanded(
+                                                              child: Image.asset(
+                                                                pokerCards[cardKey],
                                                               ),
-                                                          border: Border.all(
-                                                            color: Colors
-                                                                .grey
-                                                                .shade300,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }),
+                                                            );
+                                                          }
+                                                          return Expanded(
+                                                            child: Image.asset(
+                                                              pokerCards[0],
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                          );
+                                                        }),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
                                                 SizedBox(height: 1.5.h),
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: onPress(
-                                                        ontap: () async {
-                                                          EasyLoading.show();
-                                                          currentGame =
-                                                              await FirestoreServices
-                                                                  .I
-                                                                  .getGamebyEventId(
-                                                                    event.id,
-                                                                    currentUser
-                                                                        .id,
-                                                                  );
-                                                          EasyLoading.dismiss();
-                                                          Get.off(
-                                                            SchedulePokerN(),
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 3.w,
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: onPress(
+                                                          ontap: () async {
+                                                            EasyLoading.show();
+                                                            currentGame =
+                                                                await FirestoreServices
+                                                                    .I
+                                                                    .getGamebyEventId(
+                                                                      event.id,
+                                                                      currentUser
+                                                                          .id,
+                                                                    );
+                                                            EasyLoading.dismiss();
+                                                            Get.off(
+                                                              SchedulePokerN(),
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            height: 4.h,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                  color: Color(
+                                                                    0xff5CAF5F,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        10,
+                                                                      ),
+                                                                ),
+                                                            child: Center(
+                                                              child: text_widget(
+                                                                "Mark as a current poker run",
+                                                                fontSize: 14.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 2.w),
+                                                      InkWell(
+                                                        onTap: () async {
+                                                          await Get.to(
+                                                            () => PokerDetailsView(
+                                                              event,
+                                                              GamePlayerModel(),
+                                                            ),
                                                           );
                                                         },
                                                         child: Container(
                                                           height: 4.h,
+                                                          width: 25.w,
                                                           decoration: BoxDecoration(
-                                                            color: Color(
-                                                              0xff5CAF5F,
-                                                            ),
                                                             borderRadius:
                                                                 BorderRadius.circular(
                                                                   10,
                                                                 ),
+                                                            color: Colors
+                                                                .redAccent,
                                                           ),
                                                           child: Center(
                                                             child: text_widget(
-                                                              "Mark as a current poker run",
+                                                              "Leave",
                                                               fontSize: 14.sp,
                                                               fontWeight:
                                                                   FontWeight
@@ -429,40 +501,8 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                    SizedBox(width: 2.w),
-                                                    InkWell(
-                                                      onTap: () async {
-                                                        await Get.to(
-                                                          () => PokerDetailsView(
-                                                            event,
-                                                            GamePlayerModel(),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        height: 4.h,
-                                                        width: 25.w,
-                                                        decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                10,
-                                                              ),
-                                                          color:
-                                                              Colors.redAccent,
-                                                        ),
-                                                        child: Center(
-                                                          child: text_widget(
-                                                            "Leave",
-                                                            fontSize: 14.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ],
                                             );

@@ -85,34 +85,45 @@ class _GameViewState extends State<GameView> {
             ),
             actions: [
               onPress(
-                ontap: () {
-                  showPopup(
-                    context,
-                    "If you exit this game, you will lose all progress and must re-register to play this event?",
-                    PopupActionsButtons.cancel,
-                    PopupActionsButtons.exit,
-                    () {
-                      Get.back();
-                    },
-                    () async {
-                      Get.back();
-                      EasyLoading.show(status: "Leaving...");
-                      currentGame.latestEvent.userIds.remove(currentUser.id);
-                      await FirestoreServices.I.updateEvent(
-                        context,
-                        currentGame.latestEvent,
-                        false,
-                        false,
-                      );
-                      EasyLoading.dismiss();
-                      Get.offAll(HomePage());
-                    },
-                  );
+                ontap: () async {
+                  if (stopNumber == 6) {
+                    await showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return const PokerResultDialog();
+                      },
+                    );
+                    // Get.offAll(() => const HomePage());
+                  } else {
+                    showPopup(
+                      context,
+                      "If you exit this game, you will lose all progress and must re-register to play this event?",
+                      PopupActionsButtons.cancel,
+                      PopupActionsButtons.exit,
+                      () {
+                        Get.back();
+                      },
+                      () async {
+                        Get.back();
+                        EasyLoading.show(status: "Leaving...");
+                        currentGame.latestEvent.userIds.remove(currentUser.id);
+                        await FirestoreServices.I.updateEvent(
+                          context,
+                          currentGame.latestEvent,
+                          false,
+                          false,
+                        );
+                        EasyLoading.dismiss();
+                        Get.offAll(HomePage());
+                      },
+                    );
+                  }
                 },
                 child: Padding(
                   padding: EdgeInsets.only(right: 2.w),
                   child: text_widget(
-                    "EXIT  ",
+                    stopNumber == 6 ? "LEAVE  " : "EXIT  ",
                     color: Colors.redAccent,
                     maxline: 1,
                     textAlign: TextAlign.center,
@@ -299,15 +310,17 @@ class _GameViewState extends State<GameView> {
                               randomCard();
                               await Get.to(StopView());
                               setState(() {});
+                              if (currentGame.game.currentStop == 6) {
+                                HandResult myHand = Analysis().converter(
+                                  List<int>.from(currentGame.game.cards),
+                                );
+                                currentGame.game.rank = myHand.rank;
+                                currentGame.game.rankValue = myHand.score;
+                                FirestoreServices.I.updateGamePlayer(
+                                  currentGame.game,
+                                );
+                              }
                             } else {
-                              HandResult myHand = Analysis().converter(
-                                List<int>.from(currentGame.game.cards),
-                              );
-                              currentGame.game.rank = myHand.rank;
-                              currentGame.game.rankValue = myHand.score;
-                              FirestoreServices.I.updateGamePlayer(
-                                currentGame.game,
-                              );
                               await showDialog(
                                 context: context,
                                 barrierDismissible: true,
@@ -315,8 +328,7 @@ class _GameViewState extends State<GameView> {
                                   return const PokerResultDialog();
                                 },
                               );
-                              currentGame.game = GamePlayerModel();
-                              Get.offAll(HomePage());
+                              Get.offAll(() => const HomePage());
                             }
                           } else {
                             toast(

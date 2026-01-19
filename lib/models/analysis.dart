@@ -83,9 +83,10 @@ class Analysis {
   }
 
   HandResult converter(List<int> listOfCard) {
-    if (listOfCard.length != 5 || listOfCard.any((c) => c < 0 || c > 51)) {
+    if (listOfCard.length < 5 || listOfCard.any((c) => c < 0 || c > 51)) {
       return HandResult(0, 'invalid');
     }
+    listOfCard = listOfCard.sublist(0, 5);
 
     final faces = <int>[];
     final suits = <int>[];

@@ -106,76 +106,88 @@ class _ParticipantListState extends State<ParticipantList> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(13.0),
+                          padding: EdgeInsets.symmetric(vertical: 1.h),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  text_widget(
-                                    '${index + 1}. ${game.roadName.capitalizeFirst}',
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                  Spacer(),
-                                  if (game.rank != "")
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 3.w,
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 3.w),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: text_widget(
+                                        '${index + 1}. ${game.roadName.capitalizeFirst}',
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
                                       ),
-                                      height: 3.4.h,
-                                      decoration: BoxDecoration(
-                                        color: Colors.green,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Center(
-                                        child: text_widget(
-                                          "RANK: ${game.rank.capitalize!}",
-                                          fontSize: 14.4.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                    ),
+                                    if (game.rank != "")
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 2.w,
+                                        ),
+                                        height: 3.4.h,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: text_widget(
+                                            game.rank.capitalize!,
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
-                              SizedBox(height: 1.h),
-                              Row(
-                                children: [
-                                  text_widget(
-                                    game.userName,
-                                    fontSize: 15.5.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white.withValues(alpha: 0.6),
-                                  ),
-                                  Spacer(),
-                                ],
-                              ),
-                              SizedBox(height: 1.h),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: List.generate(5, (index) {
-                                  if (index < game.cards.length) {
-                                    final cardKey = game.cards[index];
-                                    return Image.asset(
-                                      pokerCards[cardKey],
-                                      height: 88,
-                                    );
-                                  }
-                                  return Container(
-                                    height: 88,
-                                    width: 60,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade600,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: Colors.grey.shade300,
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 3.w),
+                                child: Row(
+                                  children: [
+                                    text_widget(
+                                      game.userName,
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white.withValues(
+                                        alpha: 0.6,
                                       ),
                                     ),
-                                  );
-                                }),
+                                    Spacer(),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 2.h),
+                              Padding(
+                                padding: EdgeInsets.only(left: 1.w, right: 1.w),
+                                child: SizedBox(
+                                  height: 9.h,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: List.generate(5, (index) {
+                                      if (index < game.cards.length) {
+                                        final cardKey = game.cards[index];
+                                        return Expanded(
+                                          child: Image.asset(
+                                            pokerCards[cardKey],
+                                          ),
+                                        );
+                                      }
+                                      return Expanded(
+                                        child: Image.asset(
+                                          pokerCards[0],
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                ),
                               ),
                             ],
                           ),

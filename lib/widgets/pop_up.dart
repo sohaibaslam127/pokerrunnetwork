@@ -101,7 +101,7 @@ class PokerResultDialog extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.only(top: 60),
-            padding: const EdgeInsets.fromLTRB(20, 80, 20, 10),
+            padding: const EdgeInsets.fromLTRB(0, 80, 0, 10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(30),
@@ -109,24 +109,44 @@ class PokerResultDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(
-                    currentGame.game.cards.length > 5
-                        ? 5
-                        : currentGame.game.cards.length,
-                    (index) => Image.asset(
-                      pokerCards[currentGame.game.cards[index]],
-                      height: 88,
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: List.generate(
+                //     currentGame.game.cards.length > 5
+                //         ? 5
+                //         : currentGame.game.cards.length,
+                //     (index) => Image.asset(
+                //       pokerCards[currentGame.game.cards[index]],
+                //       height: 88,
+                //     ),
+                //   ),
+                // ),
+                Padding(
+                  padding: EdgeInsets.only(left: 1.w, right: 1.w),
+                  child: SizedBox(
+                    height: 9.5.h,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(5, (index) {
+                        if (index < currentGame.game.cards.length) {
+                          final cardKey = currentGame.game.cards[index];
+                          return Expanded(
+                            child: Image.asset(pokerCards[cardKey]),
+                          );
+                        }
+                        return Expanded(
+                          child: Image.asset(pokerCards[0], color: Colors.grey),
+                        );
+                      }),
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Winners Will Be Continue After The Poker Run.\nSee Result In My Poker Run List',
+                  'Winners will be announced after everyone\nhas completed the Poker Run!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     color: Colors.grey,
                     height: 1.5,
                   ),
@@ -135,10 +155,10 @@ class PokerResultDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Hand: ',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.black54,
                       ),
@@ -157,6 +177,7 @@ class PokerResultDialog extends StatelessWidget {
                         currentGame.game.rank.capitalize!,
                         style: TextStyle(
                           color: Colors.white,
+                          fontSize: 14.4.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

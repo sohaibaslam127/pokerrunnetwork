@@ -561,7 +561,6 @@ class FirestoreServices {
         if (gamePlayerModel.currentStop >= 6) continue;
         gameData.latestEvent = poker;
         gameData.game = gamePlayerModel;
-//        gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
         return gameData;
       }
     } catch (e) {
@@ -582,7 +581,7 @@ class FirestoreServices {
         if (gamePlayerModel.currentStop < 6) {
           gameData.latestEvent = EventModel.toModel(event.data()!);
           gameData.game = gamePlayerModel;
-//          gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
+          //          gameData.gameStage = gamePlayerModel.currentStop == 0 ? 0 : 1;
           return gameData;
         }
       }

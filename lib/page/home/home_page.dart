@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/models/gameData.dart';
+import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
 import 'package:pokerrunnetwork/page/home/completed_pokr.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
@@ -29,9 +31,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initializeGameData() async {
-    final gameData = await FirestoreServices.I.getCurrentGame();
+    currentGame = GameData();
+    currentGame = await FirestoreServices.I.getCurrentGame();
     setState(() async {
-      currentGame = gameData;
       if (currentGame.game.currentStop > 0) {
         await Get.off(GameView());
       }
