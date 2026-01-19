@@ -53,6 +53,8 @@
 	<string>Can I use the mic please?</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need Camera Access for the Profile Pic</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Pokerrun Network uses your location to verify your position at a selected Starting, Ending and Stops locations during poker event creation.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
