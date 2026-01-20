@@ -195,32 +195,32 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                       ),
                     ],
 
-                    if (isJoin &&
-                        !widget.iamCoRider.roadName.isNotEmpty &&
-                        (widget.event.coRider ?? false)) ...[
-                      SizedBox(height: 2.h),
-                      _buildCheckboxOption(
-                        "Do you want to add a co-rider for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
-                        isCorider,
-                        (val) => setState(() => isCorider = val),
-                      ),
-                      if (isCorider) ...[
-                        SizedBox(height: 1.h),
-                        textFieldWithPrefixSuffuxIconAndHintText(
-                          "Enter Co-rider Road Name",
-                          radius: 12,
-                          textInputAction: TextInputAction.search,
-                          textInputType: TextInputType.name,
-                          controller: friendName,
-                        ),
-                        SizedBox(height: 2.h),
-                        _buildCheckboxOption(
-                          "Option for co-rider to change cards for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
-                          isExtraCardCorider,
-                          (val) => setState(() => isExtraCardCorider = val),
-                        ),
-                      ],
-                    ],
+                    // if (isJoin &&
+                    //     !widget.iamCoRider.roadName.isNotEmpty &&
+                    //     (widget.event.coRider ?? false)) ...[
+                    //   SizedBox(height: 2.h),
+                    //   _buildCheckboxOption(
+                    //     "Do you want to add a co-rider for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
+                    //     isCorider,
+                    //     (val) => setState(() => isCorider = val),
+                    //   ),
+                    //   if (isCorider) ...[
+                    //     SizedBox(height: 1.h),
+                    //     textFieldWithPrefixSuffuxIconAndHintText(
+                    //       "Enter Co-rider Road Name",
+                    //       radius: 12,
+                    //       textInputAction: TextInputAction.search,
+                    //       textInputType: TextInputType.name,
+                    //       controller: friendName,
+                    //     ),
+                    //     SizedBox(height: 2.h),
+                    //     _buildCheckboxOption(
+                    //       "Option for co-rider to change cards for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
+                    //       isExtraCardCorider,
+                    //       (val) => setState(() => isExtraCardCorider = val),
+                    //     ),
+                    //   ],
+                    // ],
                     if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
                       SizedBox(height: 2.h),
                       _priceRow("Rider", widget.event.joinFee),
@@ -236,6 +236,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                           "Co-rider Extra Cards",
                           widget.event.changeCardFee,
                         ),
+                      _priceRow("Service Fee", serviceFee),
                       SizedBox(height: 1.3.h),
                       Divider(thickness: 0.2, color: Colors.white54),
                       SizedBox(height: 1.3.h),
@@ -257,7 +258,6 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                         ],
                       ),
                     ],
-                    SizedBox(height: 1.h),
                     text_widget(
                       _getFooterText(),
                       fontSize: 15.sp,
@@ -341,9 +341,10 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
 
   String _getFooterText() {
     if (widget.iamCoRider.roadName.isEmpty) {
-      String msg = isJoin
-          ? "The registration fee for this event is \$${serviceFee.toStringAsFixed(2)} per participant.\n"
-          : "";
+      String msg = "";
+      // msg += isJoin
+      //     ? "The registration fee for this event is \$${serviceFee.toStringAsFixed(2)} per participant.\n"
+      //     : "";
       msg += isJoin
           ? "\nWould you like to continue?"
           : "Would you like to leave the Event?";
