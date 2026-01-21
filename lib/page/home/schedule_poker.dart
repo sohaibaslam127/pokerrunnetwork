@@ -75,7 +75,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
               child: Container(height: 2, color: Colors.white12),
             ),
           ),
-          body: Column(
+          body: ListView(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 22.0),
@@ -141,7 +141,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                           TextSpan(
                             text: currentGame.latestEvent.stops.first.name,
                             style: TextStyle(
-                              fontSize: 15.sp,
+                              fontSize: 16.sp,
                               color: MyColors.white.withValues(alpha: 0.6),
                             ),
                           ),
@@ -198,7 +198,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                   ],
                 ),
               ),
-              Spacer(),
+              SizedBox(height: 1.h),
               onPress(
                 ontap: () async {
                   if (click) {
@@ -257,7 +257,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                 },
                 child: Image.asset(OtherButtons.startYourPokerRun),
               ),
-              SizedBox(height: 3.h),
+              SizedBox(height: 1.h),
             ],
           ),
         ),

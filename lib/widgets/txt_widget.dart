@@ -21,12 +21,13 @@ Text text_widget(
   return Text(
     text,
     maxLines: maxline,
+    textScaler: TextScaler.linear(1.0),
     textAlign: textAlign,
     textDirection: txtDirection,
     style: TextStyle(
       height: height,
       color: color ?? Colors.black,
-      fontSize: fontSize ?? 16.sp,
+      fontSize: fontSize ?? 15.sp,
       fontWeight: fontWeight ?? FontWeight.w500,
       fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
       decoration: decoration ?? TextDecoration.none,

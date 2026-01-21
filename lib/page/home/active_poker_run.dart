@@ -144,13 +144,15 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                     ),
                                     child: Row(
                                       children: [
-                                        text_widget(
-                                          event.pokerName,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
+                                        Expanded(
+                                          child: text_widget(
+                                            event.pokerName,
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                        Spacer(),
+                                        SizedBox(width: 2.w),
                                         text_widget(
                                           DateFormat(
                                             'dd MMM, hh:mm a',

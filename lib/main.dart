@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       builder: (_, orientation, screenType) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(fontFamily: "Calibri"),
+          // theme: ThemeData(fontFamily: "Calibri"),
           defaultTransition: Transition.noTransition,
           home: SplashScreen(),
           builder: EasyLoading.init(),
