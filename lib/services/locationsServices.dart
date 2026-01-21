@@ -57,7 +57,7 @@ class LocationServices {
           locationData.longitude!,
         );
 
-        final double distanceMoved = calculateDistance(
+        final double distanceMoved = await calculateDistance(
           currentUser.location.latitude,
           currentUser.location.longitude,
           newPoint.latitude,
@@ -70,9 +70,9 @@ class LocationServices {
           currentUser.location = newPoint;
         }
       });
-    } on TimeoutException catch (e, stack) {
+    } on TimeoutException catch (e, _) {
       log('Location request timed out');
-    } catch (e, stack) {
+    } catch (e, _) {
       log('Error occurred in getUserLocation()');
     }
   }

@@ -52,12 +52,14 @@ class _GameViewState extends State<GameView> {
           ? stopsModel.sponserLink
           : defaultSponsor,
     );
-    distance = calculateDistance(
+    calculateDistance(
       currentUser.location.latitude,
       currentUser.location.longitude,
       stopsModel.stopLocation.latitude,
       stopsModel.stopLocation.longitude,
-    );
+    ).then((value) {
+      distance = value;
+    });
     return Stack(
       children: [
         Image.asset(

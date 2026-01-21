@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:map_launcher/map_launcher.dart';
 
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/services/locationsServices.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:snackify/enums/snack_enums.dart';
@@ -129,7 +130,15 @@ Future<DateTime?> pickDate(BuildContext context) async {
   return picked;
 }
 
-double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+Future<double> calculateDistance(
+  double lat1,
+  double lon1,
+  double lat2,
+  double lon2,
+) async {
+  if (lat1 == 0 || lon1 == 0) {
+    await LocationServices.I.getUserLocation();
+  }
   const double p = 0.017453292519943295;
   final c = cos;
   final a =

@@ -22,7 +22,23 @@ class SchedulePokerN extends StatefulWidget {
 }
 
 class _SchedulePokerNState extends State<SchedulePokerN> {
+  double distance = 0;
   bool click = false;
+  @override
+  void initState() {
+    super.initState();
+    calculateDistance(
+      currentUser.location.latitude,
+      currentUser.location.longitude,
+      currentGame.latestEvent.stops[0].stopLocation.latitude,
+      currentGame.latestEvent.stops[0].stopLocation.longitude,
+    ).then((value) {
+      setState(() {
+        distance = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -181,7 +197,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                     Row(
                       children: [
                         text_widget(
-                          'Distance: ${calculateDistance(currentUser.location.latitude, currentUser.location.longitude, currentGame.latestEvent.stops[0].stopLocation.latitude, currentGame.latestEvent.stops[0].stopLocation.longitude).toStringAsFixed(2)} Miles',
+                          'Distance: ${distance.toStringAsFixed(2)} Miles',
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -217,7 +233,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                         currentGame.latestEvent.eventDate,
                       ) >=
                       0) {
-                    if (calculateDistance(
+                    if (await calculateDistance(
                           currentGame
                               .latestEvent
                               .stops[currentGame.game.currentStop]
