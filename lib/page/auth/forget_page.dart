@@ -79,7 +79,7 @@ class _ForgetPageState extends State<ForgetPage> {
                   SizedBox(height: 2.h),
                   Center(
                     child: text_widget(
-                      "Welcome Back To\nThe Poker Run\nNetwork.",
+                      "Welcome Back To\nThe Poker Run\nPlayer.",
                       textAlign: TextAlign.center,
                       fontSize: 24.sp,
                       height: 1.1,
