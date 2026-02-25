@@ -123,8 +123,8 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
 
                     text_widget(
                       "Starting date:  ${DateFormat("d MMM yyyy").format(widget.event.eventDate)}\n"
-                      "Starting time:  ${DateFormat("h:mm aaa").format(widget.event.eventDate)}\n"
-                      "Cost of this Poker Run:  \$${widget.event.joinFee.toStringAsFixed(2)}",
+                      "Starting time:  ${DateFormat("h:mm aaa").format(widget.event.eventDate)}",
+                      // "Cost of this Poker Run:  \$${widget.event.joinFee.toStringAsFixed(2)}",
                       fontSize: 14.5.sp,
                       color: MyColors.white.withValues(alpha: 0.60),
                       height: 1.7,
@@ -184,16 +184,16 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                         ),
                       ],
                     ),
-                    if (isJoin &&
-                        widget.event.changeCardFee > 0 &&
-                        widget.iamCoRider.roadName.isEmpty &&
-                        (widget.event.isAdditionalCard ?? false)) ...[
-                      _buildCheckboxOption(
-                        "Do you want the option of changing your card at each stop for \$${widget.event.changeCardFee.toStringAsFixed(2)}?",
-                        isExtraCard,
-                        (val) => setState(() => isExtraCard = val),
-                      ),
-                    ],
+                    // if (isJoin &&
+                    //     widget.event.changeCardFee > 0 &&
+                    //     widget.iamCoRider.roadName.isEmpty &&
+                    //     (widget.event.isAdditionalCard ?? false)) ...[
+                    //   _buildCheckboxOption(
+                    //     "Do you want the option of changing your card at each stop for \$${widget.event.changeCardFee.toStringAsFixed(2)}?",
+                    //     isExtraCard,
+                    //     (val) => setState(() => isExtraCard = val),
+                    //   ),
+                    // ],
 
                     // if (isJoin &&
                     //     !widget.iamCoRider.roadName.isNotEmpty &&
@@ -221,43 +221,43 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                     //     ),
                     //   ],
                     // ],
-                    if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
-                      SizedBox(height: 2.h),
-                      _priceRow("Rider", widget.event.joinFee),
-                      if (isCorider)
-                        _priceRow("Co-rider", widget.event.coRiderFee),
-                      if (isExtraCard)
-                        _priceRow(
-                          "Rider Extra Cards",
-                          widget.event.changeCardFee,
-                        ),
-                      if (isExtraCardCorider && isCorider)
-                        _priceRow(
-                          "Co-rider Extra Cards",
-                          widget.event.changeCardFee,
-                        ),
-                      _priceRow("Service Fee", serviceFee),
-                      SizedBox(height: 1.3.h),
-                      Divider(thickness: 0.2, color: Colors.white54),
-                      SizedBox(height: 1.3.h),
-                      Row(
-                        children: [
-                          text_widget(
-                            "Total Paid to Organizer",
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                          Spacer(),
-                          text_widget(
-                            "\$${getAmount().toStringAsFixed(2)}",
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    ],
+                    // if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
+                    //   SizedBox(height: 2.h),
+                    //   _priceRow("Rider", widget.event.joinFee),
+                    //   if (isCorider)
+                    //     _priceRow("Co-rider", widget.event.coRiderFee),
+                    //   if (isExtraCard)
+                    //     _priceRow(
+                    //       "Rider Extra Cards",
+                    //       widget.event.changeCardFee,
+                    //     ),
+                    //   if (isExtraCardCorider && isCorider)
+                    //     _priceRow(
+                    //       "Co-rider Extra Cards",
+                    //       widget.event.changeCardFee,
+                    //     ),
+                    //   _priceRow("Service Fee", serviceFee),
+                    //   SizedBox(height: 1.3.h),
+                    //   Divider(thickness: 0.2, color: Colors.white54),
+                    //   SizedBox(height: 1.3.h),
+                    //   Row(
+                    //     children: [
+                    //       text_widget(
+                    //         "Total Paid to Organizer",
+                    //         fontSize: 16.sp,
+                    //         fontWeight: FontWeight.w600,
+                    //         color: Colors.white,
+                    //       ),
+                    //       Spacer(),
+                    //       text_widget(
+                    //         "\$${getAmount().toStringAsFixed(2)}",
+                    //         fontSize: 16.sp,
+                    //         fontWeight: FontWeight.w600,
+                    //         color: Colors.white,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ],
                     text_widget(
                       _getFooterText(),
                       fontSize: 15.sp,
@@ -510,7 +510,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
       tranModel,
       currentUser.email,
       widget.event.currency.currencyCode ?? 'usd',
-      serviceFee,
+      0, //! serviceFee, make app free to use
     );
 
     if (success) {

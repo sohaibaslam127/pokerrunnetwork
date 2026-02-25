@@ -175,14 +175,15 @@ class _FindPokerState extends State<FindPoker> {
                                   SizedBox(height: 1.h),
                                   Row(
                                     children: [
-                                      Expanded(
-                                        child: text_widget(
-                                          '\$${event.joinFee.toStringAsFixed(2)}',
-                                          fontSize: 17.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                                      // Expanded(
+                                      //   child: text_widget(
+                                      //     '\$${event.joinFee.toStringAsFixed(2)}',
+                                      //     fontSize: 17.sp,
+                                      //     fontWeight: FontWeight.w500,
+                                      //     color: Colors.white,
+                                      //   ),
+                                      // ),
+                                      Spacer(),
                                       SizedBox(width: 5),
                                       onPress(
                                         ontap: () async {

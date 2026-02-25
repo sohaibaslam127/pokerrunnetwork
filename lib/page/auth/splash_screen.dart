@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:easy_admob_ads_flutter/easy_admob_ads_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,6 +43,14 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  Future<void> _initializeAds() async {
+    AdHelper.setupAdLogging();
+    AdIdRegistry.initialize(
+      ios: {AdType.native: adUnitId},
+      android: {AdType.native: adUnitId},
+    );
+  }
+
   Future<bool> init() async {
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setSystemUIOverlayStyle(
@@ -58,7 +67,6 @@ class _SplashScreenState extends State<SplashScreen> {
       version = packageInfo.version;
       buildNumber = packageInfo.buildNumber;
     });
-
     final bool isConnected =
         await InternetConnectionChecker.instance.hasConnection;
     if (isConnected) {
@@ -76,6 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    _initializeAds();
     await FirestoreServices.I.init();
     await AuthServices.I.checkUser();
     LocationServices.I.getUserLocation();

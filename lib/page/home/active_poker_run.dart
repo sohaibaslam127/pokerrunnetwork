@@ -217,33 +217,33 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                       ],
                                     ),
                                   ),
-                                  if (event.isAdditionalCard != null &&
-                                      event.isAdditionalCard!)
-                                    SizedBox(height: 0.4.h),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        text_widget(
-                                          "Extra card",
-                                          fontSize: 15.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.6,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        text_widget(
-                                          "\$${event.changeCardFee}",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  // if (event.isAdditionalCard != null &&
+                                  //     event.isAdditionalCard!)
+                                  //   SizedBox(height: 0.4.h),
+                                  // Padding(
+                                  //   padding: EdgeInsets.symmetric(
+                                  //     horizontal: 3.w,
+                                  //   ),
+                                  //   child: Row(
+                                  //     children: [
+                                  //       text_widget(
+                                  //         "Extra card",
+                                  //         fontSize: 15.5.sp,
+                                  //         fontWeight: FontWeight.w500,
+                                  //         color: Colors.white.withValues(
+                                  //           alpha: 0.6,
+                                  //         ),
+                                  //       ),
+                                  //       Spacer(),
+                                  //       text_widget(
+                                  //         "\$${event.changeCardFee}",
+                                  //         fontSize: 16.sp,
+                                  //         fontWeight: FontWeight.w500,
+                                  //         color: Colors.white,
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   SizedBox(height: .5.h),
                                   if (event.userIds.contains(currentUser.id))
                                     FutureBuilder(

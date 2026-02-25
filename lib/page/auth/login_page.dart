@@ -7,7 +7,6 @@ import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/page/auth/forget_page.dart';
 import 'package:pokerrunnetwork/page/auth/singup_page.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
-import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';

@@ -235,7 +235,7 @@ class _FindPokerState extends State<CompletedPokr> {
                                             if (event.eventWinner?.userId ==
                                                 currentUser.id)
                                               Text(
-                                                "Congratulation's シ ${event.eventWinner?.roadName.capitalizeFirst}",
+                                                "Congratulation's シ\n${event.eventWinner?.roadName.capitalizeFirst}",
                                                 style: GoogleFonts.bungee(
                                                   textStyle: TextStyle(
                                                     color:

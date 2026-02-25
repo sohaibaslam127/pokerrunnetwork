@@ -33,12 +33,10 @@ class _HomePageState extends State<HomePage> {
   Future<void> _initializeGameData() async {
     currentGame = GameData();
     currentGame = await FirestoreServices.I.getCurrentGame();
-    setState(() async {
-      if (currentGame.game.currentStop > 0) {
-        await Get.off(GameView());
-      }
-      setState(() {});
-    });
+    if (currentGame.game.currentStop > 0) {
+      await Get.off(GameView());
+    }
+    setState(() {});
   }
 
   @override
