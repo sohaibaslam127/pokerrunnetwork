@@ -8,6 +8,7 @@ import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 
 class FaqPage extends StatefulWidget {
   const FaqPage({super.key});
@@ -134,95 +135,128 @@ class _FaqPageState extends State<FaqPage> {
                 if (!isFaqs)
                   Column(
                     children: [
-                      if (videos.isEmpty) text_widget("No Video available."),
+                      if (videos.isEmpty) ...[
+                        text_widget("No Video available."),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("video_empty_ad_1"),
+                          ),
+                        ),
+                        SizedBox(height: 1.h),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("video_empty_ad_2"),
+                          ),
+                        ),
+                      ],
                       ...List.generate(videos.length, (index) {
                         final videoId = YoutubePlayer.convertUrlToId(
                           videos[index]['link'],
                         );
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 22,
-                          ),
-                          child: onPress(
-                            ontap: () => playYoutubeVideo(
-                              context,
-                              videos[index]['link'],
-                            ),
-                            child: Row(
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 22,
+                              ),
+                              child: onPress(
+                                ontap: () => playYoutubeVideo(
+                                  context,
+                                  videos[index]['link'],
+                                ),
+                                child: Row(
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Image.network(
-                                        YoutubePlayer.getThumbnail(
-                                          videoId: videoId!,
-                                          quality: ThumbnailQuality.medium,
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          child: Image.network(
+                                            YoutubePlayer.getThumbnail(
+                                              videoId: videoId!,
+                                              quality: ThumbnailQuality.medium,
+                                            ),
+                                            width: 12.h,
+                                            height: 9.h,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                        width: 12.h,
-                                        height: 9.h,
-                                        fit: BoxFit.cover,
-                                      ),
+                                        Container(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.black45,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          padding: const EdgeInsets.all(10),
+                                          child: const Icon(
+                                            Icons.play_arrow,
+                                            color: Colors.white,
+                                            size: 28,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.black45,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      padding: const EdgeInsets.all(10),
-                                      child: const Icon(
-                                        Icons.play_arrow,
-                                        color: Colors.white,
-                                        size: 28,
+                                    SizedBox(width: 3.w),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          text_widget(
+                                            videos[index]['title']
+                                                .toString()
+                                                .capitalizeFirst!,
+                                            color: Colors.white,
+                                            fontSize: 16.sp,
+                                            maxline: 1,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          SizedBox(height: 0.2.h),
+                                          text_widget(
+                                            videos[index]['description']
+                                                .toString()
+                                                .capitalizeFirst!,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                            maxline: 3,
+                                            fontSize: 14.sp,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(width: 3.w),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      text_widget(
-                                        videos[index]['title']
-                                            .toString()
-                                            .capitalizeFirst!,
-                                        color: Colors.white,
-                                        fontSize: 16.sp,
-                                        maxline: 1,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      SizedBox(height: 0.2.h),
-                                      text_widget(
-                                        videos[index]['description']
-                                            .toString()
-                                            .capitalizeFirst!,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.7,
-                                        ),
-                                        maxline: 3,
-                                        fontSize: 14.sp,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                              ),
+                            ),
+                            ],
+                          );
+                        }),
+                        if (videos.isNotEmpty) ...[
+                          SizedBox(height: 1.h),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0,
+                            ),
+                            child: CustomAdInlineWidget(
+                              widgetKey: const Key("video_last_ad"),
                             ),
                           ),
-                        );
-                      }),
-                    ],
-                  ),
+                          SizedBox(height: 4.h),
+                        ],
+                      ],
+                    ),
 
                 /// ---------------- FAQS ----------------
                 if (isFaqs)
                   Column(
                     children: [
-                      if (faqs.isEmpty)
+                      if (faqs.isEmpty) ...[
                         Padding(
                           padding: EdgeInsets.only(top: 32.h),
                           child: text_widget(
@@ -232,77 +266,109 @@ class _FaqPageState extends State<FaqPage> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ...List.generate(faqs.length, (index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 6,
-                            horizontal: 22,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("faq_empty_ad_1"),
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.18),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.3),
+                        ),
+                        SizedBox(height: 1.h),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("faq_empty_ad_2"),
+                          ),
+                        ),
+                      ],
+                      ...List.generate(faqs.length, (index) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 20,
                               ),
-                            ),
-                            child: ExpansionTile(
-                              initiallyExpanded: faqExpanded[index],
-                              onExpansionChanged: (v) =>
-                                  setState(() => faqExpanded[index] = v),
-                              title: RichText(
-                                text: TextSpan(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.18),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.3),
+                                  ),
+                                ),
+                                child: ExpansionTile(
+                                  initiallyExpanded: faqExpanded[index],
+                                  onExpansionChanged: (v) =>
+                                      setState(() => faqExpanded[index] = v),
+                                  title: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "${index + 1}. ",
+                                          style: TextStyle(
+                                            color: MyColors.primary,
+                                            fontSize: 15.5.sp,
+                                            height: 2,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "${faqs[index]['question']}",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            height: 1.5,
+                                            fontSize: 15.5.sp,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  trailing: Icon(
+                                    faqExpanded[index]
+                                        ? Remix.close_fill
+                                        : Remix.add_line,
+                                    color: const Color(0xff7E82B4),
+                                  ),
                                   children: [
-                                    TextSpan(
-                                      text: "${index + 1}. ",
-                                      style: TextStyle(
-                                        color: MyColors.primary,
-                                        fontSize: 15.5.sp,
-                                        height: 2,
-                                        fontWeight: FontWeight.w800,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 18,
+                                      ),
+                                      child: text_widget(
+                                        faqs[index]['answer'],
+                                        height: 1.3,
+                                        color: Colors.white.withValues(
+                                          alpha: 1,
+                                        ),
+                                        fontSize: 15.sp,
                                       ),
                                     ),
-                                    TextSpan(
-                                      text: "${faqs[index]['question']}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        height: 1.5,
-                                        fontSize: 15.5.sp,
-                                      ),
-                                    ),
+                                    SizedBox(height: 1.h),
                                   ],
                                 ),
                               ),
-                              trailing: Icon(
-                                faqExpanded[index]
-                                    ? Remix.close_fill
-                                    : Remix.add_line,
-                                color: const Color(0xff7E82B4),
-                              ),
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 18,
-                                  ),
-                                  child: text_widget(
-                                    faqs[index]['answer'],
-                                    height: 1.3,
-                                    color: Colors.white.withValues(alpha: 1),
-                                    fontSize: 15.sp,
-                                  ),
-                                ),
-                                SizedBox(height: 1.h),
-                              ],
+                            ),
+                            ],
+                          );
+                        }),
+                        if (faqs.isNotEmpty) ...[
+                          SizedBox(height: 1.h),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0,
+                            ),
+                            child: CustomAdInlineWidget(
+                              widgetKey: const Key("faq_last_ad"),
                             ),
                           ),
-                        );
-                      }),
-                    ],
-                  ),
-                SizedBox(height: 5.h),
-              ],
+                          SizedBox(height: 4.h),
+                        ],
+                      ],
+                    ),
+                  SizedBox(height: 1.h),
+                ],
+              ),
             ),
-          ),
         ),
       ],
     );

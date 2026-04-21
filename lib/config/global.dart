@@ -1,17 +1,30 @@
 import 'dart:io';
 import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
+import 'package:flutter/foundation.dart';
 
 UserModel currentUser = UserModel();
 GameData currentGame = GameData();
 String countryCode = "US";
-String appId = Platform.isAndroid
-    ? "ca-app-pub-3940256099942544~3347511713"
-    : "ca-app-pub-3940256099942544~1458002511";
 
-String adUnitId = Platform.isAndroid
-    ? "ca-app-pub-3940256099942544/2247696110"
-    : "ca-app-pub-3940256099942544/3986624511";
+// String appId = Platform.isAndroid
+//     ? "ca-app-pub-3940256099942544~3347511713"
+//     : "ca-app-pub-3940256099942544~1458002511";
+// String adUnitId = Platform.isAndroid
+//     ? "ca-app-pub-3940256099942544/2247696110"
+//     : "ca-app-pub-3940256099942544/3986624511";
+
+String appId = Platform.isAndroid
+    ? "ca-app-pub-2555335650225733~9455106236"
+    : "ca-app-pub-2555335650225733~8257574631";
+
+String adUnitId = kDebugMode
+    ? (Platform.isAndroid
+        ? "ca-app-pub-3940256099942544/2247696110"
+        : "ca-app-pub-3940256099942544/3986624511")
+    : (Platform.isAndroid
+        ? "ca-app-pub-2555335650225733/4266111318"
+        : "ca-app-pub-2555335650225733/6860485065");
 
 final mapApiKey = Platform.isAndroid
     ? "AIzaSyBe5djPy8Cpm6fZMl14cmjw4ZewHtKFPI0"
@@ -25,7 +38,7 @@ String website = "";
 double coriderFee = -1.0;
 
 String defaultSponsor = "https://thepokerrunapp.com";
-bool enableAds = false;
+bool enableAds = true;
 String latestAppVersion = "";
 bool needApproval = true;
 bool autoFillCards = false;

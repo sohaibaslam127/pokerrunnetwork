@@ -14,6 +14,7 @@ import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 
 class CompletedPokr extends StatefulWidget {
   const CompletedPokr({super.key});
@@ -156,14 +157,24 @@ class _FindPokerState extends State<CompletedPokr> {
                     key: Key("completed_poker: ${currentUser.id}"),
                     isLive: true,
                     query: FirestoreServices.I.getCompletedEvents(),
-                    onEmpty: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 45.h),
-                        child: text_widget(
-                          "No Event Found",
-                          color: Colors.white,
+                    onEmpty: Column(
+                      children: [
+                        SizedBox(height: 10.h),
+                        text_widget("No Event Found", color: Colors.white),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("completed_poker_empty_1"),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 1.h),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("completed_poker_empty_2"),
+                          ),
+                        ),
+                      ],
                     ),
                     separator: SizedBox(height: 1.h),
                     initialLoader: Padding(
@@ -181,186 +192,226 @@ class _FindPokerState extends State<CompletedPokr> {
                           documentSnapshots[index].data()
                               as Map<String, dynamic>,
                         );
-                        return onPress(
-                          ontap: () {
-                            Get.to(ParticipantList(event));
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 1.h, bottom: 1.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        text_widget(
-                                          event.pokerName,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                        Spacer(),
-                                        text_widget(
-                                          DateFormat(
-                                            "d MMM yyyy",
-                                          ).format(event.eventDate),
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.6,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                        return Column(
+                          children: [
+                            onPress(
+                              ontap: () {
+                                Get.to(ParticipantList(event));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 1.h,
+                                    bottom: 1.h,
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 3.w,
+                                        ),
+                                        child: Row(
                                           children: [
-                                            SizedBox(height: 1.h),
-                                            if (event.eventWinner?.userId ==
-                                                currentUser.id)
-                                              Text(
-                                                "Congratulation's シ\n${event.eventWinner?.roadName.capitalizeFirst}",
-                                                style: GoogleFonts.bungee(
-                                                  textStyle: TextStyle(
-                                                    color:
-                                                        Colors.green.shade300,
-                                                    fontSize: 16.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              )
-                                            else
-                                              Text(
-                                                "Winner is A ${event.eventWinner?.roadName.capitalizeFirst}",
-                                                maxLines: 2,
-                                                style: GoogleFonts.bungee(
-                                                  textStyle: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16.sp,
-                                                  ),
-                                                ),
+                                            text_widget(
+                                              event.pokerName,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                            Spacer(),
+                                            text_widget(
+                                              DateFormat(
+                                                "d MMM yyyy",
+                                              ).format(event.eventDate),
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.6,
                                               ),
-                                            if ((event.eventWinner?.rank ??
-                                                    "") !=
-                                                "")
-                                              Row(
-                                                children: [
-                                                  text_widget(
-                                                    "Rank: ",
-                                                    fontSize: 15.5.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.white,
-                                                  ),
-                                                  text_widget(
-                                                    event.eventWinner?.rank ??
-                                                        "",
-                                                    fontSize: 15.5.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.white,
-                                                  ),
-                                                ],
-                                              ),
+                                            ),
                                           ],
                                         ),
-                                        Spacer(),
-                                        Icon(
-                                          Remix.arrow_right_s_line,
-                                          color: Colors.white,
-                                          size: 3.h,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      left: 1.w,
-                                      right: 1.w,
-                                    ),
-                                    child: SizedBox(
-                                      height: 9.h,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: List.generate(5, (index) {
-                                          if (index <
-                                              event.eventWinner!.cards.length) {
-                                            final cardKey =
-                                                event.eventWinner!.cards[index];
-                                            return Expanded(
-                                              child: Image.asset(
-                                                pokerCards[cardKey],
-                                              ),
-                                            );
-                                          }
-                                          return Expanded(
-                                            child: Image.asset(
-                                              pokerCards[0],
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        }),
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 2.h),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 25.w,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: onPress(
-                                            ontap: () {
-                                              deletePopup(event);
-                                            },
-                                            child: Container(
-                                              width: 22.w,
-                                              height: 4.8.h,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xffFF7A7A),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Center(
-                                                child: text_widget(
-                                                  "Delete",
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 3.w,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(height: 1.h),
+                                                if (event.eventWinner?.userId ==
+                                                    currentUser.id)
+                                                  Text(
+                                                    "Congratulation's シ\n${event.eventWinner?.roadName.capitalizeFirst}",
+                                                    style: GoogleFonts.bungee(
+                                                      textStyle: TextStyle(
+                                                        color: Colors
+                                                            .green
+                                                            .shade300,
+                                                        fontSize: 16.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  )
+                                                else
+                                                  Text(
+                                                    "Winner is A ${event.eventWinner?.roadName.capitalizeFirst}",
+                                                    maxLines: 2,
+                                                    style: GoogleFonts.bungee(
+                                                      textStyle: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16.sp,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                if ((event.eventWinner?.rank ??
+                                                        "") !=
+                                                    "")
+                                                  Row(
+                                                    children: [
+                                                      text_widget(
+                                                        "Rank: ",
+                                                        fontSize: 15.5.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.white,
+                                                      ),
+                                                      text_widget(
+                                                        event
+                                                                .eventWinner
+                                                                ?.rank ??
+                                                            "",
+                                                        fontSize: 15.5.sp,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ],
+                                                  ),
+                                              ],
+                                            ),
+                                            Spacer(),
+                                            Icon(
+                                              Remix.arrow_right_s_line,
+                                              color: Colors.white,
+                                              size: 3.h,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 1.w,
+                                          right: 1.w,
+                                        ),
+                                        child: SizedBox(
+                                          height: 9.h,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: List.generate(5, (index) {
+                                              if (index <
+                                                  event
+                                                      .eventWinner!
+                                                      .cards
+                                                      .length) {
+                                                final cardKey = event
+                                                    .eventWinner!
+                                                    .cards[index];
+                                                return Expanded(
+                                                  child: Image.asset(
+                                                    pokerCards[cardKey],
+                                                  ),
+                                                );
+                                              }
+                                              return Expanded(
+                                                child: Image.asset(
+                                                  pokerCards[0],
+                                                  color: Colors.grey,
+                                                ),
+                                              );
+                                            }),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 25.w,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: onPress(
+                                                ontap: () {
+                                                  deletePopup(event);
+                                                },
+                                                child: Container(
+                                                  width: 22.w,
+                                                  height: 4.8.h,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffFF7A7A),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                  ),
+                                                  child: Center(
+                                                    child: text_widget(
+                                                      "Delete",
+                                                      fontSize: 16.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                            if ((index + 1) % 4 == 0) ...[
+                              SizedBox(height: 1.h),
+                              CustomAdInlineWidget(
+                                widgetKey: ValueKey(
+                                  "completed_poker_ad_$index",
+                                ),
+                              ),
+                            ],
+                          ],
                         );
                       }
                       return Container();
                     },
+                    footer: SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 4.h,
+                          top: 1.h,
+                        ),
+                        child: CustomAdInlineWidget(
+                          widgetKey: const Key("completed_poker_ad_footer"),
+                        ),
+                      ),
+                    ),
                     itemBuilderType: PaginateBuilderType.listView,
                   ),
                 ),

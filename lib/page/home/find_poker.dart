@@ -5,18 +5,14 @@ import 'package:intl/intl.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
-import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
-import 'package:pokerrunnetwork/page/auth/login_page.dart';
 import 'package:pokerrunnetwork/page/home/poker_view.dart';
-import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
-import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
-import 'package:readmore/readmore.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -100,14 +96,24 @@ class _FindPokerState extends State<FindPoker> {
                         ? Key("find_poker")
                         : Key("find_poker: ${searchPokerRun.text}"),
                     isLive: true,
-                    onEmpty: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 45.h),
-                        child: text_widget(
-                          "No Event Found",
-                          color: Colors.white,
+                    onEmpty: Column(
+                      children: [
+                        SizedBox(height: 10.h),
+                        text_widget("No Event Found", color: Colors.white),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("find_poker_empty_1"),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 1.h),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("find_poker_empty_2"),
+                          ),
+                        ),
+                      ],
                     ),
                     separator: SizedBox(height: 1.h),
                     initialLoader: Padding(
@@ -119,112 +125,139 @@ class _FindPokerState extends State<FindPoker> {
                         ),
                       ),
                     ),
-                    itemBuilder: (BuildContext context, documentSnapshots, index) {
-                      if (documentSnapshots[index].exists) {
-                        EventModel event = EventModel.toModel(
-                          documentSnapshots[index].data()
-                              as Map<String, dynamic>,
-                        );
-                        if (!event.userIds
-                            .map((e) => e)
-                            .toList()
-                            .contains(currentUser.id)) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(13.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    itemBuilder:
+                        (BuildContext context, documentSnapshots, index) {
+                          if (documentSnapshots[index].exists) {
+                            EventModel event = EventModel.toModel(
+                              documentSnapshots[index].data()
+                                  as Map<String, dynamic>,
+                            );
+                            if (!event.userIds
+                                .map((e) => e)
+                                .toList()
+                                .contains(currentUser.id)) {
+                              return Column(
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: text_widget(
-                                          event.pokerName,
-                                          fontSize: 15.sp,
-                                          maxline: 2,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
                                       ),
-                                      SizedBox(width: 5),
-                                      text_widget(
-                                        DateFormat(
-                                          'dd MMM, hh:mm a',
-                                        ).format(event.eventDate),
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.6,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  text_widget(
-                                    event.description,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white.withValues(alpha: 0.6),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Row(
-                                    children: [
-                                      // Expanded(
-                                      //   child: text_widget(
-                                      //     '\$${event.joinFee.toStringAsFixed(2)}',
-                                      //     fontSize: 17.sp,
-                                      //     fontWeight: FontWeight.w500,
-                                      //     color: Colors.white,
-                                      //   ),
-                                      // ),
-                                      Spacer(),
-                                      SizedBox(width: 5),
-                                      onPress(
-                                        ontap: () async {
-                                          EasyLoading.show();
-                                          GamePlayerModel coRider =
-                                              await FirestoreServices.I
-                                                  .isValidCorider(event.id);
-                                          EasyLoading.dismiss();
-                                          Get.to(
-                                            PokerDetailsView(event, coRider),
-                                          );
-                                        },
-                                        child: Container(
-                                          width: 18.w,
-                                          height: 3.h,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xff5CAF5F),
-                                            borderRadius: BorderRadius.circular(
-                                              8,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(13.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: text_widget(
+                                                  event.pokerName,
+                                                  fontSize: 15.sp,
+                                                  maxline: 2,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              SizedBox(width: 5),
+                                              text_widget(
+                                                DateFormat(
+                                                  'dd MMM, hh:mm a',
+                                                ).format(event.eventDate),
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.6,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          text_widget(
+                                            event.description,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.6,
                                             ),
                                           ),
-                                          child: Center(
-                                            child: text_widget(
-                                              "Join",
-                                              fontSize: 15.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            ),
+                                          SizedBox(height: 1.h),
+                                          Row(
+                                            children: [
+                                              Spacer(),
+                                              SizedBox(width: 5),
+                                              onPress(
+                                                ontap: () async {
+                                                  EasyLoading.show();
+                                                  GamePlayerModel coRider =
+                                                      await FirestoreServices.I
+                                                          .isValidCorider(
+                                                            event.id,
+                                                          );
+                                                  EasyLoading.dismiss();
+                                                  Get.to(
+                                                    PokerDetailsView(
+                                                      event,
+                                                      coRider,
+                                                    ),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  width: 18.w,
+                                                  height: 3.h,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xff5CAF5F),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                  ),
+                                                  child: Center(
+                                                    child: text_widget(
+                                                      "Join",
+                                                      fontSize: 15.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
+                                  if ((index + 1) % 4 == 0) ...[
+                                    SizedBox(height: 1.h),
+                                    CustomAdInlineWidget(
+                                      widgetKey: ValueKey("poker_ad_$index"),
+                                    ),
+                                  ],
                                 ],
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                      return Container();
-                    },
+                              );
+                            }
+                          }
+                          return Container();
+                        },
+                    footer: SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 4.h,
+                          top: 1.h,
+                        ),
+                        child: CustomAdInlineWidget(
+                          widgetKey: const Key("find_poker_ad_footer"),
+                        ),
+                      ),
+                    ),
                     query: searchPokerRun.text.isEmpty
                         ? FirestoreServices.I.getActiveEvents()
                         : FirestoreServices.I.searchActiveEvents(

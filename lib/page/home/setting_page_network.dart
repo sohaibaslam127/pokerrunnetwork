@@ -11,6 +11,7 @@ import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -112,10 +113,9 @@ class _SettingPageState extends State<SettingPage> {
               child: Container(height: 2, color: Colors.white12),
             ),
           ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          body: ListView(
             children: [
-              SizedBox(height: 2.h),
+              SizedBox(height: 1.h),
               Row(
                 children: [
                   Expanded(
@@ -148,7 +148,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 2.h),
+              SizedBox(height: 1.h),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Container(
@@ -179,6 +179,12 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 ),
               ),
+              SizedBox(height: 2.h),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: CustomAdInlineWidget(widgetKey: ValueKey("setting_ad")),
+              ),
+              SizedBox(height: 2.h),
             ],
           ),
         ),

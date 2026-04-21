@@ -11,6 +11,7 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 
 class ParticipantList extends StatefulWidget {
   EventModel event;
@@ -73,17 +74,17 @@ class _ParticipantListState extends State<ParticipantList> {
                   child: PaginateFirestore(
                     key: Key("members:${widget.event.id}"),
                     isLive: true,
-                    onEmpty: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 30.h),
-                        child: Text(
-                          "No Event Found",
-                          style: GoogleFonts.abel(
-                            color: Colors.white,
-                            fontSize: 20.sp,
+                    onEmpty: Column(
+                      children: [
+                        SizedBox(height: 10.h),
+                        text_widget("No Event Found", color: Colors.white),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("participant_empty_ad_1"),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                     initialLoader: Padding(
                       padding: EdgeInsets.only(bottom: 45.h),
@@ -100,100 +101,127 @@ class _ParticipantListState extends State<ParticipantList> {
                         documentSnapshots[index].data() as Map<String, dynamic>,
                       );
                       if (game.roadName == "") return Container();
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 1.h),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 3.w),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: text_widget(
-                                        '${index + 1}. ${game.roadName.capitalizeFirst}',
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
+                      return Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 1.h),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 3.w,
                                     ),
-                                    if (game.rank != "")
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 2.w,
-                                        ),
-                                        height: 3.4.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.green,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Center(
+                                    child: Row(
+                                      children: [
+                                        Expanded(
                                           child: text_widget(
-                                            game.rank.capitalize!,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.bold,
+                                            '${index + 1}. ${game.roadName.capitalizeFirst}',
+                                            fontSize: 15.sp,
+                                            fontWeight: FontWeight.w600,
                                             color: Colors.white,
                                           ),
                                         ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 3.w),
-                                child: Row(
-                                  children: [
-                                    text_widget(
-                                      game.userName,
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white.withValues(
-                                        alpha: 0.6,
+                                        if (game.rank != "")
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 2.w,
+                                            ),
+                                            height: 3.4.h,
+                                            decoration: BoxDecoration(
+                                              color: Colors.green,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Center(
+                                              child: text_widget(
+                                                game.rank.capitalize!,
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 3.w,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        text_widget(
+                                          game.userName,
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 2.h),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 1.w,
+                                      right: 1.w,
+                                    ),
+                                    child: SizedBox(
+                                      height: 9.h,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: List.generate(5, (index) {
+                                          if (index < game.cards.length) {
+                                            final cardKey = game.cards[index];
+                                            return Expanded(
+                                              child: Image.asset(
+                                                pokerCards[cardKey],
+                                              ),
+                                            );
+                                          }
+                                          return Expanded(
+                                            child: Image.asset(
+                                              pokerCards[0],
+                                              color: Colors.grey,
+                                            ),
+                                          );
+                                        }),
                                       ),
                                     ),
-                                    Spacer(),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 2.h),
-                              Padding(
-                                padding: EdgeInsets.only(left: 1.w, right: 1.w),
-                                child: SizedBox(
-                                  height: 9.h,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: List.generate(5, (index) {
-                                      if (index < game.cards.length) {
-                                        final cardKey = game.cards[index];
-                                        return Expanded(
-                                          child: Image.asset(
-                                            pokerCards[cardKey],
-                                          ),
-                                        );
-                                      }
-                                      return Expanded(
-                                        child: Image.asset(
-                                          pokerCards[0],
-                                          color: Colors.grey,
-                                        ),
-                                      );
-                                    }),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                          if ((index + 1) % 4 == 0) ...[
+                            SizedBox(height: 1.h),
+                            CustomAdInlineWidget(
+                              widgetKey: ValueKey("participant_ad_$index"),
+                            ),
+                          ],
+                        ],
                       );
                     },
+                    footer: SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 4.h,
+                          top: 1.h,
+                        ),
+                        child: CustomAdInlineWidget(
+                          widgetKey: const Key("participant_ad_footer"),
+                        ),
+                      ),
+                    ),
                     query: FirestoreServices.I.getGamePlayers(
                       widget.event.id,
                       "",

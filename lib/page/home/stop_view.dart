@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
@@ -19,7 +18,6 @@ class StopView extends StatefulWidget {
 }
 
 class _StopViewState extends State<StopView> {
-  InAppWebViewController? webViewController;
   bool isLoading = true;
   int count = 0;
 

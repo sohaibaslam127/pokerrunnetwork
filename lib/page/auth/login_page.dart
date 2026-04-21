@@ -142,16 +142,35 @@ class _LoginPageState extends State<LoginPage> {
                                   color: MyColors.secondary,
                                 ),
                               ),
-                              SizedBox(height: 2.5.h),
                             ],
                           ),
-                          SizedBox(height: 2.5.h),
+                          SizedBox(height: 2.h),
                           customButon(
                             isIcon: false,
                             btnText: "Sign In",
                             onTap: signIn,
                           ),
-                          SizedBox(height: 3.h),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: customButon(
+                                  isIcon: true,
+                                  icon: "assets/icons/google.png",
+                                  btnText: "Google",
+                                  onTap: signIn,
+                                ),
+                              ),
+                              Expanded(
+                                child: customButon(
+                                  isIcon: true,
+                                  btnText: "Apple",
+                                  icon: "assets/icons/apple.png",
+                                  onTap: signIn,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 2.h),
                           Center(
                             child: onPress(
                               ontap: () {
@@ -179,7 +198,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 2.h),
                         ],
                       ),
                     ),

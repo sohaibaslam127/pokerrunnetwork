@@ -17,6 +17,7 @@ import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 
 class PokerDetailsView extends StatefulWidget {
   final EventModel event;
@@ -268,6 +269,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                 ),
               ),
               SizedBox(height: 2.h),
+              const CustomAdInlineWidget(),
               onPress(
                 ontap: () => handlePrimaryAction(),
                 child: Image.asset(

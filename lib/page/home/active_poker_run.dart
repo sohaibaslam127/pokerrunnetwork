@@ -19,6 +19,7 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -102,14 +103,24 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                         ? Key("active_poker_run")
                         : Key("active_poker_run: ${searchPokerRun.text}"),
                     isLive: true,
-                    onEmpty: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 45.h),
-                        child: text_widget(
-                          "No Event Found",
-                          color: Colors.white,
+                    onEmpty: Column(
+                      children: [
+                        SizedBox(height: 10.h),
+                        text_widget("No Event Found", color: Colors.white),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("active_poker_run_empty_1"),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 1.h),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: Key("active_poker_run_empty_2"),
+                          ),
+                        ),
+                      ],
                     ),
                     separator: SizedBox(height: 1.h),
                     initialLoader: Center(
@@ -124,128 +135,98 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                           documentSnapshots[index].data()
                               as Map<String, dynamic>,
                         );
-                        if (event.userIds
-                            .map((e) => e)
-                            .toList()
-                            .contains(currentUser.id)) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 1.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
+                        return Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 1.h),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 3.w,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: text_widget(
+                                              event.pokerName,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          SizedBox(width: 2.w),
+                                          text_widget(
+                                            DateFormat(
+                                              'dd MMM, hh:mm a',
+                                            ).format(event.eventDate),
+                                            fontSize: 12.5.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.6,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: text_widget(
-                                            event.pokerName,
+                                    SizedBox(height: 1.h),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 3.w,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          text_widget(
+                                            "Poker run",
+                                            fontSize: 15.5.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.6,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          text_widget(
+                                            "\$${event.joinFee}",
                                             fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
+                                            fontWeight: FontWeight.w500,
                                             color: Colors.white,
                                           ),
-                                        ),
-                                        SizedBox(width: 2.w),
-                                        text_widget(
-                                          DateFormat(
-                                            'dd MMM, hh:mm a',
-                                          ).format(event.eventDate),
-                                          fontSize: 12.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.6,
+                                        ],
+                                      ),
+                                    ),
+                                    if (event.coRider != null && event.coRider!)
+                                      SizedBox(height: 0.4.h),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 3.w,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          text_widget(
+                                            "Co-Rider",
+                                            fontSize: 15.5.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.6,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 1.h),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        text_widget(
-                                          "Poker run",
-                                          fontSize: 15.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.6,
+                                          Spacer(),
+                                          text_widget(
+                                            "\$${event.coRiderFee}",
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
                                           ),
-                                        ),
-                                        Spacer(),
-                                        text_widget(
-                                          "\$${event.joinFee}",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  if (event.coRider != null && event.coRider!)
-                                    SizedBox(height: 0.4.h),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        text_widget(
-                                          "Co-Rider",
-                                          fontSize: 15.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.6,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        text_widget(
-                                          "\$${event.coRiderFee}",
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // if (event.isAdditionalCard != null &&
-                                  //     event.isAdditionalCard!)
-                                  //   SizedBox(height: 0.4.h),
-                                  // Padding(
-                                  //   padding: EdgeInsets.symmetric(
-                                  //     horizontal: 3.w,
-                                  //   ),
-                                  //   child: Row(
-                                  //     children: [
-                                  //       text_widget(
-                                  //         "Extra card",
-                                  //         fontSize: 15.5.sp,
-                                  //         fontWeight: FontWeight.w500,
-                                  //         color: Colors.white.withValues(
-                                  //           alpha: 0.6,
-                                  //         ),
-                                  //       ),
-                                  //       Spacer(),
-                                  //       text_widget(
-                                  //         "\$${event.changeCardFee}",
-                                  //         fontSize: 16.sp,
-                                  //         fontWeight: FontWeight.w500,
-                                  //         color: Colors.white,
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  SizedBox(height: .5.h),
-                                  if (event.userIds.contains(currentUser.id))
+                                    SizedBox(height: .5.h),
                                     FutureBuilder(
                                       future: FirestoreServices.I.getGamePlayer(
                                         event.id,
@@ -518,19 +499,34 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                         );
                                       },
                                     ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          );
-                        }
+                            if ((index + 1) % 4 == 0) ...[
+                              SizedBox(height: 1.h),
+                              CustomAdInlineWidget(
+                                widgetKey: ValueKey("active_poker_ad_$index"),
+                              ),
+                            ],
+                          ],
+                        );
                       }
                       return Container();
                     },
+                    footer: SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 4.h, top: 1.h),
+                        child: CustomAdInlineWidget(
+                          widgetKey: const Key("active_poker_ad_footer"),
+                        ),
+                      ),
+                    ),
                     query: searchPokerRun.text.isEmpty
-                        ? FirestoreServices.I.getActiveEvents()
+                        ? FirestoreServices.I.getActiveJoinEvents()
                         : FirestoreServices.I.searchActiveEvents(
                             searchPokerRun.text,
-                          ),
+                          ), // TODO: Create searchActiveJoinEvents for better results
                     itemBuilderType: PaginateBuilderType.listView,
                   ),
                 ),
