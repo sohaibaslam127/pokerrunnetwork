@@ -135,8 +135,9 @@ class _PokerRouteState extends State<PokerRoute> {
                                             )
                                           : () {
                                               startingPointAddressController
-                                                      .text =
-                                                  loc.formattedAddress ?? "";
+                                                  .text = formatPickedAddress(
+                                                loc,
+                                              );
                                               widget
                                                   .eventModel
                                                   .stops[0]
@@ -203,8 +204,9 @@ class _PokerRouteState extends State<PokerRoute> {
                                             )
                                           : () {
                                               finalDestinationAddressController
-                                                      .text =
-                                                  loc.formattedAddress ?? "";
+                                                  .text = formatPickedAddress(
+                                                loc,
+                                              );
                                               widget
                                                   .eventModel
                                                   .stops[6]

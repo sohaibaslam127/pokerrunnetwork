@@ -183,26 +183,25 @@ class _PokerStopsState extends State<PokerStops> {
                                                     type: 1,
                                                   )
                                                 : () {
+                                                    final picked =
+                                                        formatPickedAddress(
+                                                          loc,
+                                                        );
                                                     if (index == 0) {
                                                       firstStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
+                                                          picked;
                                                     } else if (index == 1) {
                                                       secondStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
+                                                          picked;
                                                     } else if (index == 2) {
                                                       thirdStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
+                                                          picked;
                                                     } else if (index == 3) {
                                                       fourthStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
+                                                          picked;
                                                     } else {
                                                       fifthStopAddress.text =
-                                                          loc.formattedAddress ??
-                                                          "";
+                                                          picked;
                                                     }
                                                     widget
                                                             .eventModel

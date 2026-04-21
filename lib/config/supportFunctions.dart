@@ -64,6 +64,40 @@ Future<LocationResult> showPlacePicker(BuildContext context) async {
   return result ?? LocationResult();
 }
 
+// Strips a leading Google Plus Code (e.g. "F37M+HCP, ") and, when a POI name
+// is available, ensures it leads the address so results like "F37M+HCP,
+// shadman town, faisalabad, pakistan" become "Techbolic Solutions, shadman
+// town, faisalabad, pakistan".
+String formatPickedAddress(LocationResult loc) {
+  String address = (loc.formattedAddress ?? '').trim();
+  String name = (loc.name ?? '').trim();
+
+  // Function to remove first part if it contains '+'
+  String clean(String value) {
+    if (value.isEmpty) return value;
+
+    List<String> parts = value.split(',');
+    if (parts.isNotEmpty && parts.first.contains('+')) {
+      parts.removeAt(0);
+    }
+    return parts.join(',').trim();
+  }
+
+  // Clean both name and address
+  address = clean(address);
+  name = clean(name);
+
+  if (name.isEmpty) return address.trim();
+
+  final firstPart = address.split(',').first.trim().toLowerCase();
+  final looksLikeRoad = name.toLowerCase() == firstPart;
+  final alreadyIncluded = address.toLowerCase().contains(name.toLowerCase());
+
+  if (looksLikeRoad || alreadyIncluded) return address;
+
+  return address.isEmpty ? name.trim() : '$name, $address'.trim();
+}
+
 void launchMyUrl(String url) async {
   final Uri uri = Uri.parse(url);
   try {
