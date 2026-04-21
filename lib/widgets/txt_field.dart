@@ -28,6 +28,7 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
   hintColor,
   Function? onChange,
   bool obsecure = false,
+  Widget? customSuffix,
 }) {
   return StatefulBuilder(
     builder: (BuildContext _, setState) {
@@ -75,7 +76,12 @@ Widget textFieldWithPrefixSuffuxIconAndHintText(
 
           // ✅ SUFFIX ICON / TEXT
           suffixIconConstraints: BoxConstraints(),
-          suffixIcon: isTextSuffix
+          suffixIcon: customSuffix != null
+              ? Padding(
+                  padding: EdgeInsets.only(right: 3.w),
+                  child: customSuffix,
+                )
+              : isTextSuffix
               ? Padding(
                   padding: EdgeInsets.only(right: 12.0),
                   child: text_widget(

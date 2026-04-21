@@ -8,6 +8,7 @@ import 'package:pokerrunnetwork/config/random.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
+import 'package:pokerrunnetwork/models/transaction.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
 
 class FirestoreServices {
@@ -452,6 +453,21 @@ class FirestoreServices {
           await participantRef.delete();
         }
       }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> setTransaction(TransactionModel txn) async {
+    try {
+      if (txn.id.isEmpty) {
+        txn.id = _instance.collection('transactions').doc().id;
+      }
+      await _instance
+          .collection('transactions')
+          .doc(txn.id)
+          .set(txn.toJSON(), SetOptions(merge: true));
       return true;
     } catch (e) {
       return false;

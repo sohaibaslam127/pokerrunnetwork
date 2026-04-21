@@ -22,6 +22,7 @@ Widget customButon({
   bool isIcon = false,
   String? btnText,
   Function? onTap,
+  double? fontSize,
   String? icon,
 }) {
   return Center(
@@ -58,7 +59,7 @@ Widget customButon({
                                   SizedBox(width: 1.6.w),
                                   text_widget(
                                     btnText ?? '',
-                                    fontSize: 17.6.sp,
+                                    fontSize: fontSize ?? 17.6.sp,
                                     // textAlign: TextAlign.center,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xff113559),
@@ -68,7 +69,7 @@ Widget customButon({
                               )
                             : text_widget(
                                 btnText ?? "",
-                                fontSize: 17.6.sp,
+                                fontSize: fontSize ?? 17.6.sp,
                                 textAlign: TextAlign.center,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xff113559),
