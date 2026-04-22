@@ -38,7 +38,6 @@ String helpLineEmail = "";
 String website = "";
 double coriderFee = -1.0;
 
-String defaultSponsor = "https://thepokerrunapp.com";
 bool enableAds = true;
 String latestAppVersion = "";
 bool needApproval = true;

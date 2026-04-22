@@ -56,12 +56,6 @@ class FirestoreServices {
           coriderFee = serviceFee;
         }
 
-        // Not on the admin panel, only set from remote config
-        if (data['defaultSponsor'] != null &&
-            data['defaultSponsor'].toString().trim().isNotEmpty) {
-          defaultSponsor = data['defaultSponsor'];
-        }
-
         if (data['enableAds'] != null &&
             data['enableAds'].toString().trim().isNotEmpty) {
           enableAds = data['enableAds'];
@@ -450,7 +444,11 @@ class FirestoreServices {
 
   Query getGamePlayers(String pokerId, String search) {
     if (pokerId.isEmpty) {
-      return _instance.collection('events').doc('dummy').collection('participants').limit(0);
+      return _instance
+          .collection('events')
+          .doc('dummy')
+          .collection('participants')
+          .limit(0);
     }
     if (search.isEmpty) {
       return _instance
@@ -470,7 +468,11 @@ class FirestoreServices {
 
   Query getGamePlayersProgress(String pokerId, String search) {
     if (pokerId.isEmpty) {
-      return _instance.collection('events').doc('dummy').collection('participants').limit(0);
+      return _instance
+          .collection('events')
+          .doc('dummy')
+          .collection('participants')
+          .limit(0);
     }
     Query query = _instance
         .collection('events')
