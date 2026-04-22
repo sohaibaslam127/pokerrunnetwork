@@ -8,6 +8,7 @@ import 'package:pokerrunnetwork/config/random.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/analysis.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
+import 'package:pokerrunnetwork/models/sponsors.dart';
 import 'package:pokerrunnetwork/models/stops.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/page/home/stop_view.dart';
@@ -44,11 +45,36 @@ class _GameViewState extends State<GameView> {
     }
   }
 
+  SponsorsModel? _pickSponsorFor(int stopNumber) {
+    final enabled = sponsorLinks.where((s) => s.enable);
+    final stopSpecific = enabled
+        .where((s) => s.stops.isNotEmpty && s.stops.contains(stopNumber))
+        .toList();
+    if (stopSpecific.isNotEmpty) {
+      stopSpecific.shuffle();
+      return stopSpecific.first;
+    }
+    final global = enabled.where((s) => s.stops.isEmpty).toList();
+    if (global.isNotEmpty) {
+      global.shuffle();
+      return global.first;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     stopsModel = currentGame.latestEvent.stops[currentGame.game.currentStop];
     stopNumber = currentGame.game.currentStop;
     finalUrl = normalizeUrl(stopsModel.sponserLink);
+    SponsorsModel? fallbackSponsor;
+    String fallbackSponsorUrl = "";
+    if (finalUrl.isEmpty) {
+      fallbackSponsor = _pickSponsorFor(stopNumber);
+      if (fallbackSponsor != null) {
+        fallbackSponsorUrl = normalizeUrl(fallbackSponsor.link);
+      }
+    }
     calculateDistance(
       currentUser.location.latitude,
       currentUser.location.longitude,
@@ -167,12 +193,16 @@ class _GameViewState extends State<GameView> {
                       padding: EdgeInsets.symmetric(horizontal: 3.w),
                       child: onPress(
                         ontap: () {
-                          if (finalUrl.isNotEmpty) launchMyUrl(finalUrl);
+                          if (finalUrl.isNotEmpty) {
+                            launchMyUrl(finalUrl);
+                          } else if (fallbackSponsorUrl.isNotEmpty) {
+                            launchMyUrl(fallbackSponsorUrl);
+                          }
                         },
                         child: Row(
                           children: [
                             text_widget(
-                              "Sponsored: ${stopsModel.sponserName.capitalize}",
+                              "Sponsored: ${(finalUrl.isNotEmpty ? stopsModel.sponserName : (fallbackSponsor?.name ?? stopsModel.sponserName)).capitalize}",
                               color: Colors.white.withValues(alpha: 0.8),
                               maxline: 1,
                               fontWeight: FontWeight.w700,
@@ -180,7 +210,8 @@ class _GameViewState extends State<GameView> {
                             ),
                             Spacer(),
                             Icon(
-                              finalUrl.isNotEmpty
+                              (finalUrl.isNotEmpty ||
+                                      fallbackSponsorUrl.isNotEmpty)
                                   ? RemixIcons.link
                                   : Icons.campaign_outlined,
                               color: Colors.white.withValues(alpha: 0.8),
@@ -220,11 +251,39 @@ class _GameViewState extends State<GameView> {
                                   ),
                               ],
                             )
-                          : CustomAdInlineWidget(
-                              height: 52.h,
-                              isMedium: true,
-                              radius: 0,
-                            ),
+                          : fallbackSponsorUrl.isNotEmpty
+                              ? Stack(
+                                  children: [
+                                    InAppWebView(
+                                      key: Key(fallbackSponsorUrl),
+                                      initialUrlRequest: URLRequest(
+                                        url: WebUri(fallbackSponsorUrl),
+                                      ),
+                                      initialSettings: InAppWebViewSettings(
+                                        javaScriptEnabled: true,
+                                        mediaPlaybackRequiresUserGesture: false,
+                                        useHybridComposition: true,
+                                      ),
+                                      onWebViewCreated: (controller) {
+                                        webViewController = controller;
+                                      },
+                                      onLoadStop: (controller, url) {
+                                        setState(() => isLoading = false);
+                                      },
+                                    ),
+                                    if (isLoading)
+                                      Center(
+                                        child: CircularProgressIndicator(
+                                          color: MyColors.primary,
+                                        ),
+                                      ),
+                                  ],
+                                )
+                              : CustomAdInlineWidget(
+                                  height: 52.h,
+                                  isMedium: true,
+                                  radius: 0,
+                                ),
                     ),
 
                     SizedBox(height: .5.h),

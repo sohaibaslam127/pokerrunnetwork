@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:pokerrunnetwork/models/gameData.dart';
+import 'package:pokerrunnetwork/models/sponsors.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
 import 'package:flutter/foundation.dart';
 
 UserModel currentUser = UserModel();
 GameData currentGame = GameData();
 String countryCode = "US";
+List<SponsorsModel> sponsorLinks = [];
 
 // String appId = Platform.isAndroid
 //     ? "ca-app-pub-3940256099942544~3347511713"

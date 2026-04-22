@@ -7,6 +7,7 @@ import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
+import 'package:pokerrunnetwork/models/sponsors.dart';
 import 'package:pokerrunnetwork/models/transaction.dart';
 import 'package:pokerrunnetwork/models/userModel.dart';
 
@@ -69,6 +70,15 @@ class FirestoreServices {
         if (data['needApproval'] != null &&
             data['needApproval'].toString().trim().isNotEmpty) {
           needApproval = data['needApproval'];
+        }
+
+        if (data['sponsorLinks'] is List) {
+          sponsorLinks = (data['sponsorLinks'] as List)
+              .whereType<Map>()
+              .map((e) => SponsorsModel.toModel(Map<String, dynamic>.from(e)))
+              .toList();
+        } else {
+          sponsorLinks = [];
         }
       }
     }
