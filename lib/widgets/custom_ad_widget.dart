@@ -40,7 +40,7 @@ class _CustomAdInlineWidgetState extends State<CustomAdInlineWidget> {
       return const SizedBox.shrink();
     }
 
-    final double adHeight = widget.height ?? 103.0;
+    final double adHeight = widget.height ?? 107.0;
     final double adRadius = widget.radius ?? 10;
 
     return Container(
@@ -80,11 +80,12 @@ class _CustomAdInlineWidgetState extends State<CustomAdInlineWidget> {
                       height: 320,
                     ),
                   )
-                : AdmobNativeAd.small(
-                    key: _stableKey,
-                    // The package uses IDs registered in AdIdRegistry (see SplashScreen)
-                    backgroundColor: Colors.transparent,
-                    height: adHeight,
+                : Center(
+                    child: AdmobNativeAd.small(
+                      key: _stableKey,
+                      backgroundColor: Colors.transparent,
+                      height: adHeight,
+                    ),
                   ),
 
             // "Sponsored" label
