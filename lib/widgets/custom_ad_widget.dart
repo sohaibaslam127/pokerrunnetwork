@@ -10,11 +10,13 @@ class CustomAdInlineWidget extends StatefulWidget {
   final Key? widgetKey;
   final double? height;
   final double? radius;
+  final bool isMedium;
   const CustomAdInlineWidget({
     super.key,
     this.widgetKey,
     this.height,
     this.radius,
+    this.isMedium = false,
   });
 
   @override
@@ -70,12 +72,20 @@ class _CustomAdInlineWidgetState extends State<CustomAdInlineWidget> {
             ),
 
             // Admob Native Ad
-            AdmobNativeAd.small(
-              key: _stableKey,
-              // The package uses IDs registered in AdIdRegistry (see SplashScreen)
-              backgroundColor: Colors.transparent,
-              height: adHeight,
-            ),
+            widget.isMedium || adHeight > 30.h
+                ? Center(
+                    child: AdmobNativeAd.medium(
+                      key: _stableKey,
+                      backgroundColor: Colors.transparent,
+                      height: 320,
+                    ),
+                  )
+                : AdmobNativeAd.small(
+                    key: _stableKey,
+                    // The package uses IDs registered in AdIdRegistry (see SplashScreen)
+                    backgroundColor: Colors.transparent,
+                    height: adHeight,
+                  ),
 
             // "Sponsored" label
             Positioned(
@@ -91,7 +101,7 @@ class _CustomAdInlineWidgetState extends State<CustomAdInlineWidget> {
                   "Sponsored",
                   style: TextStyle(
                     color: Colors.white70,
-                    fontSize: 10.sp,
+                    fontSize: widget.isMedium ? 12.sp : 10.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

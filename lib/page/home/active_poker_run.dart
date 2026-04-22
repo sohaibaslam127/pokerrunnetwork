@@ -107,17 +107,11 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                       children: [
                         SizedBox(height: 10.h),
                         text_widget("No Event Found", color: Colors.white),
+                        SizedBox(height: 10.h),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: CustomAdInlineWidget(
-                            widgetKey: Key("active_poker_run_empty_1"),
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CustomAdInlineWidget(
-                            widgetKey: Key("active_poker_run_empty_2"),
+                            widgetKey: Key("active_poker_run_empty"),
                           ),
                         ),
                       ],
@@ -420,9 +414,25 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                                           .id,
                                                                     );
                                                             EasyLoading.dismiss();
-                                                            Get.off(
-                                                              SchedulePokerN(),
-                                                            );
+                                                            if (currentGame
+                                                                    .game
+                                                                    .pokerId
+                                                                    .isNotEmpty &&
+                                                                currentGame
+                                                                    .game
+                                                                    .userId
+                                                                    .isNotEmpty) {
+                                                              await Get.to(
+                                                                SchedulePokerN(),
+                                                              );
+                                                            } else {
+                                                              // try again
+                                                              toast(
+                                                                context,
+                                                                "Error",
+                                                                "Please try again",
+                                                              );
+                                                            }
                                                           },
                                                           child: Container(
                                                             height: 4.h,
@@ -516,7 +526,7 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                     },
                     footer: SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 4.h, top: 1.h),
+                        padding: EdgeInsets.only(bottom: 4.h, top: .5.h),
                         child: CustomAdInlineWidget(
                           widgetKey: const Key("active_poker_ad_footer"),
                         ),
@@ -526,11 +536,10 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                         ? FirestoreServices.I.getActiveJoinEvents()
                         : FirestoreServices.I.searchActiveEvents(
                             searchPokerRun.text,
-                          ), // TODO: Create searchActiveJoinEvents for better results
+                          ),
                     itemBuilderType: PaginateBuilderType.listView,
                   ),
                 ),
-                SizedBox(height: 3.h),
               ],
             ),
           ),

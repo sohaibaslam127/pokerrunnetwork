@@ -12,6 +12,7 @@ import 'package:pokerrunnetwork/models/stops.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/page/home/stop_view.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -47,11 +48,7 @@ class _GameViewState extends State<GameView> {
   Widget build(BuildContext context) {
     stopsModel = currentGame.latestEvent.stops[currentGame.game.currentStop];
     stopNumber = currentGame.game.currentStop;
-    finalUrl = normalizeUrl(
-      stopsModel.sponserLink.isNotEmpty
-          ? stopsModel.sponserLink
-          : defaultSponsor,
-    );
+    finalUrl = normalizeUrl(stopsModel.sponserLink);
     calculateDistance(
       currentUser.location.latitude,
       currentUser.location.longitude,
@@ -59,6 +56,9 @@ class _GameViewState extends State<GameView> {
       stopsModel.stopLocation.longitude,
     ).then((value) {
       distance = value;
+      Future.delayed(const Duration(milliseconds: 800), () {
+        setState(() {});
+      });
     });
     return Stack(
       children: [
@@ -162,11 +162,12 @@ class _GameViewState extends State<GameView> {
                       ),
                     ),
                     SizedBox(height: 1.h),
+
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 3.w),
                       child: onPress(
                         ontap: () {
-                          launchMyUrl(finalUrl);
+                          if (finalUrl.isNotEmpty) launchMyUrl(finalUrl);
                         },
                         child: Row(
                           children: [
@@ -179,7 +180,9 @@ class _GameViewState extends State<GameView> {
                             ),
                             Spacer(),
                             Icon(
-                              RemixIcons.link,
+                              finalUrl.isNotEmpty
+                                  ? RemixIcons.link
+                                  : Icons.campaign_outlined,
                               color: Colors.white.withValues(alpha: 0.8),
                             ),
                           ],
@@ -189,34 +192,41 @@ class _GameViewState extends State<GameView> {
                     SizedBox(height: 1.h),
                     SizedBox(
                       height: 52.h,
-                      child: Stack(
-                        children: [
-                          InAppWebView(
-                            key: Key(finalUrl),
-                            initialUrlRequest: URLRequest(
-                              url: WebUri(finalUrl),
+                      child: finalUrl.isNotEmpty
+                          ? Stack(
+                              children: [
+                                InAppWebView(
+                                  key: Key(finalUrl),
+                                  initialUrlRequest: URLRequest(
+                                    url: WebUri(finalUrl),
+                                  ),
+                                  initialSettings: InAppWebViewSettings(
+                                    javaScriptEnabled: true,
+                                    mediaPlaybackRequiresUserGesture: false,
+                                    useHybridComposition: true,
+                                  ),
+                                  onWebViewCreated: (controller) {
+                                    webViewController = controller;
+                                  },
+                                  onLoadStop: (controller, url) {
+                                    setState(() => isLoading = false);
+                                  },
+                                ),
+                                if (isLoading)
+                                  Center(
+                                    child: CircularProgressIndicator(
+                                      color: MyColors.primary,
+                                    ),
+                                  ),
+                              ],
+                            )
+                          : CustomAdInlineWidget(
+                              height: 52.h,
+                              isMedium: true,
+                              radius: 0,
                             ),
-                            initialSettings: InAppWebViewSettings(
-                              javaScriptEnabled: true,
-                              mediaPlaybackRequiresUserGesture: false,
-                              useHybridComposition: true,
-                            ),
-                            onWebViewCreated: (controller) {
-                              webViewController = controller;
-                            },
-                            onLoadStop: (controller, url) {
-                              setState(() => isLoading = false);
-                            },
-                          ),
-                          if (isLoading)
-                            Center(
-                              child: CircularProgressIndicator(
-                                color: MyColors.primary,
-                              ),
-                            ),
-                        ],
-                      ),
                     ),
+
                     SizedBox(height: .5.h),
                     Container(
                       padding: EdgeInsets.all(2.w),

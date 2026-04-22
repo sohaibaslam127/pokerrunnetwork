@@ -78,10 +78,11 @@ class _ParticipantListState extends State<ParticipantList> {
                       children: [
                         SizedBox(height: 10.h),
                         text_widget("No Event Found", color: Colors.white),
+                        SizedBox(height: 10.h),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: CustomAdInlineWidget(
-                            widgetKey: Key("participant_empty_ad_1"),
+                            widgetKey: Key("participant_empty_ad"),
                           ),
                         ),
                       ],
@@ -213,10 +214,7 @@ class _ParticipantListState extends State<ParticipantList> {
                     },
                     footer: SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 4.h,
-                          top: 1.h,
-                        ),
+                        padding: EdgeInsets.only(bottom: 4.h),
                         child: CustomAdInlineWidget(
                           widgetKey: const Key("participant_ad_footer"),
                         ),

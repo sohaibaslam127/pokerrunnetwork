@@ -25,11 +25,11 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
     title: text_widget(
       title.toUpperCase(),
       color: Colors.white,
-      fontSize: 16.5.sp,
+      fontSize: 16.sp,
       fontWeight: FontWeight.bold,
     ),
     offset: Offset(3.w, topInset > 44 ? 3.h : 0),
-    subtitle: text_widget(message, color: Colors.white, fontSize: 16.sp),
+    subtitle: text_widget(message, color: Colors.white, fontSize: 15.sp),
     duration: const Duration(seconds: 2),
     backgroundGradient: LinearGradient(
       colors: type == 0

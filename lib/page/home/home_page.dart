@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     if (currentGame.game.currentStop > 0) {
       await Get.off(GameView());
     }
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -104,8 +105,13 @@ class _HomePageState extends State<HomePage> {
                 if (currentGame.latestEvent.id != "") ...[
                   onPress(
                     ontap: () async {
-                      await Get.to(SchedulePokerN());
-                      _initializeGameData();
+                      if (currentGame.game.pokerId.isNotEmpty &&
+                          currentGame.game.userId.isNotEmpty) {
+                        await Get.to(SchedulePokerN());
+                        _initializeGameData();
+                      } else {
+                        toast(context, "Error", "Please try again");
+                      }
                     },
                     child: Image.asset(
                       OtherButtons.currentPokerRun,

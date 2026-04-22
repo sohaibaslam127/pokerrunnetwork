@@ -149,6 +149,7 @@ class FirestoreServices {
         return UserModel();
       }
     } catch (e) {
+      toast(context, "Get User Error", e.toString());
       return UserModel();
     }
     return user;
@@ -394,7 +395,25 @@ class FirestoreServices {
     }
   }
 
+  Stream<GamePlayerModel> gamePlayerStream(String pokerId, String userId) {
+    if (pokerId.isEmpty || userId.isEmpty) {
+      return Stream.value(GamePlayerModel());
+    }
+    return _instance
+        .collection('events')
+        .doc(pokerId)
+        .collection("participants")
+        .doc(userId)
+        .snapshots()
+        .map(
+          (doc) => doc.exists
+              ? GamePlayerModel.toModel(doc.data() ?? {})
+              : GamePlayerModel(),
+        );
+  }
+
   Future<GamePlayerModel> getGamePlayer(String pokerId, String userId) async {
+    if (pokerId.isEmpty || userId.isEmpty) return GamePlayerModel();
     try {
       DocumentSnapshot<Map<String, dynamic>> data = await _instance
           .collection('events')
@@ -430,6 +449,9 @@ class FirestoreServices {
   }
 
   Query getGamePlayers(String pokerId, String search) {
+    if (pokerId.isEmpty) {
+      return _instance.collection('events').doc('dummy').collection('participants').limit(0);
+    }
     if (search.isEmpty) {
       return _instance
           .collection('events')
@@ -447,6 +469,9 @@ class FirestoreServices {
   }
 
   Query getGamePlayersProgress(String pokerId, String search) {
+    if (pokerId.isEmpty) {
+      return _instance.collection('events').doc('dummy').collection('participants').limit(0);
+    }
     Query query = _instance
         .collection('events')
         .doc(pokerId)
@@ -463,6 +488,9 @@ class FirestoreServices {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> newPlayerStatus(String pokerId) {
+    if (pokerId.isEmpty) {
+      return const Stream.empty();
+    }
     return _instance
         .collection('events')
         .doc(pokerId)

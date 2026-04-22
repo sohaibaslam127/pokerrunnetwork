@@ -111,7 +111,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
             children: [
               Expanded(
                 child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   children: [
                     SizedBox(height: 2.h),
                     text_widget(
@@ -130,7 +130,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                       color: MyColors.white.withValues(alpha: 0.60),
                       height: 1.7,
                     ),
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 1.h),
                     text_widget(
                       "Description",
                       fontSize: 16.sp,
@@ -138,7 +138,6 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                       color: Colors.white,
                     ),
                     SizedBox(height: 0.3.h),
-
                     text_widget(
                       widget.event.description,
                       fontSize: 14.5.sp,
@@ -185,6 +184,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                         ),
                       ],
                     ),
+
                     // if (isJoin &&
                     //     widget.event.changeCardFee > 0 &&
                     //     widget.iamCoRider.roadName.isEmpty &&
@@ -222,43 +222,42 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                     //     ),
                     //   ],
                     // ],
-                    // if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
-                    //   SizedBox(height: 2.h),
-                    //   _priceRow("Rider", widget.event.joinFee),
-                    //   if (isCorider)
-                    //     _priceRow("Co-rider", widget.event.coRiderFee),
-                    //   if (isExtraCard)
-                    //     _priceRow(
-                    //       "Rider Extra Cards",
-                    //       widget.event.changeCardFee,
-                    //     ),
-                    //   if (isExtraCardCorider && isCorider)
-                    //     _priceRow(
-                    //       "Co-rider Extra Cards",
-                    //       widget.event.changeCardFee,
-                    //     ),
-                    //   _priceRow("Service Fee", serviceFee),
-                    //   SizedBox(height: 1.3.h),
-                    //   Divider(thickness: 0.2, color: Colors.white54),
-                    //   SizedBox(height: 1.3.h),
-                    //   Row(
-                    //     children: [
-                    //       text_widget(
-                    //         "Total Paid to Organizer",
-                    //         fontSize: 16.sp,
-                    //         fontWeight: FontWeight.w600,
-                    //         color: Colors.white,
-                    //       ),
-                    //       Spacer(),
-                    //       text_widget(
-                    //         "\$${getAmount().toStringAsFixed(2)}",
-                    //         fontSize: 16.sp,
-                    //         fontWeight: FontWeight.w600,
-                    //         color: Colors.white,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ],
+                    if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
+                      _priceRow("Joing Fee", widget.event.joinFee),
+                      // if (isCorider)
+                      //   _priceRow("Co-rider", widget.event.coRiderFee),
+                      // if (isExtraCard)
+                      //   _priceRow(
+                      //     "Rider Extra Cards",
+                      //     widget.event.changeCardFee,
+                      //   ),
+                      // if (isExtraCardCorider && isCorider)
+                      //   _priceRow(
+                      //     "Co-rider Extra Cards",
+                      //     widget.event.changeCardFee,
+                      //   ),
+                      _priceRow("Service Fee", serviceFee),
+                      SizedBox(height: .5.h),
+                      Divider(thickness: 0.2, color: Colors.white54),
+                      SizedBox(height: .5.h),
+                      Row(
+                        children: [
+                          text_widget(
+                            "Total Paid to Organizer",
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                          Spacer(),
+                          text_widget(
+                            "\$${getAmount().toStringAsFixed(2)}",
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
                     text_widget(
                       _getFooterText(),
                       fontSize: 15.sp,
@@ -268,8 +267,11 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                   ],
                 ),
               ),
-              SizedBox(height: 2.h),
-              const CustomAdInlineWidget(),
+              SizedBox(height: .5.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: const CustomAdInlineWidget(),
+              ),
               onPress(
                 ontap: () => handlePrimaryAction(),
                 child: Image.asset(
@@ -348,7 +350,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
       //     ? "The registration fee for this event is \$${serviceFee.toStringAsFixed(2)} per participant.\n"
       //     : "";
       msg += isJoin
-          ? "\nWould you like to continue?"
+          ? "\nPay the joining fee \$${getAmount().toStringAsFixed(2)} to confirm your participation to the organizer at starting point.\n\nWould you like to continue for free?"
           : "Would you like to leave the Event?";
       return msg;
     } else {

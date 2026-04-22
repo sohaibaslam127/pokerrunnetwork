@@ -27,12 +27,12 @@ class UserModel {
     fcm = jsonMap['fcm'];
     id = jsonMap['id'];
     isUser = jsonMap['isUser'];
-    pokerRunCount = jsonMap['pokerRunCount'];
+    pokerRunCount = jsonMap['pokerRunCount'] ?? 0;
     privateNote = jsonMap['privateNote'];
     name = jsonMap['name'];
     number = jsonMap['number'];
     image = jsonMap['image'];
-    riderCount = jsonMap['riderCount'];
+    riderCount = jsonMap['riderCount'] ?? 0;
     enable = jsonMap['enable'] ?? true;
     createdAt = jsonMap['createdAt'].toDate();
     lastAppOpen = jsonMap['lastAppOpen'].toDate();

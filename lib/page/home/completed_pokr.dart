@@ -161,17 +161,11 @@ class _FindPokerState extends State<CompletedPokr> {
                       children: [
                         SizedBox(height: 10.h),
                         text_widget("No Event Found", color: Colors.white),
+                        SizedBox(height: 10.h),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: CustomAdInlineWidget(
-                            widgetKey: Key("completed_poker_empty_1"),
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CustomAdInlineWidget(
-                            widgetKey: Key("completed_poker_empty_2"),
+                            widgetKey: Key("completed_poker_empty"),
                           ),
                         ),
                       ],
@@ -403,10 +397,7 @@ class _FindPokerState extends State<CompletedPokr> {
                     },
                     footer: SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 4.h,
-                          top: 1.h,
-                        ),
+                        padding: EdgeInsets.only(bottom: 4.h),
                         child: CustomAdInlineWidget(
                           widgetKey: const Key("completed_poker_ad_footer"),
                         ),

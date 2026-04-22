@@ -1,15 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
+import 'package:pokerrunnetwork/models/gameData.dart';
+import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
 import 'package:pokerrunnetwork/page/home/game_view.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
-import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -24,19 +26,36 @@ class SchedulePokerN extends StatefulWidget {
 class _SchedulePokerNState extends State<SchedulePokerN> {
   double distance = 0;
   bool click = false;
+  StreamSubscription<GamePlayerModel>? _gameSub;
   @override
   void initState() {
     super.initState();
-    calculateDistance(
-      currentUser.location.latitude,
-      currentUser.location.longitude,
-      currentGame.latestEvent.stops[0].stopLocation.latitude,
-      currentGame.latestEvent.stops[0].stopLocation.longitude,
-    ).then((value) {
-      setState(() {
+    if (currentGame.game.pokerId.isNotEmpty &&
+        currentGame.game.userId.isNotEmpty) {
+      calculateDistance(
+        currentUser.location.latitude,
+        currentUser.location.longitude,
+        currentGame.latestEvent.stops[0].stopLocation.latitude,
+        currentGame.latestEvent.stops[0].stopLocation.longitude,
+      ).then((value) {
         distance = value;
+        _gameSub = FirestoreServices.I
+            .gamePlayerStream(currentGame.game.pokerId, currentGame.game.userId)
+            .listen((updated) {
+              if (updated.pokerId.isEmpty) return;
+              currentGame.game = updated;
+              if (mounted) setState(() {});
+            });
       });
-    });
+    } else {
+      Get.back();
+    }
+  }
+
+  @override
+  void dispose() {
+    _gameSub?.cancel();
+    super.dispose();
   }
 
   @override
@@ -49,16 +68,14 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
           width: double.infinity,
           height: double.infinity,
         ),
-
         Scaffold(
           backgroundColor: Colors.transparent,
-
           appBar: AppBar(
             backgroundColor: Colors.white10,
             elevation: 0,
             leadingWidth: 9.w,
             leading: Padding(
-              padding: EdgeInsets.only(bottom: 3.5),
+              padding: EdgeInsets.only(bottom: 2.5, left: 1.5.w),
               child: onPress(
                 ontap: () {
                   Get.back();
