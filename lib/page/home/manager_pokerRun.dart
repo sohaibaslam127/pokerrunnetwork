@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
@@ -62,7 +63,7 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
             title: text_widget(
               "Back",
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
+              color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -295,6 +296,10 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
               ),
             ),
           ),
+          // bottomNavigationBar: Padding(
+          //   padding: EdgeInsets.only(left: 20, right: 20, bottom: 4.h),
+          //   child: const CustomAdInlineWidget(),
+          // ),
         ),
       ],
     );

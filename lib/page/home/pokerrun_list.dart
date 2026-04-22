@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
@@ -74,7 +75,7 @@ class _SchedulePokerState extends State<PokerRunList> {
                   ? "Copy an Existing Poker Run"
                   : "Co-Manager Poker Runs List",
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
+              color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -111,13 +112,14 @@ class _SchedulePokerState extends State<PokerRunList> {
                 EventModel eventModel = EventModel.toModel(
                   documentSnapshots[index].data() as Map<String, dynamic>,
                 );
-                return Padding(
+
+                Widget item = Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: Colors.white.withOpacity(0.18),
                       border: Border.all(
-                        color: const Color(0xffFFFFFF).withValues(alpha: 0.30),
+                        color: const Color(0xffFFFFFF).withOpacity(0.30),
                         width: 1.2,
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -188,7 +190,7 @@ class _SchedulePokerState extends State<PokerRunList> {
                               ).format(eventModel.eventDate),
                               fontSize: 14.7.sp,
                               fontWeight: FontWeight.w400,
-                              color: Colors.white.withValues(alpha: 0.60),
+                              color: Colors.white.withOpacity(0.60),
                             ),
                           ),
                           if (widget.type == 2) ...[
@@ -208,17 +210,13 @@ class _SchedulePokerState extends State<PokerRunList> {
                                     SizedBox(width: 1.3.w),
                                     Expanded(
                                       child: text_widget(
-                                        eventModel
-                                                .eventWinner
-                                                ?.roadName
+                                        eventModel.eventWinner?.roadName
                                                 .capitalizeFirst! ??
                                             "No One Join The Game",
                                         fontSize: 14.7.sp,
                                         maxline: 1,
                                         fontWeight: FontWeight.w400,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.60,
-                                        ),
+                                        color: Colors.white.withOpacity(0.60),
                                       ),
                                     ),
                                   ] else if (eventModel.status == 3) ...[
@@ -235,9 +233,7 @@ class _SchedulePokerState extends State<PokerRunList> {
                                         fontSize: 14.7.sp,
                                         maxline: 3,
                                         fontWeight: FontWeight.w400,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.60,
-                                        ),
+                                        color: Colors.white.withOpacity(0.60),
                                       ),
                                     ),
                                   ],
@@ -253,16 +249,12 @@ class _SchedulePokerState extends State<PokerRunList> {
                                     ),
                                     SizedBox(width: 1.3.w),
                                     text_widget(
-                                      eventModel
-                                              .eventWinner
-                                              ?.rank
+                                      eventModel.eventWinner?.rank
                                               .capitalize! ??
                                           "",
                                       fontSize: 14.7.sp,
                                       fontWeight: FontWeight.w400,
-                                      color: Colors.white.withValues(
-                                        alpha: 0.60,
-                                      ),
+                                      color: Colors.white.withOpacity(0.60),
                                     ),
                                   ],
                                 ],
@@ -377,6 +369,22 @@ class _SchedulePokerState extends State<PokerRunList> {
                           : null,
                     ),
                   ),
+                );
+
+                return Column(
+                  children: [
+                    item,
+                    if ((index + 1) % 4 == 0)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: CustomAdInlineWidget(),
+                      ),
+                    if (index == documentSnapshots.length - 1)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 20),
+                        child: CustomAdInlineWidget(),
+                      ),
+                  ],
                 );
               },
               query: widget.type == 1

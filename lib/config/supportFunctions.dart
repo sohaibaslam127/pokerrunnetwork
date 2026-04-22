@@ -103,7 +103,7 @@ void launchMyUrl(String url) async {
   try {
     await launchUrl(uri, mode: LaunchMode.platformDefault);
   } catch (e) {
-    debugPrint("Error launching URL: $e");
+    logger.e("Error launching URL: $e");
   }
 }
 
@@ -132,7 +132,7 @@ Future<void> openStore(bool playStoreId, bool appStoreId) async {
   if (await canLaunchUrl(uri)) {
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   } else {
-    debugPrint('Could not launch $url');
+    logger.e('Could not launch $url');
   }
 }
 

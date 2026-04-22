@@ -281,7 +281,7 @@ class FirestoreServices {
       }
       return events;
     } catch (e) {
-      print(e.toString());
+      logger.e("Error getting latest event: $e");
     }
     return [];
   }
@@ -339,7 +339,7 @@ class FirestoreServices {
         }
       }
     } catch (e) {
-      print(e);
+      logger.e("Error getting all join events: $e");
     }
     return events;
   }

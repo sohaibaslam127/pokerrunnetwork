@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:get/get.dart' hide SnackPosition;
 import 'package:intl/intl.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
@@ -482,7 +483,11 @@ class _CreatePokerState extends State<CreatePoker> {
                     ),
                   ),
                 ),
-                // SizedBox(height: 5.h),
+                SizedBox(height: 2.h),
+                Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: CustomAdInlineWidget(),
+                ),
               ],
             ),
           ),

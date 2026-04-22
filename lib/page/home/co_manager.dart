@@ -11,6 +11,7 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -55,7 +56,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
             title: text_widget(
               "Co-Manager List",
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
+              color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
             actions: [
@@ -75,34 +76,65 @@ class _CoManagerPageState extends State<CoManagerPage> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(20),
-            child: ListView(
-              children: List.generate(widget.eventModel.coManagers.length, (
-                index,
-              ) {
+            child: ListView.builder(
+              itemCount:
+                  widget.eventModel.coManagers.length +
+                  (widget.eventModel.coManagers.length ~/ 3) +
+                  1,
+              itemBuilder: (context, index) {
+                int totalItems =
+                    widget.eventModel.coManagers.length +
+                    (widget.eventModel.coManagers.length ~/ 3) +
+                    1;
+
+                // Last element is always an ad
+                if (index == totalItems - 1) {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: CustomAdInlineWidget(),
+                  );
+                }
+
+                // Every 4th element is an ad (index 3, 7, 11...)
+                if ((index + 1) % 4 == 0) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: CustomAdInlineWidget(),
+                  );
+                }
+
+                // Calculate the actual data index
+                int adCountBefore = (index + 1) ~/ 4;
+                int dataIndex = index - adCountBefore;
+
+                if (dataIndex >= widget.eventModel.coManagers.length) {
+                  return const SizedBox.shrink();
+                }
+
                 return Padding(
                   padding: EdgeInsets.only(bottom: 1.2.h),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: Colors.white.withOpacity(0.18),
                       border: Border.all(
-                        color: const Color(0xffFFFFFF).withValues(alpha: 0.30),
+                        color: const Color(0xffFFFFFF).withOpacity(0.30),
                         width: 1.2,
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(
                       title: text_widget(
-                        widget.eventModel.coManagerNames[index].capitalize!,
+                        widget.eventModel.coManagerNames[dataIndex].capitalize!,
                         fontSize: 16.5.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                       contentPadding: EdgeInsets.symmetric(horizontal: 3.w),
                       subtitle: text_widget(
-                        widget.eventModel.coManagers[index].toLowerCase(),
+                        widget.eventModel.coManagers[dataIndex].toLowerCase(),
                         fontSize: 14.7.sp,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.60),
+                        color: Colors.white.withOpacity(0.60),
                       ),
                       trailing: onPress(
                         ontap: () {
@@ -116,8 +148,10 @@ class _CoManagerPageState extends State<CoManagerPage> {
                             },
                             () {
                               Get.back();
-                              widget.eventModel.coManagers.removeAt(index);
-                              widget.eventModel.coManagerNames.removeAt(index);
+                              widget.eventModel.coManagers.removeAt(dataIndex);
+                              widget.eventModel.coManagerNames.removeAt(
+                                dataIndex,
+                              );
                               setState(() {});
                               FirestoreServices.I.setEvent(
                                 context,
@@ -133,7 +167,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
                     ),
                   ),
                 );
-              }),
+              },
             ),
           ),
         ),

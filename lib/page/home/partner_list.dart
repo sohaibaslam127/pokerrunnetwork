@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:get/get.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
@@ -67,7 +68,7 @@ class _PartnerListState extends State<PartnerList> {
                   ? "Authorize ${widget.eventModel.pokerName.capitalizeFirst} Participants"
                   : "Progress of ${widget.eventModel.pokerName.capitalizeFirst} Participants",
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
+              color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -116,13 +117,13 @@ class _PartnerListState extends State<PartnerList> {
                   isPaid.value = true;
                 }
 
-                return Padding(
+                Widget item = Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: Colors.white.withOpacity(0.18),
                       border: Border.all(
-                        color: const Color(0xffFFFFFF).withValues(alpha: 0.30),
+                        color: const Color(0xffFFFFFF).withOpacity(0.30),
                         width: 1.2,
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -156,7 +157,7 @@ class _PartnerListState extends State<PartnerList> {
                                 game.userName.toLowerCase(),
                                 fontSize: 14.7.sp,
                                 fontWeight: FontWeight.w400,
-                                color: Colors.white.withValues(alpha: 0.60),
+                                color: Colors.white.withOpacity(0.60),
                               ),
                             ],
                           ),
@@ -407,6 +408,21 @@ class _PartnerListState extends State<PartnerList> {
                       ],
                     ),
                   ),
+                );
+                return Column(
+                  children: [
+                    item,
+                    if ((index + 1) % 4 == 0)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: CustomAdInlineWidget(),
+                      ),
+                    if (index == documentSnapshots.length - 1)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 20),
+                        child: CustomAdInlineWidget(),
+                      ),
+                  ],
                 );
               },
               query: widget.type == 0

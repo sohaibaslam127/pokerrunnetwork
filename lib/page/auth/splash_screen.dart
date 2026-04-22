@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +10,7 @@ import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/firebase_options.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
+import 'package:pokerrunnetwork/services/3rd_party/ad_service.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/services/locationsServices.dart';
@@ -27,6 +27,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String version = "", buildNumber = "";
+
   @override
   void initState() {
     super.initState();
@@ -63,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final bool isConnected =
         await InternetConnectionChecker.instance.hasConnection;
     if (isConnected) {
-      log('Device is connected to the internet');
+      logger.i('Device is connected to the internet');
     } else {
       Get.offAll(
         CloseApp(
@@ -77,6 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    await AdService.I.init();
     await FirestoreServices.I.init();
     await StripeServices.I.init();
     await AuthServices.I.checkUser();

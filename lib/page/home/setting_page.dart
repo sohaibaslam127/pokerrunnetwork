@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
@@ -103,7 +104,7 @@ class _SettingPageState extends State<SettingPage> {
             title: text_widget(
               "Setting",
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
+              color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -154,7 +155,7 @@ class _SettingPageState extends State<SettingPage> {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Color(0xffF98080).withValues(alpha: 0.50),
+                      color: Color(0xffF98080).withOpacity(0.50),
                     ),
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -179,6 +180,12 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 ),
               ),
+              const Spacer(),
+              Padding(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 4.h),
+                child: CustomAdInlineWidget(),
+              ),
+              SizedBox(height: 2.h),
             ],
           ),
         ),

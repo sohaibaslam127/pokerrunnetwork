@@ -43,7 +43,7 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
             title: text_widget(
               "Back",
               fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
+              color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
@@ -149,9 +149,9 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                         width: 37.w,
                         height: 4.7.h,
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.20),
+                          color: Colors.white.withOpacity(0.20),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.30),
+                            color: Colors.white.withOpacity(0.30),
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),

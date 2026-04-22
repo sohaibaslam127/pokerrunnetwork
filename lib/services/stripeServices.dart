@@ -5,6 +5,8 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/transaction.dart';
 
+import '../config/global.dart';
+
 class StripeServices {
   static final StripeServices I = StripeServices._();
   StripeServices._();
@@ -101,14 +103,14 @@ class StripeServices {
   void _handleStripeError(BuildContext context, dynamic e) {
     if (e is StripeException) {
       final msg = e.error.message ?? "Stripe error occurred.";
-      debugPrint("StripeException: $msg");
+      logger.e("StripeException: $msg");
       toast(context, "Stripe Error", msg);
     } else if (e is DioException) {
       final msg = e.response?.data['error'] ?? e.message ?? "Network error.";
-      debugPrint("DioException: $msg");
+      logger.e("DioException: $msg");
       toast(context, "API Error", msg.toString());
     } else {
-      debugPrint("Unexpected Error: $e");
+      logger.e("Unexpected Error: $e");
       toast(context, "Unexpected Error", e.toString());
     }
   }
