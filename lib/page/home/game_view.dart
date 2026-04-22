@@ -45,21 +45,21 @@ class _GameViewState extends State<GameView> {
     }
   }
 
-  SponsorsModel? _pickSponsorFor(int stopNumber) {
+  SponsorsModel _pickSponsorFor(int stopNumber) {
     final enabled = sponsorLinks.where((s) => s.enable);
     final stopSpecific = enabled
-        .where((s) => s.stops.isNotEmpty && s.stops.contains(stopNumber))
+        .where((s) => s.stop.isNotEmpty && s.stop.contains(stopNumber))
         .toList();
     if (stopSpecific.isNotEmpty) {
       stopSpecific.shuffle();
       return stopSpecific.first;
     }
-    final global = enabled.where((s) => s.stops.isEmpty).toList();
+    final global = enabled.where((s) => s.stop.isEmpty).toList();
     if (global.isNotEmpty) {
       global.shuffle();
       return global.first;
     }
-    return null;
+    return SponsorsModel()..link = "https://www.tomorrowbyte.com/";
   }
 
   @override
@@ -68,13 +68,13 @@ class _GameViewState extends State<GameView> {
     stopNumber = currentGame.game.currentStop;
     finalUrl = normalizeUrl(stopsModel.sponserLink);
     SponsorsModel? fallbackSponsor;
+
     String fallbackSponsorUrl = "";
     if (finalUrl.isEmpty) {
       fallbackSponsor = _pickSponsorFor(stopNumber);
-      if (fallbackSponsor != null) {
-        fallbackSponsorUrl = normalizeUrl(fallbackSponsor.link);
-      }
+      fallbackSponsorUrl = normalizeUrl(fallbackSponsor.link);
     }
+
     calculateDistance(
       currentUser.location.latitude,
       currentUser.location.longitude,
@@ -252,38 +252,38 @@ class _GameViewState extends State<GameView> {
                               ],
                             )
                           : fallbackSponsorUrl.isNotEmpty
-                              ? Stack(
-                                  children: [
-                                    InAppWebView(
-                                      key: Key(fallbackSponsorUrl),
-                                      initialUrlRequest: URLRequest(
-                                        url: WebUri(fallbackSponsorUrl),
-                                      ),
-                                      initialSettings: InAppWebViewSettings(
-                                        javaScriptEnabled: true,
-                                        mediaPlaybackRequiresUserGesture: false,
-                                        useHybridComposition: true,
-                                      ),
-                                      onWebViewCreated: (controller) {
-                                        webViewController = controller;
-                                      },
-                                      onLoadStop: (controller, url) {
-                                        setState(() => isLoading = false);
-                                      },
-                                    ),
-                                    if (isLoading)
-                                      Center(
-                                        child: CircularProgressIndicator(
-                                          color: MyColors.primary,
-                                        ),
-                                      ),
-                                  ],
-                                )
-                              : CustomAdInlineWidget(
-                                  height: 52.h,
-                                  isMedium: true,
-                                  radius: 0,
+                          ? Stack(
+                              children: [
+                                InAppWebView(
+                                  key: Key(fallbackSponsorUrl),
+                                  initialUrlRequest: URLRequest(
+                                    url: WebUri(fallbackSponsorUrl),
+                                  ),
+                                  initialSettings: InAppWebViewSettings(
+                                    javaScriptEnabled: true,
+                                    mediaPlaybackRequiresUserGesture: false,
+                                    useHybridComposition: true,
+                                  ),
+                                  onWebViewCreated: (controller) {
+                                    webViewController = controller;
+                                  },
+                                  onLoadStop: (controller, url) {
+                                    setState(() => isLoading = false);
+                                  },
                                 ),
+                                if (isLoading)
+                                  Center(
+                                    child: CircularProgressIndicator(
+                                      color: MyColors.primary,
+                                    ),
+                                  ),
+                              ],
+                            )
+                          : CustomAdInlineWidget(
+                              height: 52.h,
+                              isMedium: true,
+                              radius: 0,
+                            ),
                     ),
 
                     SizedBox(height: .5.h),

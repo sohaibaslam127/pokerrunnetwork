@@ -71,16 +71,21 @@ class FirestoreServices {
             data['needApproval'].toString().trim().isNotEmpty) {
           needApproval = data['needApproval'];
         }
-
-        if (data['sponsorLinks'] is List) {
-          sponsorLinks = (data['sponsorLinks'] as List)
-              .whereType<Map>()
-              .map((e) => SponsorsModel.toModel(Map<String, dynamic>.from(e)))
-              .toList();
-        } else {
-          sponsorLinks = [];
-        }
       }
+    }
+
+    try {
+      final sponsorSnap = await _instance
+          .collection('admin')
+          .doc('info')
+          .collection('sponsorLinks')
+          .get();
+      sponsorLinks = sponsorSnap.docs
+          .where((d) => d.exists)
+          .map((d) => SponsorsModel.toModel(d.data()))
+          .toList();
+    } catch (e) {
+      sponsorLinks = [];
     }
   }
 

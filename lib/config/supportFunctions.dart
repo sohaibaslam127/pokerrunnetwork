@@ -28,7 +28,7 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
       fontSize: 16.sp,
       fontWeight: FontWeight.bold,
     ),
-    offset: Offset(3.w, topInset > 44 ? 3.h : 0),
+    offset: Offset(3.w, 3.h),
     subtitle: text_widget(message, color: Colors.white, fontSize: 15.sp),
     duration: const Duration(seconds: 2),
     backgroundGradient: LinearGradient(

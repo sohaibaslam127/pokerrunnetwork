@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class SponsorsModel {
-  List<int> stops = [];
+  List<int> stop = [];
   String name = "";
   String link = "";
   String id = "";
@@ -13,7 +11,7 @@ class SponsorsModel {
     link = jsonMap['link'] ?? '';
     id = jsonMap['id'] ?? '';
     enable = jsonMap['enable'] ?? true;
-    stops = List<int>.from(jsonMap['stops'] ?? []);
+    stop = List<int>.from(jsonMap['stop'] ?? []);
   }
   Map<String, dynamic> toSaveJSON() {
     Map<String, dynamic> jsonMap = <String, dynamic>{};
@@ -21,7 +19,7 @@ class SponsorsModel {
     jsonMap['link'] = link;
     jsonMap['id'] = id;
     jsonMap['enable'] = enable;
-    jsonMap['stops'] = stops;
+    jsonMap['stops'] = stop;
     return jsonMap;
   }
 }

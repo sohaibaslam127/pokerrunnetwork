@@ -8,6 +8,7 @@ import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
+import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/page/auth/login_page.dart';
 import 'package:pokerrunnetwork/page/home/participant_list.dart';
@@ -405,32 +406,33 @@ class _ActivePokerRunState extends State<ActivePokerRun> {
                                                         child: onPress(
                                                           ontap: () async {
                                                             EasyLoading.show();
-                                                            currentGame =
-                                                                await FirestoreServices
-                                                                    .I
-                                                                    .getGamebyEventId(
-                                                                      event.id,
-                                                                      currentUser
-                                                                          .id,
-                                                                    );
+                                                            GameData
+                                                            game = await FirestoreServices
+                                                                .I
+                                                                .getGamebyEventId(
+                                                                  event.id,
+                                                                  currentUser
+                                                                      .id,
+                                                                );
                                                             EasyLoading.dismiss();
-                                                            if (currentGame
+                                                            if (game
                                                                     .game
                                                                     .pokerId
                                                                     .isNotEmpty &&
-                                                                currentGame
+                                                                game
                                                                     .game
                                                                     .userId
                                                                     .isNotEmpty) {
+                                                              currentGame =
+                                                                  game;
                                                               await Get.to(
                                                                 SchedulePokerN(),
                                                               );
                                                             } else {
-                                                              // try again
                                                               toast(
                                                                 context,
-                                                                "Error",
-                                                                "Please try again",
+                                                                "Game Not Started",
+                                                                "It seems you have already completed this game, wait for the results.",
                                                               );
                                                             }
                                                           },
