@@ -168,27 +168,80 @@ class _GameViewState extends State<GameView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 1.5.h),
+
+                    // ── Stop header + progress ────────────────────────────
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      padding: EdgeInsets.symmetric(horizontal: 4.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: text_widget(
-                              "Stop $stopNumber: ${stopsModel.name}",
-                              color: Colors.white.withValues(alpha: 0.8),
-                              maxline: 1,
-                              textAlign: TextAlign.center,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17.5.sp,
-                            ),
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 3.w,
+                                  vertical: 0.5.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: MyColors.primary.withValues(
+                                    alpha: 0.18,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: MyColors.primary.withValues(
+                                      alpha: 0.40,
+                                    ),
+                                  ),
+                                ),
+                                child: text_widget(
+                                  "Stop $stopNumber of ${currentGame.latestEvent.stops.length - 1}",
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: MyColors.primary,
+                                ),
+                              ),
+                              const Spacer(),
+                              // progress dots
+                              Row(
+                                children: List.generate(
+                                  currentGame.latestEvent.stops.length - 1,
+                                  (i) {
+                                    final active = i < stopNumber;
+                                    final current = i == stopNumber - 1;
+                                    return Container(
+                                      margin: EdgeInsets.only(left: 1.w),
+                                      width: current ? 3.w : 1.8.w,
+                                      height: 1.8.w,
+                                      decoration: BoxDecoration(
+                                        color: active
+                                            ? MyColors.primary
+                                            : Colors.white.withValues(
+                                                alpha: 0.25,
+                                              ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 0.8.h),
+                          text_widget(
+                            stopsModel.name,
+                            color: Colors.white,
+                            maxline: 2,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17.sp,
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 1.h),
 
+                    SizedBox(height: .5.h),
+
+                    // ── Sponsor chip ──────────────────────────────────────
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 3.w),
                       child: onPress(
@@ -199,28 +252,51 @@ class _GameViewState extends State<GameView> {
                             launchMyUrl(fallbackSponsorUrl);
                           }
                         },
-                        child: Row(
-                          children: [
-                            text_widget(
-                              "Sponsored: ${(finalUrl.isNotEmpty ? stopsModel.sponserName : (fallbackSponsor?.name ?? stopsModel.sponserName)).capitalize}",
-                              color: Colors.white.withValues(alpha: 0.8),
-                              maxline: 1,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15.sp,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 3.5.w,
+                            vertical: 0.8.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.06),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.10),
                             ),
-                            Spacer(),
-                            Icon(
-                              (finalUrl.isNotEmpty ||
-                                      fallbackSponsorUrl.isNotEmpty)
-                                  ? RemixIcons.link
-                                  : Icons.campaign_outlined,
-                              color: Colors.white.withValues(alpha: 0.8),
-                            ),
-                          ],
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.campaign_outlined,
+                                color: MyColors.white.withValues(alpha: 0.55),
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 2.w),
+                              Expanded(
+                                child: text_widget(
+                                  "Sponsored by ${(finalUrl.isNotEmpty ? stopsModel.sponserName : (fallbackSponsor?.name ?? stopsModel.sponserName)).capitalize}",
+                                  color: Colors.white.withValues(alpha: 0.75),
+                                  maxline: 1,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13.5.sp,
+                                ),
+                              ),
+                              if (finalUrl.isNotEmpty ||
+                                  fallbackSponsorUrl.isNotEmpty)
+                                Icon(
+                                  RemixIcons.external_link_line,
+                                  color: MyColors.primary,
+                                  size: 15.sp,
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
+
                     SizedBox(height: 1.h),
+
+                    // ── WebView / Ad ──────────────────────────────────────
                     SizedBox(
                       height: 52.h,
                       child: finalUrl.isNotEmpty
@@ -280,58 +356,98 @@ class _GameViewState extends State<GameView> {
                               ],
                             )
                           : CustomAdInlineWidget(
-                              height: 52.h,
+                              height: 53.h,
                               isMedium: true,
                               radius: 0,
                             ),
                     ),
 
-                    SizedBox(height: .5.h),
-                    Container(
-                      padding: EdgeInsets.all(2.w),
-                      margin: EdgeInsets.all(2.w),
-                      width: Get.width,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.30),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.40),
+                    SizedBox(height: 1.h),
+
+                    // ── Address + distance card ───────────────────────────
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3.w),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 2.w,
+                          vertical: 1.4.h,
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: text_widget(
-                                  stopsModel.address,
-                                  color: Colors.white,
-                                  maxline: 2,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(width: 3.w),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(1.5.w),
-                                  child: text_widget(
-                                    "${distance.toStringAsFixed(2)}\nMiles",
-                                    textAlign: TextAlign.center,
-                                    fontSize: 14.4.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.05),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.10),
                           ),
-                        ],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              RemixIcons.map_pin_2_line,
+                              color: const Color(0xFFEF6C4A),
+                              size: 18.sp,
+                            ),
+                            SizedBox(width: 2.5.w),
+                            Expanded(
+                              child: text_widget(
+                                stopsModel.address,
+                                color: Colors.white.withValues(alpha: 0.85),
+                                maxline: 2,
+                                fontSize: 13.5.sp,
+                                fontWeight: FontWeight.w500,
+                                height: 1.4,
+                              ),
+                            ),
+                            SizedBox(width: 3.w),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 3.w,
+                                vertical: 0.8.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: distance < miles
+                                    ? Colors.green.withValues(alpha: 0.20)
+                                    : MyColors.secondary.withValues(
+                                        alpha: 0.18,
+                                      ),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: distance < miles
+                                      ? Colors.green.withValues(alpha: 0.45)
+                                      : MyColors.secondary.withValues(
+                                          alpha: 0.35,
+                                        ),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  text_widget(
+                                    distance.toStringAsFixed(2),
+                                    textAlign: TextAlign.center,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: distance < miles
+                                        ? Colors.greenAccent
+                                        : MyColors.secondary,
+                                  ),
+                                  text_widget(
+                                    "miles",
+                                    textAlign: TextAlign.center,
+                                    fontSize: 12.5.sp,
+                                    color: distance < miles
+                                        ? Colors.greenAccent.withValues(
+                                            alpha: 0.75,
+                                          )
+                                        : MyColors.secondary.withValues(
+                                            alpha: 0.75,
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

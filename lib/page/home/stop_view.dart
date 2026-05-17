@@ -173,10 +173,38 @@ class _StopViewState extends State<StopView> {
                   },
                   child: Image.asset(OtherButtons.changeThisCard),
                 ),
-                text_widget(
-                  "Note: 1 permanent card change per stop",
-                  color: Colors.white.withValues(alpha: 0.7),
-                  fontSize: 16.sp,
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 3.w,
+                      vertical: 0.8.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.amber.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: Colors.amber.withValues(alpha: 0.75),
+                          size: 14.sp,
+                        ),
+                        SizedBox(width: 2.w),
+                        text_widget(
+                          "1 permanent card change allowed per stop",
+                          fontSize: 13.sp,
+                          color: Colors.amber.withValues(alpha: 0.85),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ] else ...[
                 Spacer(flex: 3),
