@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
+import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 void showPopup(
@@ -31,14 +32,12 @@ void showPopup(
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Text(
+                    child: text_widget(
                       title.capitalize!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
                 ),

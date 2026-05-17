@@ -71,7 +71,7 @@ class _PokerStopsState extends State<PokerStops> {
       children: [
         Positioned.fill(
           child: Image.asset(
-            "assets/icons/bbg.jpg",
+            "assets/icons/bg.jpg",
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,

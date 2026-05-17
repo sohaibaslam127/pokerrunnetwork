@@ -95,7 +95,7 @@ class _PokerSponsersState extends State<PokerSponsers> {
   Widget _copyPasteSuffix(TextEditingController controller) {
     return AnimatedBuilder(
       animation: controller,
-      builder: (_, __) {
+      builder: (_, _) {
         final hasText = controller.text.trim().isNotEmpty;
         return onPress(
           ontap: () async {
@@ -204,7 +204,7 @@ class _PokerSponsersState extends State<PokerSponsers> {
       children: [
         Positioned.fill(
           child: Image.asset(
-            "assets/icons/bbg.jpg",
+            "assets/icons/bg.jpg",
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -476,12 +476,8 @@ class _PokerSponsersState extends State<PokerSponsers> {
 
                                 for (final slot in _unlockedPaidSlots) {
                                   final i = slot - 1;
-                                  if (_nameControllers[i].text
-                                          .trim()
-                                          .isEmpty ||
-                                      _linkControllers[i].text
-                                          .trim()
-                                          .isEmpty) {
+                                  if (_nameControllers[i].text.trim().isEmpty ||
+                                      _linkControllers[i].text.trim().isEmpty) {
                                     toast(
                                       context,
                                       "Sponsor required",

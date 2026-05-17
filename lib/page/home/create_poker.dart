@@ -85,9 +85,9 @@ class _CreatePokerState extends State<CreatePoker> {
           backgroundColor: Colors.transparent,
           body: onPress(
             ontap: () => FocusManager.instance.primaryFocus?.unfocus(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: ListView(
               children: [
+                SizedBox(height: 5.h),
                 Center(
                   child: Container(
                     width: 90.w,
