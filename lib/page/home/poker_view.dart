@@ -18,6 +18,7 @@ import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
+import 'package:pokerrunnetwork/page/home/route_map_view.dart';
 
 class PokerDetailsView extends StatefulWidget {
   final EventModel event;
@@ -200,7 +201,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                                     ),
                                     onPress(
                                       ontap: () {
-                                        // implement it
+                                        Get.to(RouteMapView(widget.event));
                                       },
                                       child: Container(
                                         padding: EdgeInsets.all(1.5.w),
