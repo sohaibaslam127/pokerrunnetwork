@@ -81,8 +81,8 @@ class _RouteMapViewState extends State<RouteMapView> {
     border: 2px solid #ffffff;
     box-shadow: 0 2px 6px rgba(0,0,0,0.25);
   }
-  .stop-marker.start { background: #F0C11D; color: #1a3b70; }
-  .stop-marker.end { background: #EF6C4A; color: #fff; }
+  .stop-marker.start { background: #2ecc71; color: #ffffff; }
+  .stop-marker.end { background: #000000; color: #ffffff; }
   
   .live-location-marker {
     display: flex; align-items: center; justify-content: center;
@@ -120,18 +120,83 @@ class _RouteMapViewState extends State<RouteMapView> {
   const points = $pointsJson;
   const map = L.map('map', { zoomControl: false, attributionControl: true });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OSM &copy; CARTO',
+  // High-resolution clean Satellite base imagery
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxZoom: 20
+  }).addTo(map);
+
+  // Clean, transparent reference labels & roads overlay (No commercial/POI clutter)
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; CARTO',
     subdomains: 'abcd',
     maxZoom: 20
   }).addTo(map);
 
+  // // Show All Places on map using google satelite view
+  // L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+  //   attribution: '&copy; Google Maps',
+  //   subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+  //   maxZoom: 20
+  // }).addTo(map);
+
+  // Start Race Icon (Crossed Waving Flags)
+  const startIconSvg = `
+<svg
+  viewBox="0 0 24 24"
+  width="20"
+  height="20"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
+>
+  <!-- Crossed flagpoles -->
+  <path d="M4 20l8-12M20 20l-8-12"/>
+  <!-- Left flag waving -->
+  <path d="M12 8c-1.5-1.5-3.5-1.5-5 0s-1 3.5 1.5 5c1.5 1.5 3.5 1.5 5 0Z" fill="currentColor"/>
+  <!-- Right flag waving -->
+  <path d="M12 8c1.5-1.5 3.5-1.5 5 0s1 3.5-1.5 5c-1.5 1.5-3.5 1.5-5 0Z" fill="currentColor"/>
+</svg>
+`;
+
+  // Finish Race Icon (Checkered Flag with Black & White Checks)
+  const finishIconSvg = `
+<svg
+  viewBox="0 0 24 24"
+  width="20"
+  height="20"
+  fill="currentColor"
+  style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
+>
+  <!-- Flag Pole -->
+  <path d="M6 2a1 1 0 0 1 1 1v18a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1z"/>
+
+  <!-- Checkered Flag White Base -->
+  <path d="M7 4h10v8H7V4z"/>
+
+  <!-- Black Checkered Squares -->
+  <path
+    d="M7 4h2.5v2.5H7zm5 0h2.5v2.5H12zm-2.5 2.5h2.5v2.5H9.5zm5 0H17v2.5H14.5zm-7.5 2.5h2.5v2.5H7zm5 0h2.5v2.5H12z"
+    fill="#000000"
+  />
+</svg>
+`;
+
   const latlngs = [];
   points.forEach(p => {
     const cls = p.isStart ? 'stop-marker start' : (p.isEnd ? 'stop-marker end' : 'stop-marker');
+    let markerContent = p.label;
+    if (p.isStart) {
+      markerContent = startIconSvg;
+    } else if (p.isEnd) {
+      markerContent = finishIconSvg;
+    }
     const icon = L.divIcon({
       className: '',
-      html: '<div class="' + cls + '">' + p.label + '</div>',
+      html: '<div class="' + cls + '">' + markerContent + '</div>',
       iconSize: [30, 30],
       iconAnchor: [15, 15],
       popupAnchor: [0, -16]
@@ -169,10 +234,21 @@ class _RouteMapViewState extends State<RouteMapView> {
       const p1 = points[i];
       const p2 = points[i + 1];
       const coords = await fetchWalkingSegment(p1.lat, p1.lng, p2.lat, p2.lng);
+      
+      // Dark navy outline for high contrast with the primary yellow path on satellite view
       L.polyline(coords, {
-        color: '#1a3b70',
+        color: '#113559',
+        weight: 6,
+        opacity: 0.9,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+
+      // Main active route path (Primary color: Gold/Yellow)
+      L.polyline(coords, {
+        color: '#F0C11D',
         weight: 4,
-        opacity: 0.85,
+        opacity: 1.0,
         lineCap: 'round',
         lineJoin: 'round'
       }).addTo(map);
@@ -365,7 +441,7 @@ class _RouteMapViewState extends State<RouteMapView> {
               ),
             ),
             title: text_widget(
-              "Route Map",
+              "Preview Route",
               fontSize: 17.sp,
               color: Colors.white.withValues(alpha: 0.80),
               fontWeight: FontWeight.w600,
@@ -447,52 +523,62 @@ class _RouteMapViewState extends State<RouteMapView> {
                     Positioned(
                       left: 4.w,
                       right: 4.w,
-                      bottom: 3.h,
-                      child: Row(
+                      bottom: 4.h,
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 3.w,
-                                vertical: 1.2.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.65),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 3.w,
+                                    vertical: 1.2.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.75),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.12,
+                                      ),
+                                    ),
+                                  ),
+                                  child: text_widget(
+                                    "${_validStops.length - 2} stop${_validStops.length == 1 ? '' : 's'} • dashed line shows stop sequence (golf-cart paths inside clubs)",
+                                    fontSize: 14.sp,
+                                    color: Colors.white.withValues(alpha: 0.75),
+                                    height: 1.3,
+                                  ),
                                 ),
                               ),
-                              child: text_widget(
-                                "${_validStops.length - 2} stop${_validStops.length == 1 ? '' : 's'} • dashed line shows stop sequence (golf-cart paths inside clubs)",
-                                fontSize: 14.sp,
-                                color: Colors.white.withValues(alpha: 0.75),
-                                height: 1.3,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 2.w),
-                          onPress(
-                            ontap: _openInExternalMap,
-                            child: Container(
-                              padding: EdgeInsets.all(2.5.w),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFEF6C4A),
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.35),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 3),
+                              SizedBox(width: 2.w),
+                              onPress(
+                                ontap: _openInExternalMap,
+                                child: Container(
+                                  width: 11.w,
+                                  height: 11.w,
+                                  // padding: EdgeInsets.all(2.5.w),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFEF6C4A),
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.35,
+                                        ),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                  child: Icon(
+                                    RemixIcons.external_link_line,
+                                    color: Colors.white,
+                                    size: 18.sp,
+                                  ),
+                                ),
                               ),
-                              child: Icon(
-                                RemixIcons.external_link_line,
-                                color: Colors.white,
-                                size: 20.sp,
-                              ),
-                            ),
+                            ],
                           ),
                         ],
                       ),

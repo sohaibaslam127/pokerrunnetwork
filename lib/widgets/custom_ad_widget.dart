@@ -44,7 +44,6 @@ class _CustomAdInlineWidgetState extends State<CustomAdInlineWidget> {
     final double adRadius = widget.radius ?? 10;
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 0.5.h),
       width: double.infinity,
       height: adHeight,
       decoration: BoxDecoration(
@@ -56,7 +55,6 @@ class _CustomAdInlineWidgetState extends State<CustomAdInlineWidget> {
         borderRadius: BorderRadius.circular(adRadius),
         child: Stack(
           children: [
-            // Shimmer effect as a background placeholder
             Shimmer(
               duration: const Duration(seconds: 2),
               interval: const Duration(seconds: 1),
@@ -102,7 +100,7 @@ class _CustomAdInlineWidgetState extends State<CustomAdInlineWidget> {
                   "Sponsored",
                   style: TextStyle(
                     color: Colors.white70,
-                    fontSize: widget.isMedium ? 12.sp : 10.sp,
+                    fontSize: widget.isMedium ? 13.sp : 12.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

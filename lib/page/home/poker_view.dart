@@ -13,7 +13,6 @@ import 'package:pokerrunnetwork/models/transaction.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/services/stripeServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
-import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -112,44 +111,15 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
             children: [
               Expanded(
                 child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
                   children: [
-                    SizedBox(height: 2.h),
-                    text_widget(
-                      widget.event.pokerName,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                    SizedBox(height: 0.3.h),
+                    SizedBox(height: 1.5.h),
 
-                    text_widget(
-                      "Starting date:  ${DateFormat("d MMM yyyy").format(widget.event.eventDate)}\n"
-                      "Starting time:  ${DateFormat("h:mm aaa").format(widget.event.eventDate)}",
-                      // "Cost of this Poker Run:  \$${widget.event.joinFee.toStringAsFixed(2)}",
-                      fontSize: 14.5.sp,
-                      color: MyColors.white.withValues(alpha: 0.60),
-                      height: 1.7,
-                    ),
-                    SizedBox(height: 1.h),
-                    text_widget(
-                      "Description",
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                    SizedBox(height: 0.3.h),
-                    text_widget(
-                      widget.event.description,
-                      fontSize: 14.5.sp,
-                      color: MyColors.white.withValues(alpha: 0.60),
-                      height: 1.7,
-                    ),
-                    SizedBox(height: 2.h),
+                    // ── Date / time card ──────────────────────────────────
                     Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 3.w,
-                        vertical: 1.5.h,
+                        horizontal: 4.w,
+                        vertical: 1.6.h,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.05),
@@ -159,94 +129,238 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                         ),
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Container(
+                            padding: EdgeInsets.all(2.2.w),
+                            decoration: BoxDecoration(
+                              color: MyColors.primary.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              RemixIcons.calendar_event_line,
+                              color: MyColors.primary,
+                              size: 20.sp,
+                            ),
+                          ),
+                          SizedBox(width: 3.w),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _routeStopRow(
-                                  iconWidget: Icon(
-                                    RemixIcons.checkbox_blank_circle_line,
-                                    color: Colors.white.withValues(alpha: 0.85),
-                                    size: 16.sp,
-                                  ),
-                                  label: "Start Point",
-                                  name: widget.event.stops.first.name,
-                                  address: widget.event.stops.first.address,
-                                  showLine: true,
+                                text_widget(
+                                  "Event Date",
+                                  fontSize: 12.sp,
+                                  color: MyColors.white.withValues(alpha: 0.50),
+                                  fontWeight: FontWeight.w500,
                                 ),
-                                _routeStopRow(
-                                  iconWidget: Icon(
-                                    RemixIcons.map_pin_fill,
-                                    color: const Color(0xFFEF6C4A),
-                                    size: 18.sp,
-                                  ),
-                                  label: "End Point",
-                                  name: widget.event.stops.last.name,
-                                  address: widget.event.stops.last.address,
-                                ),
-                                SizedBox(height: 2.h),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: text_widget(
-                                        "Tap the map icon to view the full route including all stops and start/end points.",
-                                        fontSize: 13.sp,
-                                        color: MyColors.white.withValues(
-                                          alpha: 0.55,
-                                        ),
-                                        height: 1.4,
-                                      ),
-                                    ),
-                                    onPress(
-                                      ontap: () {
-                                        Get.to(RouteMapView(widget.event));
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(1.5.w),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.08,
-                                          ),
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.15,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          RemixIcons.map_2_fill,
-                                          color: Colors.amber,
-                                          size: 18.sp,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                SizedBox(height: 0.4.h),
+                                text_widget(
+                                  DateFormat(
+                                    'EEE, dd MMM yyyy  •  h:mm a',
+                                  ).format(widget.event.eventDate),
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(width: 2.w),
                         ],
                       ),
                     ),
-                    text_widget(
-                      isJoin
-                          ? "Pay organizer \$${widget.event.joinFee} at starting location for Authorization to participate in this Poker Run!"
-                          : "",
-                      fontSize: 15.sp,
-                      color: MyColors.white.withValues(alpha: 0.60),
-                      height: 1.7,
+
+                    SizedBox(height: 1.5.h),
+
+                    // ── Description card ──────────────────────────────────
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 1.6.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.08),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                RemixIcons.article_line,
+                                color: MyColors.white.withValues(alpha: 0.65),
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 2.w),
+                              text_widget(
+                                "Description",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: MyColors.white.withValues(alpha: 0.75),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 0.8.h),
+                          text_widget(
+                            widget.event.description,
+                            fontSize: 14.sp,
+                            color: MyColors.white.withValues(alpha: 0.60),
+                            height: 1.6,
+                          ),
+                        ],
+                      ),
                     ),
+
+                    SizedBox(height: 1.5.h),
+
+                    // ── Route card ────────────────────────────────────────
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 1.5.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.08),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                RemixIcons.route_line,
+                                color: MyColors.white.withValues(alpha: 0.65),
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 2.w),
+                              text_widget(
+                                "Route",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: MyColors.white.withValues(alpha: 0.75),
+                              ),
+                              const Spacer(),
+                              onPress(
+                                ontap: () => Get.to(RouteMapView(widget.event)),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 3.w,
+                                    vertical: 0.6.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: MyColors.primary.withValues(
+                                      alpha: 0.15,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: MyColors.primary.withValues(
+                                        alpha: 0.35,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        RemixIcons.map_2_fill,
+                                        color: MyColors.primary,
+                                        size: 13.sp,
+                                      ),
+                                      SizedBox(width: 1.5.w),
+                                      text_widget(
+                                        "View Map",
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: MyColors.primary,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 1.4.h),
+                          _routeStopRow(
+                            iconWidget: Icon(
+                              RemixIcons.checkbox_blank_circle_line,
+                              color: Colors.white.withValues(alpha: 0.85),
+                              size: 16.sp,
+                            ),
+                            label: "Start Point",
+                            name: widget.event.stops.first.name,
+                            address: widget.event.stops.first.address,
+                            showLine: true,
+                          ),
+                          _routeStopRow(
+                            iconWidget: Icon(
+                              RemixIcons.map_pin_fill,
+                              color: const Color(0xFFEF6C4A),
+                              size: 18.sp,
+                            ),
+                            label: "End Point",
+                            name: widget.event.stops.last.name,
+                            address: widget.event.stops.last.address,
+                          ),
+                          SizedBox(height: 0.5.h),
+                          text_widget(
+                            "${widget.event.stops.length} stops total — tap View Map for the full route.",
+                            fontSize: 12.sp,
+                            color: MyColors.white.withValues(alpha: 0.40),
+                            height: 1.4,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // ── Fee notice ────────────────────────────────────────
+                    if (isJoin) ...[
+                      SizedBox(height: 1.5.h),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 4.w,
+                          vertical: 1.4.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: MyColors.primary.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: MyColors.primary.withValues(alpha: 0.25),
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              RemixIcons.coins_line,
+                              color: MyColors.primary,
+                              size: 17.sp,
+                            ),
+                            SizedBox(width: 2.5.w),
+                            Expanded(
+                              child: text_widget(
+                                "Pay \$${widget.event.joinFee.toStringAsFixed(2)} to the organizer at the starting location to confirm your participation.",
+                                fontSize: 13.5.sp,
+                                color: MyColors.primary.withValues(alpha: 0.90),
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    SizedBox(height: 1.5.h),
+                    const CustomAdInlineWidget(),
+                    SizedBox(height: 1.5.h),
                   ],
                 ),
-              ),
-              SizedBox(height: .5.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: const CustomAdInlineWidget(),
               ),
               onPress(
                 ontap: () => handlePrimaryAction(),
@@ -395,36 +509,6 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                   height: 1.4,
                 ),
               ),
-              // const SizedBox(height: 24),
-              // Container(
-              //   padding: const EdgeInsets.all(16),
-              //   decoration: BoxDecoration(
-              //     color: Colors.white,
-              //     borderRadius: BorderRadius.circular(12),
-              //     boxShadow: [
-              //       BoxShadow(
-              //         color: Colors.black.withOpacity(0.08),
-              //         blurRadius: 15,
-              //         offset: const Offset(0, 5),
-              //       ),
-              //     ],
-              //     border: Border.all(color: Colors.grey.shade200),
-              //   ),
-              //   child: Column(
-              //     children: [
-              //       _buildPriceRow('Rider', '\$3.40'),
-              //       const Padding(
-              //         padding: EdgeInsets.symmetric(vertical: 8),
-              //         child: Divider(thickness: 0.8),
-              //       ),
-              //       _buildPriceRow(
-              //         'Total Paid To Organizer At Start',
-              //         '\$3.40',
-              //         isBold: true,
-              //       ),
-              //     ],
-              //   ),
-              // ),
               const SizedBox(height: 20),
               Row(
                 children: [

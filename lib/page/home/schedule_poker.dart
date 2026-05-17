@@ -11,6 +11,7 @@ import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
 import 'package:pokerrunnetwork/page/home/game_view.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
+import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
@@ -108,135 +109,334 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
               child: Container(height: 2, color: Colors.white12),
             ),
           ),
-          body: ListView(
+          body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 5.w),
                   children: [
-                    SizedBox(height: 2.h),
+                    SizedBox(height: 1.5.h),
+
+                    // ── Dropdown hint banner ──────────────────────────────────
                     Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 1.4.h,
+                      ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.30),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 15,
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: text_widget(
-                                "Use the drop down menu to switch\nbetween Active poker runs",
-                                fontSize: 16.5.sp,
-                                color: MyColors.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Image.asset(
-                              "assets/icons/up.png",
-                              height: 4.5.h,
-                              color: MyColors.primary,
-                            ),
-                          ],
+                        color: MyColors.primary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: MyColors.primary.withValues(alpha: 0.35),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 2.h),
-                    text_widget(
-                      "Poker Run will begin on",
-                      fontSize: 17.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                    SizedBox(height: 1.h),
-                    text_widget(
-                      "Date: ${DateFormat('dd MMM, hh:mm a').format(currentGame.latestEvent.eventDate)}\nPlease go to the starting point before the poker run begins and check in with organizers to activate this Poker Run.",
-                      fontSize: 15.5.sp,
-                      color: MyColors.white.withValues(alpha: 0.6),
-                      height: 1.7,
-                    ),
-                    SizedBox(height: 2.h),
-                    RichText(
-                      text: TextSpan(
+                      child: Row(
                         children: [
-                          TextSpan(
-                            text: 'Starting point: ',
-                            style: TextStyle(
-                              fontSize: 16.sp,
+                          Icon(
+                            RemixIcons.information_line,
+                            color: MyColors.primary,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 3.w),
+                          Expanded(
+                            child: text_widget(
+                              "Use the drop-down menu to switch between Active Poker Runs",
+                              fontSize: 14.sp,
+                              color: MyColors.primary,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              height: 1.4,
                             ),
                           ),
-                          TextSpan(
-                            text: currentGame.latestEvent.stops.first.name,
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color: MyColors.white.withValues(alpha: 0.6),
+                          SizedBox(width: 2.w),
+                          Image.asset(
+                            "assets/icons/up.png",
+                            height: 3.5.h,
+                            color: MyColors.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 1.5.h),
+
+                    // ── Event date card ───────────────────────────────────────
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 1.6.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.08),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(2.2.w),
+                            decoration: BoxDecoration(
+                              color: MyColors.primary.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              RemixIcons.calendar_event_line,
+                              color: MyColors.primary,
+                              size: 20.sp,
+                            ),
+                          ),
+                          SizedBox(width: 3.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                text_widget(
+                                  "Event Starts",
+                                  fontSize: 12.sp,
+                                  color: MyColors.white.withValues(alpha: 0.50),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                SizedBox(height: 0.4.h),
+                                text_widget(
+                                  DateFormat(
+                                    'EEE, dd MMM yyyy  •  hh:mm a',
+                                  ).format(currentGame.latestEvent.eventDate),
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(height: 0.6.h),
+                                text_widget(
+                                  "Check in with organizers at the starting point to activate your run.",
+                                  fontSize: 13.sp,
+                                  color: MyColors.white.withValues(alpha: 0.55),
+                                  height: 1.4,
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 1.h),
-                    text_widget(
-                      currentGame.latestEvent.stops.first.address,
-                      fontSize: 15.sp,
-                      color: MyColors.white.withValues(alpha: 0.6),
-                      height: 1.7,
-                    ),
-                    SizedBox(height: 1.h),
-                    InkWell(
-                      onTap: () {
-                        openMaps(
-                          context,
-                          currentGame.latestEvent.stops.first.name,
-                          currentGame
-                              .latestEvent
-                              .stops
-                              .first
-                              .stopLocation
-                              .latitude,
-                          currentGame
-                              .latestEvent
-                              .stops
-                              .first
-                              .stopLocation
-                              .longitude,
-                        );
-                      },
-                      child: Image.asset("assets/icons/nav.png"),
-                    ),
-                    SizedBox(height: 2.h),
-                    Row(
-                      children: [
-                        text_widget(
-                          'Distance: ${distance.toStringAsFixed(2)} Miles',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+
+                    SizedBox(height: 1.5.h),
+
+                    // ── Starting point card ───────────────────────────────────
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 1.6.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.08),
                         ),
-                      ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          text_widget(
+                            "Starting Point",
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: MyColors.white.withValues(alpha: 0.50),
+                          ),
+                          SizedBox(height: 1.h),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                RemixIcons.map_pin_fill,
+                                color: const Color(0xFFEF6C4A),
+                                size: 20.sp,
+                              ),
+                              SizedBox(width: 2.5.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    text_widget(
+                                      currentGame.latestEvent.stops.first.name,
+                                      fontSize: 15.5.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(height: 0.3.h),
+                                    text_widget(
+                                      currentGame
+                                          .latestEvent
+                                          .stops
+                                          .first
+                                          .address,
+                                      fontSize: 13.sp,
+                                      color: MyColors.white.withValues(
+                                        alpha: 0.60,
+                                      ),
+                                      height: 1.4,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 1.5.h),
+                          Divider(
+                            color: Colors.white.withValues(alpha: 0.08),
+                            height: 0,
+                          ),
+                          SizedBox(height: 1.2.h),
+                          Row(
+                            children: [
+                              // Distance badge
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 3.w,
+                                  vertical: 0.7.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: MyColors.secondary.withValues(
+                                    alpha: 0.15,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: MyColors.secondary.withValues(
+                                      alpha: 0.30,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      RemixIcons.route_line,
+                                      color: MyColors.secondary,
+                                      size: 14.sp,
+                                    ),
+                                    SizedBox(width: 1.5.w),
+                                    text_widget(
+                                      "${distance.toStringAsFixed(2)} mi away",
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: MyColors.secondary,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Spacer(),
+                              // Navigate button
+                              onPress(
+                                ontap: () {
+                                  openMaps(
+                                    context,
+                                    currentGame.latestEvent.stops.first.name,
+                                    currentGame
+                                        .latestEvent
+                                        .stops
+                                        .first
+                                        .stopLocation
+                                        .latitude,
+                                    currentGame
+                                        .latestEvent
+                                        .stops
+                                        .first
+                                        .stopLocation
+                                        .longitude,
+                                    "My Location",
+                                    currentUser.location.latitude,
+                                    currentUser.location.longitude,
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 4.w,
+                                    vertical: 0.9.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: MyColors.primary,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        RemixIcons.navigation_fill,
+                                        color: Colors.black,
+                                        size: 14.sp,
+                                      ),
+                                      SizedBox(width: 1.5.w),
+                                      text_widget(
+                                        "Navigate",
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 1.h),
-                    text_widget(
-                      '''Your poker run will begin at the date and time above. you must be within 0.062 miles of the start location to begin your poker run.\n\nOnce your poker run begins. go to the first poker run stop to unlock your first card.''',
-                      fontSize: 15.sp,
-                      color: MyColors.white.withValues(alpha: 0.6),
-                      height: 1.7,
+
+                    SizedBox(height: 1.5.h),
+
+                    // ── Instructions card ─────────────────────────────────────
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 1.6.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.04),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.07),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                RemixIcons.flag_2_line,
+                                color: MyColors.white.withValues(alpha: 0.70),
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 2.w),
+                              text_widget(
+                                "How to Begin",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: MyColors.white.withValues(alpha: 0.75),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 1.h),
+                          text_widget(
+                            "You must be within 0.062 miles of the start location to begin your Poker Run.\n\nOnce started, navigate to each stop on the route to unlock your cards.",
+                            fontSize: 14.sp,
+                            color: MyColors.white.withValues(alpha: 0.55),
+                            height: 1.6,
+                          ),
+                        ],
+                      ),
                     ),
+                    SizedBox(height: 1.5.h),
+                    const CustomAdInlineWidget(),
+                    SizedBox(height: 1.5.h),
                   ],
                 ),
               ),
-              SizedBox(height: 1.h),
               onPress(
                 ontap: () async {
-                  if (click) {
-                    return;
-                  }
+                  if (click) return;
                   click = true;
                   currentGame.game.currentStop = 0;
                   if (!currentGame.game.approved) {
@@ -290,7 +490,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                 },
                 child: Image.asset(OtherButtons.startYourPokerRun),
               ),
-              SizedBox(height: 1.h),
+              SizedBox(height: 4.h),
             ],
           ),
         ),

@@ -122,7 +122,7 @@ class _GameViewState extends State<GameView> {
                         return const PokerResultDialog();
                       },
                     );
-                    // Get.offAll(() => const HomePage());
+                    Get.offAll(() => const HomePage());
                   } else {
                     showPopup(
                       context,
@@ -343,19 +343,20 @@ class _GameViewState extends State<GameView> {
                         ontap: () {
                           openMaps(
                             context,
-                            currentGame.latestEvent.stops.first.name,
+                            currentGame.latestEvent.stops[stopNumber].name,
                             currentGame
                                 .latestEvent
-                                .stops
-                                .first
+                                .stops[stopNumber]
                                 .stopLocation
                                 .latitude,
                             currentGame
                                 .latestEvent
-                                .stops
-                                .first
+                                .stops[stopNumber]
                                 .stopLocation
                                 .longitude,
+                            currentGame.latestEvent.stops[stopNumber - 1].name,
+                            currentUser.location.latitude,
+                            currentUser.location.longitude,
                           );
                         },
                         child: Image.asset(
