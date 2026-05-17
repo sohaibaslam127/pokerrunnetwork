@@ -145,44 +145,88 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                       height: 1.7,
                     ),
                     SizedBox(height: 2.h),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              text_widget(
-                                "Starting point: ${widget.event.stops[0].name}",
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                              SizedBox(height: 0.3.h),
-
-                              text_widget(
-                                "${widget.event.stops[0].address}\n${widget.event.stops[0].sponserName == "" ? widget.event.stops[0].sponserLink : widget.event.stops[0].sponserName}",
-                                fontSize: 14.5.sp,
-                                color: MyColors.white.withValues(alpha: 0.60),
-                                height: 1.7,
-                              ),
-                            ],
-                          ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 3.w,
+                        vertical: 1.5.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.08),
                         ),
-                        onPress(
-                          ontap: () => openMaps(
-                            context,
-                            widget.event.stops[0].name,
-                            widget.event.stops[0].stopLocation.latitude,
-                            widget.event.stops[0].stopLocation.longitude,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _routeStopRow(
+                                  iconWidget: Icon(
+                                    RemixIcons.checkbox_blank_circle_line,
+                                    color: Colors.white.withValues(alpha: 0.85),
+                                    size: 16.sp,
+                                  ),
+                                  label: "Start Point",
+                                  name: widget.event.stops.first.name,
+                                  address: widget.event.stops.first.address,
+                                  showLine: true,
+                                ),
+                                _routeStopRow(
+                                  iconWidget: Icon(
+                                    RemixIcons.map_pin_fill,
+                                    color: const Color(0xFFEF6C4A),
+                                    size: 18.sp,
+                                  ),
+                                  label: "End Point",
+                                  name: widget.event.stops.last.name,
+                                  address: widget.event.stops.last.address,
+                                ),
+                                SizedBox(height: 2.h),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: text_widget(
+                                        "Tap the map icon to view the full route including all stops and start/end points.",
+                                        fontSize: 13.sp,
+                                        color: MyColors.white.withValues(
+                                          alpha: 0.55,
+                                        ),
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                    onPress(
+                                      child: Container(
+                                        padding: EdgeInsets.all(1.5.w),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.08,
+                                          ),
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.15,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          RemixIcons.map_2_fill,
+                                          color: Colors.amber,
+                                          size: 18.sp,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Icon(
-                            RemixIcons.map_pin_line,
-                            color: Colors.white,
-                            size: 22.sp,
-                          ),
-                        ),
-                      ],
+                          SizedBox(width: 2.w),
+                        ],
+                      ),
                     ),
 
                     // if (isJoin &&
@@ -222,44 +266,52 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                     //     ),
                     //   ],
                     // ],
-                    if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
-                      _priceRow("Joing Fee", widget.event.joinFee),
-                      // if (isCorider)
-                      //   _priceRow("Co-rider", widget.event.coRiderFee),
-                      // if (isExtraCard)
-                      //   _priceRow(
-                      //     "Rider Extra Cards",
-                      //     widget.event.changeCardFee,
-                      //   ),
-                      // if (isExtraCardCorider && isCorider)
-                      //   _priceRow(
-                      //     "Co-rider Extra Cards",
-                      //     widget.event.changeCardFee,
-                      //   ),
-                      _priceRow("Service Fee", serviceFee),
-                      SizedBox(height: .5.h),
-                      Divider(thickness: 0.2, color: Colors.white54),
-                      SizedBox(height: .5.h),
-                      Row(
-                        children: [
-                          text_widget(
-                            "Total Paid to Organizer",
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                          Spacer(),
-                          text_widget(
-                            "\$${getAmount().toStringAsFixed(2)}",
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    ],
+                    // if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
+                    //   _priceRow("Joing Fee", widget.event.joinFee),
+                    //   // if (isCorider)
+                    //   //   _priceRow("Co-rider", widget.event.coRiderFee),
+                    //   // if (isExtraCard)
+                    //   //   _priceRow(
+                    //   //     "Rider Extra Cards",
+                    //   //     widget.event.changeCardFee,
+                    //   //   ),
+                    //   // if (isExtraCardCorider && isCorider)
+                    //   //   _priceRow(
+                    //   //     "Co-rider Extra Cards",
+                    //   //     widget.event.changeCardFee,
+                    //   //   ),
+                    //   _priceRow("Service Fee", serviceFee),
+                    //   SizedBox(height: .5.h),
+                    //   Divider(thickness: 0.2, color: Colors.white54),
+                    //   SizedBox(height: .5.h),
+                    //   Row(
+                    //     children: [
+                    //       text_widget(
+                    //         "Total Paid to Organizer",
+                    //         fontSize: 16.sp,
+                    //         fontWeight: FontWeight.w600,
+                    //         color: Colors.white,
+                    //       ),
+                    //       Spacer(),
+                    //       text_widget(
+                    //         "\$${getAmount().toStringAsFixed(2)}",
+                    //         fontSize: 16.sp,
+                    //         fontWeight: FontWeight.w600,
+                    //         color: Colors.white,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ],
+                    // text_widget(
+                    //   _getFooterText(),
+                    //   fontSize: 15.sp,
+                    //   color: MyColors.white.withValues(alpha: 0.60),
+                    //   height: 1.7,
+                    // ),
                     text_widget(
-                      _getFooterText(),
+                      isJoin
+                          ? "Pay organizer \$${widget.event.joinFee} at starting location for Authorization to participate in this Poker Run!"
+                          : "",
                       fontSize: 15.sp,
                       color: MyColors.white.withValues(alpha: 0.60),
                       height: 1.7,
@@ -285,6 +337,61 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _routeStopRow({
+    required Widget iconWidget,
+    required String label,
+    required String name,
+    required String address,
+    bool showLine = false,
+  }) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: 5.w,
+            child: CustomPaint(
+              painter: showLine ? DottedLinePainter() : null,
+              child: Column(children: [iconWidget]),
+            ),
+          ),
+          SizedBox(width: 2.w),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: showLine ? 2.h : 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  text_widget(
+                    label,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    color: MyColors.white.withValues(alpha: 0.55),
+                  ),
+                  SizedBox(height: 0.2.h),
+                  text_widget(
+                    name,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: 0.2.h),
+                  text_widget(
+                    address,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w400,
+                    color: MyColors.white.withValues(alpha: 0.65),
+                    height: 1.3,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -680,4 +787,30 @@ Widget _buildPriceRow(String label, String price, {bool isBold = false}) {
       ),
     ],
   );
+}
+
+class DottedLinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.45)
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round;
+
+    double dashHeight = 4;
+    double dashSpace = 4;
+    double startY = 22; // Start from behind the top icon
+
+    while (startY < size.height) {
+      canvas.drawLine(
+        Offset(size.width / 2, startY),
+        Offset(size.width / 2, startY + dashHeight),
+        paint,
+      );
+      startY += dashHeight + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

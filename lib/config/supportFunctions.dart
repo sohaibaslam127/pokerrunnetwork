@@ -252,8 +252,8 @@ Future<void> openMaps(BuildContext context, name, lat, lng) async {
                   child: text_widget(
                     "Open in ${e.mapName}",
                     color: MyColors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17.sp,
                   ),
                 ),
               ),

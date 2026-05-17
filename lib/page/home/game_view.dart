@@ -53,7 +53,7 @@ class _GameViewState extends State<GameView> {
     if (stopSpecific.isNotEmpty) {
       stopSpecific.shuffle();
       return stopSpecific.first;
-    }
+     }
     final global = enabled.where((s) => s.stop.isEmpty).toList();
     if (global.isNotEmpty) {
       global.shuffle();
