@@ -199,6 +199,9 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                                       ),
                                     ),
                                     onPress(
+                                      ontap: () {
+                                        // implement it
+                                      },
                                       child: Container(
                                         padding: EdgeInsets.all(1.5.w),
                                         decoration: BoxDecoration(
@@ -228,86 +231,6 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                         ],
                       ),
                     ),
-
-                    // if (isJoin &&
-                    //     widget.event.changeCardFee > 0 &&
-                    //     widget.iamCoRider.roadName.isEmpty &&
-                    //     (widget.event.isAdditionalCard ?? false)) ...[
-                    //   _buildCheckboxOption(
-                    //     "Do you want the option of changing your card at each stop for \$${widget.event.changeCardFee.toStringAsFixed(2)}?",
-                    //     isExtraCard,
-                    //     (val) => setState(() => isExtraCard = val),
-                    //   ),
-                    // ],
-
-                    // if (isJoin &&
-                    //     !widget.iamCoRider.roadName.isNotEmpty &&
-                    //     (widget.event.coRider ?? false)) ...[
-                    //   SizedBox(height: 2.h),
-                    //   _buildCheckboxOption(
-                    //     "Do you want to add a co-rider for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
-                    //     isCorider,
-                    //     (val) => setState(() => isCorider = val),
-                    //   ),
-                    //   if (isCorider) ...[
-                    //     SizedBox(height: 1.h),
-                    //     textFieldWithPrefixSuffuxIconAndHintText(
-                    //       "Enter Co-rider Road Name",
-                    //       radius: 12,
-                    //       textInputAction: TextInputAction.search,
-                    //       textInputType: TextInputType.name,
-                    //       controller: friendName,
-                    //     ),
-                    //     SizedBox(height: 2.h),
-                    //     _buildCheckboxOption(
-                    //       "Option for co-rider to change cards for \$${widget.event.coRiderFee.toStringAsFixed(2)}?",
-                    //       isExtraCardCorider,
-                    //       (val) => setState(() => isExtraCardCorider = val),
-                    //     ),
-                    //   ],
-                    // ],
-                    // if (widget.iamCoRider.roadName.isEmpty && isJoin) ...[
-                    //   _priceRow("Joing Fee", widget.event.joinFee),
-                    //   // if (isCorider)
-                    //   //   _priceRow("Co-rider", widget.event.coRiderFee),
-                    //   // if (isExtraCard)
-                    //   //   _priceRow(
-                    //   //     "Rider Extra Cards",
-                    //   //     widget.event.changeCardFee,
-                    //   //   ),
-                    //   // if (isExtraCardCorider && isCorider)
-                    //   //   _priceRow(
-                    //   //     "Co-rider Extra Cards",
-                    //   //     widget.event.changeCardFee,
-                    //   //   ),
-                    //   _priceRow("Service Fee", serviceFee),
-                    //   SizedBox(height: .5.h),
-                    //   Divider(thickness: 0.2, color: Colors.white54),
-                    //   SizedBox(height: .5.h),
-                    //   Row(
-                    //     children: [
-                    //       text_widget(
-                    //         "Total Paid to Organizer",
-                    //         fontSize: 16.sp,
-                    //         fontWeight: FontWeight.w600,
-                    //         color: Colors.white,
-                    //       ),
-                    //       Spacer(),
-                    //       text_widget(
-                    //         "\$${getAmount().toStringAsFixed(2)}",
-                    //         fontSize: 16.sp,
-                    //         fontWeight: FontWeight.w600,
-                    //         color: Colors.white,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ],
-                    // text_widget(
-                    //   _getFooterText(),
-                    //   fontSize: 15.sp,
-                    //   color: MyColors.white.withValues(alpha: 0.60),
-                    //   height: 1.7,
-                    // ),
                     text_widget(
                       isJoin
                           ? "Pay organizer \$${widget.event.joinFee} at starting location for Authorization to participate in this Poker Run!"
@@ -394,79 +317,6 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
       ),
     );
   }
-
-  Widget _priceRow(String label, double price) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 0.5.h),
-      child: Row(
-        children: [
-          text_widget(label, fontSize: 16.sp, color: Colors.white),
-          Spacer(),
-          text_widget(
-            "\$${price.toStringAsFixed(2)}",
-            fontSize: 16.sp,
-            color: Colors.white,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCheckboxOption(
-    String title,
-    bool value,
-    Function(bool) onChanged,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        text_widget(title, fontSize: 16.sp, color: Colors.white),
-        Row(
-          children: [
-            Theme(
-              data: ThemeData(unselectedWidgetColor: Colors.white),
-              child: Checkbox(
-                value: value,
-                onChanged: (v) => onChanged(true),
-                activeColor: Colors.white,
-                checkColor: Colors.black,
-              ),
-            ),
-            text_widget("Yes", fontSize: 15.sp, color: Colors.white),
-            SizedBox(width: 5.w),
-            Theme(
-              data: ThemeData(unselectedWidgetColor: Colors.white),
-              child: Checkbox(
-                value: !value,
-                onChanged: (v) => onChanged(false),
-                activeColor: Colors.white,
-                checkColor: Colors.black,
-              ),
-            ),
-            text_widget("No", fontSize: 15.sp, color: Colors.white),
-          ],
-        ),
-      ],
-    );
-  }
-
-  String _getFooterText() {
-    if (widget.iamCoRider.roadName.isEmpty) {
-      String msg = "";
-      // msg += isJoin
-      //     ? "The registration fee for this event is \$${serviceFee.toStringAsFixed(2)} per participant.\n"
-      //     : "";
-      msg += isJoin
-          ? "\nPay the joining fee \$${getAmount().toStringAsFixed(2)} to confirm your participation to the organizer at starting point.\n\nWould you like to continue for free?"
-          : "Would you like to leave the Event?";
-      return msg;
-    } else {
-      return "You have been identified as ${widget.iamCoRider.roadName}'s Co-Rider.\n"
-          "Fees have been paid by the primary rider. Co-riders do not pay registration fees.";
-    }
-  }
-
-  // --- Logic Functions (Ported from Old Design) ---
 
   Future<void> handlePrimaryAction() async {
     if (isJoin) {
