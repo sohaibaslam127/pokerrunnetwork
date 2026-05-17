@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
@@ -141,21 +142,44 @@ class _RouteMapViewState extends State<RouteMapView> {
     latlngs.push([p.lat, p.lng]);
   });
 
-  if (latlngs.length > 1) {
-    L.polyline(latlngs, {
-      color: '#F0C11D',
-      weight: 4,
-      opacity: 0.9,
-      dashArray: '8, 8',
-      lineCap: 'round',
-      lineJoin: 'round'
-    }).addTo(map);
-    map.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] });
-  } else if (latlngs.length === 1) {
+  if (latlngs.length === 1) {
     map.setView(latlngs[0], 16);
-  } else {
+  } else if (latlngs.length === 0) {
     map.setView([0, 0], 2);
+  } else {
+    map.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] });
   }
+
+  async function fetchWalkingSegment(lat1, lng1, lat2, lng2) {
+    try {
+      const url = 'https://router.project-osrm.org/route/v1/foot/'
+        + lng1 + ',' + lat1 + ';' + lng2 + ',' + lat2
+        + '?overview=full&geometries=geojson';
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.code === 'Ok' && data.routes && data.routes[0]) {
+        return data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+      }
+    } catch (_) {}
+    return [[lat1, lng1], [lat2, lng2]];
+  }
+
+  async function drawRoutes() {
+    for (let i = 0; i < points.length - 1; i++) {
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const coords = await fetchWalkingSegment(p1.lat, p1.lng, p2.lat, p2.lng);
+      L.polyline(coords, {
+        color: '#1a3b70',
+        weight: 4,
+        opacity: 0.85,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+    }
+  }
+
+  if (latlngs.length > 1) { drawRoutes(); }
 
   // Live Location
   let userLatLng = null;
@@ -263,47 +287,50 @@ class _RouteMapViewState extends State<RouteMapView> {
     }
 
     if (!mounted) return;
-    await showModalBottomSheet(
+    await showCupertinoModalPopup(
       context: context,
-      backgroundColor: const Color(0xFF1C1C1F),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: text_widget(
-                  "Open in",
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
+      builder: (context) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.0),
+        child: CupertinoActionSheet(
+          actions: maps
+              .map(
+                (e) => Container(
+                  color: MyColors.black,
+                  child: CupertinoActionSheetAction(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await launch(e);
+                    },
+                    child: text_widget(
+                      "Open in ${e.mapName}",
+                      color: MyColors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 17.sp,
+                    ),
+                  ),
                 ),
+              )
+              .toList(),
+          cancelButton: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13),
+              color: Colors.black26,
+            ),
+            child: CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: text_widget(
+                'Cancel',
+                color: MyColors.black,
+                fontWeight: FontWeight.w700,
+                fontSize: 18.sp,
               ),
-              for (final m in maps)
-                ListTile(
-                  leading: const Icon(
-                    RemixIcons.map_pin_line,
-                    color: Colors.white,
-                  ),
-                  title: text_widget(
-                    m.mapName,
-                    fontSize: 14.sp,
-                    color: Colors.white,
-                  ),
-                  onTap: () async {
-                    Navigator.pop(ctx);
-                    await launch(m);
-                  },
-                ),
-              const SizedBox(height: 8),
-            ],
+            ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
