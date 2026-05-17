@@ -60,7 +60,6 @@ Widget customButon({
                                   text_widget(
                                     btnText ?? '',
                                     fontSize: fontSize ?? 17.6.sp,
-                                    // textAlign: TextAlign.center,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xff113559),
                                   ),

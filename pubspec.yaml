@@ -34,6 +34,7 @@ dependencies:
   easy_admob_ads_flutter: ^1.0.1
   shimmer_animation: ^2.2.2+1
   dio:
+  map_launcher:
   logger: ^2.0.2+1
 
 dev_dependencies:

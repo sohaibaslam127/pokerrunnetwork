@@ -7,6 +7,7 @@ import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/page/home/poker_Sponsers.dart';
+import 'package:pokerrunnetwork/page/home/route_map_view.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -265,7 +266,7 @@ class _PokerStopsState extends State<PokerStops> {
                               SizedBox(height: .5.h),
                               customButon(
                                 isIcon: false,
-                                btnText: "Continue To Sponsors",
+                                btnText: "Continue To Preview",
                                 icon: "assets/icons/p1.png",
                                 onTap: () {
                                   FocusManager.instance.primaryFocus?.unfocus();
@@ -367,7 +368,7 @@ class _PokerStopsState extends State<PokerStops> {
                                       fourthStopAddress.text;
                                   widget.eventModel.stops[5].address =
                                       fifthStopAddress.text;
-                                  Get.to(PokerSponsers(widget.eventModel));
+                                  Get.to(RouteMapView(widget.eventModel));
                                 },
                               ),
                             ],
