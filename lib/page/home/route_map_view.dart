@@ -82,8 +82,8 @@ class _RouteMapViewState extends State<RouteMapView> {
     border: 2px solid #ffffff;
     box-shadow: 0 2px 6px rgba(0,0,0,0.25);
   }
-  .stop-marker.start { background: #F0C11D; color: #1a3b70; }
-  .stop-marker.end { background: #EF6C4A; color: #fff; }
+  .stop-marker.start { background: #2ecc71; color: #ffffff; }
+  .stop-marker.end { background: #000000; color: #ffffff; }
   
   .live-location-marker {
     display: flex; align-items: center; justify-content: center;
@@ -141,12 +141,63 @@ class _RouteMapViewState extends State<RouteMapView> {
   //   maxZoom: 20
   // }).addTo(map);
 
+  // Start Race Icon (Crossed Waving Flags)
+  const startIconSvg = `
+<svg
+  viewBox="0 0 24 24"
+  width="20"
+  height="20"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
+>
+  <!-- Crossed flagpoles -->
+  <path d="M4 20l8-12M20 20l-8-12"/>
+  <!-- Left flag waving -->
+  <path d="M12 8c-1.5-1.5-3.5-1.5-5 0s-1 3.5 1.5 5c1.5 1.5 3.5 1.5 5 0Z" fill="currentColor"/>
+  <!-- Right flag waving -->
+  <path d="M12 8c1.5-1.5 3.5-1.5 5 0s1 3.5-1.5 5c-1.5 1.5-3.5 1.5-5 0Z" fill="currentColor"/>
+</svg>
+`;
+
+  // Finish Race Icon (Checkered Flag with Black & White Checks)
+  const finishIconSvg = `
+<svg
+  viewBox="0 0 24 24"
+  width="20"
+  height="20"
+  fill="currentColor"
+  style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
+>
+  <!-- Flag Pole -->
+  <path d="M6 2a1 1 0 0 1 1 1v18a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1z"/>
+
+  <!-- Checkered Flag White Base -->
+  <path d="M7 4h10v8H7V4z"/>
+
+  <!-- Black Checkered Squares -->
+  <path
+    d="M7 4h2.5v2.5H7zm5 0h2.5v2.5H12zm-2.5 2.5h2.5v2.5H9.5zm5 0H17v2.5H14.5zm-7.5 2.5h2.5v2.5H7zm5 0h2.5v2.5H12z"
+    fill="#000000"
+  />
+</svg>
+`;
+
   const latlngs = [];
   points.forEach(p => {
     const cls = p.isStart ? 'stop-marker start' : (p.isEnd ? 'stop-marker end' : 'stop-marker');
+    let markerContent = p.label;
+    if (p.isStart) {
+      markerContent = startIconSvg;
+    } else if (p.isEnd) {
+      markerContent = finishIconSvg;
+    }
     const icon = L.divIcon({
       className: '',
-      html: '<div class="' + cls + '">' + p.label + '</div>',
+      html: '<div class="' + cls + '">' + markerContent + '</div>',
       iconSize: [30, 30],
       iconAnchor: [15, 15],
       popupAnchor: [0, -16]
