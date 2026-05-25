@@ -7,7 +7,6 @@ import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/random.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/analysis.dart';
-import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/models/sponsors.dart';
 import 'package:pokerrunnetwork/models/stops.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
@@ -35,7 +34,13 @@ class _GameViewState extends State<GameView> {
   String finalUrl = "";
   double distance = 0;
 
+  // Distances to all 5 intermediate stops — used during first-stop selection
+  final Map<int, double> _allDistances = {1: 99, 2: 99, 3: 99, 4: 99, 5: 99};
+  bool _calculatingAllDistances = false;
+  bool _picking = false;
+
   NRandom ran = NRandom(52, 4);
+
   void randomCard() {
     int number = ran.getNextIndex();
     if (currentGame.game.cards.contains(number)) {
@@ -45,10 +50,10 @@ class _GameViewState extends State<GameView> {
     }
   }
 
-  SponsorsModel _pickSponsorFor(int stopNumber) {
+  SponsorsModel _pickSponsorFor(int actualStopIdx) {
     final enabled = sponsorLinks.where((s) => s.enable);
     final stopSpecific = enabled
-        .where((s) => s.stop.isNotEmpty && s.stop.contains(stopNumber))
+        .where((s) => s.stop.isNotEmpty && s.stop.contains(actualStopIdx))
         .toList();
     if (stopSpecific.isNotEmpty) {
       stopSpecific.shuffle();
@@ -62,16 +67,79 @@ class _GameViewState extends State<GameView> {
     return SponsorsModel()..link = "https://www.tomorrowbyte.com/";
   }
 
+  // Builds the circular route sequence from a chosen start stop.
+  // e.g. startStop=4 → [4, 5, 1, 2, 3]
+  List<int> _computeSequence(int startStop) {
+    const all = [1, 2, 3, 4, 5];
+    final idx = all.indexOf(startStop);
+    if (idx < 0) return List.from(all);
+    return [...all.sublist(idx), ...all.sublist(0, idx)];
+  }
+
+  // True only between leaving initial point and drawing first card.
+  bool get _isFirstStopPhase =>
+      currentGame.game.routeSequence.isEmpty &&
+      currentGame.game.currentStop == 1;
+
+  // Maps the position counter (currentStop 1–5) to the real stops[] index.
+  // When currentStop == 6 (final), falls back to 6 (stops[6]).
+  int get _actualIdx {
+    final seq = currentGame.game.routeSequence;
+    final pos = currentGame.game.currentStop;
+    if (seq.isEmpty || pos < 1 || pos > seq.length) return pos;
+    return seq[pos - 1];
+  }
+
+  // Label for the "coming from" field in openMaps — purely cosmetic.
+  String get _prevStopName {
+    if (stopNumber <= 1) return currentGame.latestEvent.stops[0].name;
+    final seq = currentGame.game.routeSequence;
+    if (seq.isEmpty || stopNumber - 2 >= seq.length) {
+      return currentGame.latestEvent.stops[0].name;
+    }
+    return currentGame.latestEvent.stops[seq[stopNumber - 2]].name;
+  }
+
+  void _refreshAllDistances() {
+    if (_calculatingAllDistances) return;
+    _calculatingAllDistances = true;
+    int done = 0;
+    for (int i = 1; i <= 5; i++) {
+      calculateDistance(
+        currentUser.location.latitude,
+        currentUser.location.longitude,
+        currentGame.latestEvent.stops[i].stopLocation.latitude,
+        currentGame.latestEvent.stops[i].stopLocation.longitude,
+      ).then((d) {
+        if (!mounted) return;
+        _allDistances[i] = d;
+        done++;
+        if (done == 5) {
+          _calculatingAllDistances = false;
+          Future.delayed(const Duration(milliseconds: 900), () {
+            if (mounted) setState(() {});
+          });
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    stopsModel = currentGame.latestEvent.stops[currentGame.game.currentStop];
     stopNumber = currentGame.game.currentStop;
+
+    if (_isFirstStopPhase) {
+      _refreshAllDistances();
+      return _buildFirstStopPhase(context);
+    }
+
+    final actualIdx = _actualIdx;
+    stopsModel = currentGame.latestEvent.stops[actualIdx];
     finalUrl = normalizeUrl(stopsModel.sponserLink);
     SponsorsModel? fallbackSponsor;
-
     String fallbackSponsorUrl = "";
     if (finalUrl.isEmpty) {
-      fallbackSponsor = _pickSponsorFor(stopNumber);
+      fallbackSponsor = _pickSponsorFor(actualIdx);
       fallbackSponsorUrl = normalizeUrl(fallbackSponsor.link);
     }
 
@@ -83,9 +151,83 @@ class _GameViewState extends State<GameView> {
     ).then((value) {
       distance = value;
       Future.delayed(const Duration(milliseconds: 800), () {
-        setState(() {});
+        if (mounted) setState(() {});
       });
     });
+
+    return _buildNormalView(context, fallbackSponsor, fallbackSponsorUrl);
+  }
+
+  // ── Shared AppBar ────────────────────────────────────────────────────────
+
+  AppBar _buildAppBar({required bool showLeaveAtResult}) {
+    return AppBar(
+      backgroundColor: Colors.white10,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      leadingWidth: 8.w,
+      title: text_widget(
+        currentGame.latestEvent.pokerName.capitalize!,
+        fontSize: 17.sp,
+        color: Colors.white.withValues(alpha: 0.80),
+        fontWeight: FontWeight.w600,
+      ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(0),
+        child: Container(height: 2, color: Colors.white12),
+      ),
+      actions: [
+        onPress(
+          ontap: () async {
+            if (showLeaveAtResult) {
+              await showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (ctx) => const PokerResultDialog(),
+              );
+              Get.offAll(() => const HomePage());
+            } else {
+              showPopup(
+                context,
+                "If you exit this game, you will lose all progress and must re-register to play this event?",
+                PopupActionsButtons.cancel,
+                PopupActionsButtons.exit,
+                () => Get.back(),
+                () async {
+                  Get.back();
+                  EasyLoading.show(status: "Leaving...");
+                  currentGame.latestEvent.userIds.remove(currentUser.id);
+                  await FirestoreServices.I.updateEvent(
+                    context,
+                    currentGame.latestEvent,
+                    false,
+                    false,
+                  );
+                  EasyLoading.dismiss();
+                  Get.offAll(HomePage());
+                },
+              );
+            }
+          },
+          child: Padding(
+            padding: EdgeInsets.only(right: 2.w),
+            child: text_widget(
+              showLeaveAtResult ? "LEAVE  " : "EXIT  ",
+              color: Colors.redAccent,
+              maxline: 1,
+              textAlign: TextAlign.center,
+              fontWeight: FontWeight.bold,
+              fontSize: 15.sp,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── First-stop selection phase ───────────────────────────────────────────
+
+  Widget _buildFirstStopPhase(BuildContext context) {
     return Stack(
       children: [
         Image.asset(
@@ -96,72 +238,338 @@ class _GameViewState extends State<GameView> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.white10,
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            leadingWidth: 8.w,
-            title: text_widget(
-              currentGame.latestEvent.pokerName.capitalize!,
-              fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
-              fontWeight: FontWeight.w600,
-            ),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(0),
-              child: Container(height: 2, color: Colors.white12),
-            ),
-            actions: [
-              onPress(
-                ontap: () async {
-                  if (stopNumber == 6) {
-                    await showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return const PokerResultDialog();
-                      },
-                    );
-                    Get.offAll(() => const HomePage());
-                  } else {
-                    showPopup(
+          appBar: _buildAppBar(showLeaveAtResult: false),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  children: [
+                    SizedBox(height: 1.5.h),
+
+                    // Info banner
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 1.4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: MyColors.primary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: MyColors.primary.withValues(alpha: 0.35),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            RemixIcons.information_line,
+                            color: MyColors.primary,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 3.w),
+                          Expanded(
+                            child: text_widget(
+                              "Navigate to any stop and draw your first card. Your route will continue in sequence from there.",
+                              fontSize: 13.sp,
+                              color: MyColors.primary,
+                              fontWeight: FontWeight.w600,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 1.5.h),
+
+                    // All 5 stops
+                    ...List.generate(
+                      5,
+                      (i) => _buildFirstStopCard(context, i + 1),
+                    ),
+
+                    SizedBox(height: 1.h),
+                    const CustomAdInlineWidget(),
+                    SizedBox(height: 2.h),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFirstStopCard(BuildContext context, int stopIdx) {
+    final stop = currentGame.latestEvent.stops[stopIdx];
+    final dist = _allDistances[stopIdx] ?? 99.0;
+    final isNear = dist < miles;
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.5.h),
+      padding: EdgeInsets.all(3.5.w),
+      decoration: BoxDecoration(
+        color: isNear
+            ? Colors.green.withValues(alpha: 0.08)
+            : Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isNear
+              ? Colors.green.withValues(alpha: 0.35)
+              : Colors.white.withValues(alpha: 0.08),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Stop badge + distance chip
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 2.5.w,
+                  vertical: 0.35.h,
+                ),
+                decoration: BoxDecoration(
+                  color: MyColors.primary.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: MyColors.primary.withValues(alpha: 0.40),
+                  ),
+                ),
+                child: text_widget(
+                  "Stop $stopIdx",
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w600,
+                  color: MyColors.primary,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 2.5.w,
+                  vertical: 0.35.h,
+                ),
+                decoration: BoxDecoration(
+                  color: isNear
+                      ? Colors.green.withValues(alpha: 0.15)
+                      : MyColors.secondary.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isNear
+                        ? Colors.green.withValues(alpha: 0.40)
+                        : MyColors.secondary.withValues(alpha: 0.30),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      RemixIcons.route_line,
+                      size: 12.sp,
+                      color: isNear ? Colors.greenAccent : MyColors.secondary,
+                    ),
+                    SizedBox(width: 1.w),
+                    text_widget(
+                      "${dist.toStringAsFixed(2)} mi",
+                      fontSize: 11.5.sp,
+                      fontWeight: FontWeight.w600,
+                      color: isNear ? Colors.greenAccent : MyColors.secondary,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 1.h),
+
+          // Stop name + address
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                RemixIcons.map_pin_fill,
+                color: const Color(0xFFEF6C4A),
+                size: 18.sp,
+              ),
+              SizedBox(width: 2.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    text_widget(
+                      stop.name,
+                      fontSize: 14.5.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      maxline: 1,
+                    ),
+                    SizedBox(height: 0.2.h),
+                    text_widget(
+                      stop.address,
+                      fontSize: 12.5.sp,
+                      color: Colors.white.withValues(alpha: 0.60),
+                      height: 1.35,
+                      maxline: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 1.2.h),
+
+          // Navigate + Get Card buttons
+          Row(
+            children: [
+              Expanded(
+                child: onPress(
+                  ontap: () {
+                    openMaps(
                       context,
-                      "If you exit this game, you will lose all progress and must re-register to play this event?",
-                      PopupActionsButtons.cancel,
-                      PopupActionsButtons.exit,
-                      () {
-                        Get.back();
-                      },
-                      () async {
-                        Get.back();
-                        EasyLoading.show(status: "Leaving...");
-                        currentGame.latestEvent.userIds.remove(currentUser.id);
-                        await FirestoreServices.I.updateEvent(
-                          context,
-                          currentGame.latestEvent,
-                          false,
-                          false,
-                        );
-                        EasyLoading.dismiss();
-                        Get.offAll(HomePage());
-                      },
+                      stop.name,
+                      stop.stopLocation.latitude,
+                      stop.stopLocation.longitude,
+                      "My Location",
+                      currentUser.location.latitude,
+                      currentUser.location.longitude,
                     );
-                  }
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(right: 2.w),
-                  child: text_widget(
-                    stopNumber == 6 ? "LEAVE  " : "EXIT  ",
-                    color: Colors.redAccent,
-                    maxline: 1,
-                    textAlign: TextAlign.center,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15.sp,
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 1.1.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.12),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Transform.rotate(
+                          angle: 1.5,
+                          child: Icon(
+                            RemixIcons.navigation_fill,
+                            color: MyColors.primary,
+                            size: 14.sp,
+                          ),
+                        ),
+                        SizedBox(width: 1.5.w),
+                        text_widget(
+                          "Navigate",
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: MyColors.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 3.w),
+              Expanded(
+                child: onPress(
+                  ontap: () async {
+                    if (_picking) return;
+                    if (!isNear) {
+                      toast(
+                        context,
+                        "Too Far",
+                        "Navigate to this stop to draw a card (within 0.062 mi)",
+                      );
+                      return;
+                    }
+                    _picking = true;
+                    try {
+                      currentGame.game.routeSequence = _computeSequence(
+                        stopIdx,
+                      );
+                      randomCard();
+                      await FirestoreServices.I.updateGamePlayer(
+                        currentGame.game,
+                      );
+                      await Get.to(StopView());
+                      if (!mounted) return;
+                      setState(() {});
+                      if (currentGame.game.currentStop == 6) {
+                        final myHand = Analysis().converter(
+                          List<int>.from(currentGame.game.cards),
+                        );
+                        currentGame.game.rank = myHand.rank;
+                        currentGame.game.rankValue = myHand.score;
+                        FirestoreServices.I.updateGamePlayer(currentGame.game);
+                      }
+                    } finally {
+                      _picking = false;
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 1.1.h),
+                    decoration: BoxDecoration(
+                      color: isNear
+                          ? MyColors.primary
+                          : Colors.white.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(8),
+                      border: isNear
+                          ? null
+                          : Border.all(
+                              color: Colors.white.withValues(alpha: 0.10),
+                            ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.style,
+                          size: 14.sp,
+                          color: isNear
+                              ? Colors.black
+                              : Colors.white.withValues(alpha: 0.30),
+                        ),
+                        SizedBox(width: 1.5.w),
+                        text_widget(
+                          "Get Card",
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: isNear
+                              ? Colors.black
+                              : Colors.white.withValues(alpha: 0.30),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  // ── Normal stop view (stops 1–6) ─────────────────────────────────────────
+
+  Widget _buildNormalView(
+    BuildContext context,
+    SponsorsModel? fallbackSponsor,
+    String fallbackSponsorUrl,
+  ) {
+    return Stack(
+      children: [
+        Image.asset(
+          "assets/background/darkbackground.jpg",
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: _buildAppBar(showLeaveAtResult: stopNumber == 6),
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -211,7 +619,6 @@ class _GameViewState extends State<GameView> {
                                   color: MyColors.primary,
                                 ),
                               ),
-
                               Row(
                                 children: List.generate(
                                   currentGame.latestEvent.stops.length - 1,
@@ -461,6 +868,8 @@ class _GameViewState extends State<GameView> {
                     ),
                   ],
                 ),
+
+                // ── Navigate + Card buttons ───────────────────────────────
                 Row(
                   children: [
                     Expanded(
@@ -468,18 +877,10 @@ class _GameViewState extends State<GameView> {
                         ontap: () {
                           openMaps(
                             context,
-                            currentGame.latestEvent.stops[stopNumber].name,
-                            currentGame
-                                .latestEvent
-                                .stops[stopNumber]
-                                .stopLocation
-                                .latitude,
-                            currentGame
-                                .latestEvent
-                                .stops[stopNumber]
-                                .stopLocation
-                                .longitude,
-                            currentGame.latestEvent.stops[stopNumber - 1].name,
+                            stopsModel.name,
+                            stopsModel.stopLocation.latitude,
+                            stopsModel.stopLocation.longitude,
+                            _prevStopName,
                             currentUser.location.latitude,
                             currentUser.location.longitude,
                           );
@@ -521,9 +922,7 @@ class _GameViewState extends State<GameView> {
                               await showDialog(
                                 context: context,
                                 barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return const PokerResultDialog();
-                                },
+                                builder: (ctx) => const PokerResultDialog(),
                               );
                               Get.offAll(() => const HomePage());
                             }

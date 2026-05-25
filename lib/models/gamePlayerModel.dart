@@ -14,6 +14,7 @@ class GamePlayerModel {
   int rankValue = 0;
   int currentStop = 0;
   List<int> cards = [];
+  List<int> routeSequence = [];
 
   GamePlayerModel();
 
@@ -34,6 +35,7 @@ class GamePlayerModel {
     spends = toDouble(jsonMap['spends']);
     cards = List<int>.from(jsonMap['cards']);
     currentStop = toInt(jsonMap['currentStop']);
+    routeSequence = List<int>.from(jsonMap['routeSequence'] ?? []);
     pokerId = jsonMap['pokerId'] ?? "";
     changeCardAttempts = toInt(jsonMap['changeCardAttempts']);
   }
@@ -55,6 +57,7 @@ class GamePlayerModel {
     jsonMap['currentStop'] = toInt(currentStop);
     jsonMap['pokerId'] = pokerId;
     jsonMap['cards'] = cards;
+    jsonMap['routeSequence'] = routeSequence;
     jsonMap['rank'] = rank;
     jsonMap['rankValue'] = toInt(rankValue);
     jsonMap['changeCardAttempts'] = toInt(changeCardAttempts);
