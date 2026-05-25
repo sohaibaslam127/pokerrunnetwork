@@ -24,7 +24,7 @@ class PokerSponsers extends StatefulWidget {
 }
 
 class _PokerSponsersState extends State<PokerSponsers> {
-  static const Map<int, double> _paidSlotPrices = {2: 0.99, 4: 1.99, 6: 2.99};
+  static const Map<int, double> _paidSlotPrices = {2: 2.99, 4: 1.99, 6: 0.99};
 
   late final List<TextEditingController> _nameControllers;
   late final List<TextEditingController> _linkControllers;
@@ -277,27 +277,11 @@ class _PokerSponsersState extends State<PokerSponsers> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         text_widget(
-                                          "Slots you don't purchase will display Poker Run Network's own relative ads.",
+                                          "You get 3 Free sponsorship spots. You can purchase 3 more spots. Unused spots display the Poker Run Network website / 3rd party ads.",
                                           color: Color(0xff6C5B2A),
                                           fontSize: 12.5.sp,
                                           fontWeight: FontWeight.w500,
                                         ),
-                                        SizedBox(height: 0.6.h),
-                                        text_widget(
-                                          "Bundle & save: unlock 2 paid slots for 10% off, or all 3 for 25% off.",
-                                          color: Color(0xff6C5B2A),
-                                          fontSize: 12.5.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        if (discount > 0) ...[
-                                          SizedBox(height: 0.6.h),
-                                          text_widget(
-                                            "${(discount * 100).toStringAsFixed(0)}% discount applied — you save \$${_discountAmount.toStringAsFixed(2)}.",
-                                            color: Color(0xff137333),
-                                            fontSize: 12.5.sp,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ],
                                       ],
                                     ),
                                   ),
