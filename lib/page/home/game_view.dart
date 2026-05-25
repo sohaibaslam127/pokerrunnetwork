@@ -201,8 +201,17 @@ class _GameViewState extends State<GameView> {
                                   color: MyColors.primary,
                                 ),
                               ),
-                              const Spacer(),
-                              // progress dots
+                              Expanded(
+                                child: text_widget(
+                                  "Next Stop",
+                                  textAlign: TextAlign.center,
+                                  fontSize: 19.sp,
+                                  fontWeight: FontWeight.w600,
+                                  maxline: 1,
+                                  color: MyColors.primary,
+                                ),
+                              ),
+
                               Row(
                                 children: List.generate(
                                   currentGame.latestEvent.stops.length - 1,

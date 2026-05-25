@@ -295,7 +295,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                               Container(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 3.w,
-                                  vertical: 0.7.h,
+                                  vertical: 0.8.h,
                                 ),
                                 decoration: BoxDecoration(
                                   color: MyColors.secondary.withValues(
@@ -303,8 +303,8 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                                   ),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
-                                    color: MyColors.secondary.withValues(
-                                      alpha: 0.30,
+                                    color: MyColors.primary.withValues(
+                                      alpha: 0.5,
                                     ),
                                   ),
                                 ),
@@ -362,17 +362,23 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(
-                                        RemixIcons.navigation_fill,
-                                        color: Colors.black,
-                                        size: 14.sp,
-                                      ),
-                                      SizedBox(width: 1.5.w),
                                       text_widget(
-                                        "Navigate",
+                                        "To Starting Point",
                                         fontSize: 13.sp,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.black,
+                                      ),
+                                      SizedBox(width: 1.w),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 1),
+                                        child: Transform.rotate(
+                                          angle: 1.5,
+                                          child: Icon(
+                                            RemixIcons.navigation_fill,
+                                            color: Colors.black,
+                                            size: 14.sp,
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),

@@ -37,3 +37,7 @@ class MyApp extends StatelessWidget {
 
 // Heysarge@rocketmail.com
 // Calcutta1313$
+
+// different location starting, nearby stop will be stop 1
+// => when user get to any hole and get the card then it will be his first stop,
+// then move to the next one and continue the game
