@@ -73,17 +73,6 @@ class _RouteMapViewState extends State<RouteMapView> {
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   html, body, #map { height: 100%; width: 100%; margin: 0; padding: 0; background: #f4f4f5; }
-  .stop-marker {
-    display: flex; align-items: center; justify-content: center;
-    width: 30px; height: 30px; border-radius: 50%;
-    background: rgba(255,255,255,0.95);
-    color: #1a3b70; font-weight: 700; font-size: 13px;
-    border: 2px solid #ffffff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  }
-  .stop-marker.start { background: #2ecc71; color: #ffffff; }
-  .stop-marker.end { background: #000000; color: #ffffff; }
-  
   .live-location-marker {
     display: flex; align-items: center; justify-content: center;
   }
@@ -140,69 +129,28 @@ class _RouteMapViewState extends State<RouteMapView> {
   //   maxZoom: 20
   // }).addTo(map);
 
-  // Start Race Icon (Crossed Waving Flags)
-  const startIconSvg = `
-<svg
-  viewBox="0 0 24 24"
-  width="20"
-  height="20"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="1.8"
-  stroke-linecap="round"
-  stroke-linejoin="round"
-  style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
->
-  <!-- Crossed flagpoles -->
-  <path d="M4 20l8-12M20 20l-8-12"/>
-  <!-- Left flag waving -->
-  <path d="M12 8c-1.5-1.5-3.5-1.5-5 0s-1 3.5 1.5 5c1.5 1.5 3.5 1.5 5 0Z" fill="currentColor"/>
-  <!-- Right flag waving -->
-  <path d="M12 8c1.5-1.5 3.5-1.5 5 0s1 3.5-1.5 5c-1.5 1.5-3.5 1.5-5 0Z" fill="currentColor"/>
-</svg>
-`;
-
-  // Finish Race Icon (Checkered Flag with Black & White Checks)
-  const finishIconSvg = `
-<svg
-  viewBox="0 0 24 24"
-  width="20"
-  height="20"
-  fill="currentColor"
-  style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
->
-  <!-- Flag Pole -->
-  <path d="M6 2a1 1 0 0 1 1 1v18a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1z"/>
-
-  <!-- Checkered Flag White Base -->
-  <path d="M7 4h10v8H7V4z"/>
-
-  <!-- Black Checkered Squares -->
-  <path
-    d="M7 4h2.5v2.5H7zm5 0h2.5v2.5H12zm-2.5 2.5h2.5v2.5H9.5zm5 0H17v2.5H14.5zm-7.5 2.5h2.5v2.5H7zm5 0h2.5v2.5H12z"
-    fill="#000000"
-  />
-</svg>
-`;
-
   const latlngs = [];
   points.forEach(p => {
-    const cls = p.isStart ? 'stop-marker start' : (p.isEnd ? 'stop-marker end' : 'stop-marker');
-    let markerContent = p.label;
-    if (p.isStart) {
-      markerContent = startIconSvg;
-    } else if (p.isEnd) {
-      markerContent = finishIconSvg;
-    }
+    const bg    = (p.isStart || p.isEnd) ? '#000000' : '#ffffff';
+    const color = (p.isStart || p.isEnd) ? '#ffffff' : '#1a3b70';
+    const border = (p.isStart || p.isEnd) ? '2px solid #F0C11D' : '2px solid #1a3b70';
+    const html = '<div style="'
+      + 'width:32px;height:32px;border-radius:50%;'
+      + 'background:' + bg + ';color:' + color + ';'
+      + 'display:flex;align-items:center;justify-content:center;'
+      + 'font-weight:700;font-size:13px;font-family:system-ui,sans-serif;'
+      + 'border:' + border + ';'
+      + 'box-shadow:0 2px 8px rgba(0,0,0,0.45);'
+      + '">' + p.label + '</div>';
     const icon = L.divIcon({
       className: '',
-      html: '<div class="' + cls + '">' + markerContent + '</div>',
-      iconSize: [30, 30],
-      iconAnchor: [15, 15],
-      popupAnchor: [0, -16]
+      html: html,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -18]
     });
     const m = L.marker([p.lat, p.lng], { icon }).addTo(map);
-    const title = p.isStart ? 'Start Point' : (p.isEnd ? 'End Point' : 'Stop ' + p.label);
+    const title = p.isStart ? 'Start' : (p.isEnd ? 'End' : 'Stop ' + p.label);
     m.bindPopup('<b>' + title + '</b><br/>' + (p.name || '') + '<br/><span style="color:#666">' + (p.address || '') + '</span>');
     latlngs.push([p.lat, p.lng]);
   });
@@ -229,30 +177,34 @@ class _RouteMapViewState extends State<RouteMapView> {
     return [[lat1, lng1], [lat2, lng2]];
   }
 
+  function drawSegment(coords) {
+    L.polyline(coords, {
+      color: '#113559',
+      weight: 6,
+      opacity: 0.9,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(map);
+    L.polyline(coords, {
+      color: '#F0C11D',
+      weight: 4,
+      opacity: 1.0,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(map);
+  }
+
   async function drawRoutes() {
+    // Linear segments: 0→1→2→...→n-1
     for (let i = 0; i < points.length - 1; i++) {
       const p1 = points[i];
       const p2 = points[i + 1];
-      const coords = await fetchWalkingSegment(p1.lat, p1.lng, p2.lat, p2.lng);
-      
-      // Dark navy outline for high contrast with the primary yellow path on satellite view
-      L.polyline(coords, {
-        color: '#113559',
-        weight: 6,
-        opacity: 0.9,
-        lineCap: 'round',
-        lineJoin: 'round'
-      }).addTo(map);
-
-      // Main active route path (Primary color: Gold/Yellow)
-      L.polyline(coords, {
-        color: '#F0C11D',
-        weight: 4,
-        opacity: 1.0,
-        lineCap: 'round',
-        lineJoin: 'round'
-      }).addTo(map);
+      drawSegment(await fetchWalkingSegment(p1.lat, p1.lng, p2.lat, p2.lng));
     }
+    // Closing segment: last point → first point (circular path)
+    const first = points[0];
+    const last = points[points.length - 1];
+    drawSegment(await fetchWalkingSegment(last.lat, last.lng, first.lat, first.lng));
   }
 
   if (latlngs.length > 1) { drawRoutes(); }

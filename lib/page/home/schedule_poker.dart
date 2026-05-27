@@ -445,7 +445,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                   if (click) return;
                   click = true;
                   currentGame.game.currentStop = 0;
-                  if (!currentGame.game.approved) {
+                  if (currentGame.game.approved) {
                     click = false;
                     toast(
                       context,

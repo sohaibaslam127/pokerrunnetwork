@@ -37,7 +37,7 @@ class _GameViewState extends State<GameView> {
   // Distances to all 5 intermediate stops — used during first-stop selection
   final Map<int, double> _allDistances = {1: 99, 2: 99, 3: 99, 4: 99, 5: 99};
   bool _calculatingAllDistances = false;
-  bool _picking = false;
+  bool _autoSelectDone = false;
 
   NRandom ran = NRandom(52, 4);
 
@@ -116,12 +116,30 @@ class _GameViewState extends State<GameView> {
         done++;
         if (done == 5) {
           _calculatingAllDistances = false;
-          Future.delayed(const Duration(milliseconds: 900), () {
-            if (mounted) setState(() {});
-          });
+          _autoSelectNearest();
         }
       });
     }
+  }
+
+  Future<void> _autoSelectNearest() async {
+    if (_autoSelectDone) return;
+    _autoSelectDone = true;
+
+    int minStop = 1;
+    double minDist = _allDistances[1] ?? 99.0;
+    for (int i = 2; i <= 5; i++) {
+      final d = _allDistances[i] ?? 99.0;
+      if (d < minDist) {
+        minDist = d;
+        minStop = i;
+      }
+    }
+
+    currentGame.game.routeSequence = _computeSequence(minStop);
+    await FirestoreServices.I.updateGamePlayer(currentGame.game);
+
+    if (mounted) setState(() {});
   }
 
   @override
@@ -130,7 +148,7 @@ class _GameViewState extends State<GameView> {
 
     if (_isFirstStopPhase) {
       _refreshAllDistances();
-      return _buildFirstStopPhase(context);
+      return _buildAutoSelectingView();
     }
 
     final actualIdx = _actualIdx;
@@ -225,9 +243,7 @@ class _GameViewState extends State<GameView> {
     );
   }
 
-  // ── First-stop selection phase ───────────────────────────────────────────
-
-  Widget _buildFirstStopPhase(BuildContext context) {
+  Widget _buildAutoSelectingView() {
     return Stack(
       children: [
         Image.asset(
@@ -239,316 +255,23 @@ class _GameViewState extends State<GameView> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: _buildAppBar(showLeaveAtResult: false),
-          body: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w),
-                  children: [
-                    SizedBox(height: 1.5.h),
-
-                    // Info banner
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.w,
-                        vertical: 1.4.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: MyColors.primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: MyColors.primary.withValues(alpha: 0.35),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            RemixIcons.information_line,
-                            color: MyColors.primary,
-                            size: 20.sp,
-                          ),
-                          SizedBox(width: 3.w),
-                          Expanded(
-                            child: text_widget(
-                              "Navigate to any stop and draw your first card. Your route will continue in sequence from there.",
-                              fontSize: 13.sp,
-                              color: MyColors.primary,
-                              fontWeight: FontWeight.w600,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 1.5.h),
-
-                    // All 5 stops
-                    ...List.generate(
-                      5,
-                      (i) => _buildFirstStopCard(context, i + 1),
-                    ),
-
-                    SizedBox(height: 1.h),
-                    const CustomAdInlineWidget(),
-                    SizedBox(height: 2.h),
-                  ],
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: MyColors.primary),
+                SizedBox(height: 2.h),
+                text_widget(
+                  "Finding your nearest stop…",
+                  fontSize: 14.sp,
+                  color: Colors.white.withValues(alpha: 0.75),
+                  fontWeight: FontWeight.w500,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildFirstStopCard(BuildContext context, int stopIdx) {
-    final stop = currentGame.latestEvent.stops[stopIdx];
-    final dist = _allDistances[stopIdx] ?? 99.0;
-    final isNear = dist < miles;
-
-    return Container(
-      margin: EdgeInsets.only(bottom: 1.5.h),
-      padding: EdgeInsets.all(3.5.w),
-      decoration: BoxDecoration(
-        color: isNear
-            ? Colors.green.withValues(alpha: 0.08)
-            : Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isNear
-              ? Colors.green.withValues(alpha: 0.35)
-              : Colors.white.withValues(alpha: 0.08),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Stop badge + distance chip
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 2.5.w,
-                  vertical: 0.35.h,
-                ),
-                decoration: BoxDecoration(
-                  color: MyColors.primary.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: MyColors.primary.withValues(alpha: 0.40),
-                  ),
-                ),
-                child: text_widget(
-                  "Stop $stopIdx",
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w600,
-                  color: MyColors.primary,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 2.5.w,
-                  vertical: 0.35.h,
-                ),
-                decoration: BoxDecoration(
-                  color: isNear
-                      ? Colors.green.withValues(alpha: 0.15)
-                      : MyColors.secondary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isNear
-                        ? Colors.green.withValues(alpha: 0.40)
-                        : MyColors.secondary.withValues(alpha: 0.30),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      RemixIcons.route_line,
-                      size: 12.sp,
-                      color: isNear ? Colors.greenAccent : MyColors.secondary,
-                    ),
-                    SizedBox(width: 1.w),
-                    text_widget(
-                      "${dist.toStringAsFixed(2)} mi",
-                      fontSize: 11.5.sp,
-                      fontWeight: FontWeight.w600,
-                      color: isNear ? Colors.greenAccent : MyColors.secondary,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 1.h),
-
-          // Stop name + address
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                RemixIcons.map_pin_fill,
-                color: const Color(0xFFEF6C4A),
-                size: 18.sp,
-              ),
-              SizedBox(width: 2.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    text_widget(
-                      stop.name,
-                      fontSize: 14.5.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      maxline: 1,
-                    ),
-                    SizedBox(height: 0.2.h),
-                    text_widget(
-                      stop.address,
-                      fontSize: 12.5.sp,
-                      color: Colors.white.withValues(alpha: 0.60),
-                      height: 1.35,
-                      maxline: 2,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 1.2.h),
-
-          // Navigate + Get Card buttons
-          Row(
-            children: [
-              Expanded(
-                child: onPress(
-                  ontap: () {
-                    openMaps(
-                      context,
-                      stop.name,
-                      stop.stopLocation.latitude,
-                      stop.stopLocation.longitude,
-                      "My Location",
-                      currentUser.location.latitude,
-                      currentUser.location.longitude,
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 1.1.h),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.12),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Transform.rotate(
-                          angle: 1.5,
-                          child: Icon(
-                            RemixIcons.navigation_fill,
-                            color: MyColors.primary,
-                            size: 14.sp,
-                          ),
-                        ),
-                        SizedBox(width: 1.5.w),
-                        text_widget(
-                          "Navigate",
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w600,
-                          color: MyColors.primary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 3.w),
-              Expanded(
-                child: onPress(
-                  ontap: () async {
-                    if (_picking) return;
-                    if (!isNear) {
-                      toast(
-                        context,
-                        "Too Far",
-                        "Navigate to this stop to draw a card (within 0.062 mi)",
-                      );
-                      return;
-                    }
-                    _picking = true;
-                    try {
-                      currentGame.game.routeSequence = _computeSequence(
-                        stopIdx,
-                      );
-                      randomCard();
-                      await FirestoreServices.I.updateGamePlayer(
-                        currentGame.game,
-                      );
-                      await Get.to(StopView());
-                      if (!mounted) return;
-                      setState(() {});
-                      if (currentGame.game.currentStop == 6) {
-                        final myHand = Analysis().converter(
-                          List<int>.from(currentGame.game.cards),
-                        );
-                        currentGame.game.rank = myHand.rank;
-                        currentGame.game.rankValue = myHand.score;
-                        FirestoreServices.I.updateGamePlayer(currentGame.game);
-                      }
-                    } finally {
-                      _picking = false;
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 1.1.h),
-                    decoration: BoxDecoration(
-                      color: isNear
-                          ? MyColors.primary
-                          : Colors.white.withValues(alpha: 0.06),
-                      borderRadius: BorderRadius.circular(8),
-                      border: isNear
-                          ? null
-                          : Border.all(
-                              color: Colors.white.withValues(alpha: 0.10),
-                            ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.style,
-                          size: 14.sp,
-                          color: isNear
-                              ? Colors.black
-                              : Colors.white.withValues(alpha: 0.30),
-                        ),
-                        SizedBox(width: 1.5.w),
-                        text_widget(
-                          "Get Card",
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w600,
-                          color: isNear
-                              ? Colors.black
-                              : Colors.white.withValues(alpha: 0.30),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 
