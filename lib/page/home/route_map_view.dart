@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
+import 'package:location/location.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
@@ -26,6 +28,7 @@ class RouteMapView extends StatefulWidget {
 class _RouteMapViewState extends State<RouteMapView> {
   late final List<StopsModel> _validStops;
   InAppWebViewController? _webViewController;
+  StreamSubscription<LocationData>? _locationSub;
 
   @override
   void initState() {
@@ -36,6 +39,37 @@ class _RouteMapViewState extends State<RouteMapView> {
               s.stopLocation.latitude != 0.0 || s.stopLocation.longitude != 0.0,
         )
         .toList();
+  }
+
+  Future<void> _startLocationUpdates() async {
+    final loc = Location();
+    bool serviceEnabled = await loc.serviceEnabled();
+    if (!serviceEnabled) serviceEnabled = await loc.requestService();
+    if (!serviceEnabled) return;
+
+    PermissionStatus permission = await loc.hasPermission();
+    if (permission == PermissionStatus.denied) {
+      permission = await loc.requestPermission();
+    }
+    if (permission != PermissionStatus.granted) return;
+
+    await loc.changeSettings(accuracy: LocationAccuracy.high, interval: 3000);
+
+    _locationSub = loc.onLocationChanged.listen((data) {
+      final lat = data.latitude;
+      final lng = data.longitude;
+      final acc = data.accuracy ?? 10.0;
+      if (lat == null || lng == null) return;
+      _webViewController?.evaluateJavascript(
+        source: 'updateUserMarker(L.latLng($lat, $lng), $acc);',
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _locationSub?.cancel();
+    super.dispose();
   }
 
   String _buildHtml() {
@@ -73,6 +107,17 @@ class _RouteMapViewState extends State<RouteMapView> {
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   html, body, #map { height: 100%; width: 100%; margin: 0; padding: 0; background: #f4f4f5; }
+  .stop-marker {
+    display: flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    color: #1a3b70; font-weight: 700; font-size: 13px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .stop-marker.start { background: #2ecc71; color: #ffffff; }
+  .stop-marker.end { background: #000000; color: #ffffff; }
+  
   .live-location-marker {
     display: flex; align-items: center; justify-content: center;
   }
@@ -129,28 +174,60 @@ class _RouteMapViewState extends State<RouteMapView> {
   //   maxZoom: 20
   // }).addTo(map);
 
+  // Start Icon (Golf Flag)
+  const startIconSvg = `
+<svg width="22" height="22" viewBox="-3 0 20 20" xmlns="http://www.w3.org/2000/svg"
+  style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
+>
+  <g transform="translate(-5 -2)">
+    <path fill="#1e428a" d="M12,4v6l6-3Z"/>
+    <path d="M12,13c-3.31,0-6,1.79-6,4s2.69,4,6,4,6-1.79,6-4a3.59,3.59,0,0,0-2-3" fill="none" stroke="#1e428a" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <path d="M12,3V17M12,4v6l6-3Z" fill="none" stroke="#1e428a" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+  </g>
+</svg>
+`;
+
+  // Finish Race Icon (Checkered Flag with Black & White Checks)
+  const finishIconSvg = `
+<svg
+  viewBox="-3 0 24 24"
+  width="22"
+  height="22"
+  fill="currentColor"
+  style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
+>
+  <!-- Flag Pole -->
+  <path d="M6 2a1 1 0 0 1 1 1v18a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1z"/>
+
+  <!-- Checkered Flag White Base -->
+  <path d="M7 4h10v8H7V4z"/>
+
+  <!-- Black Checkered Squares -->
+  <path
+    d="M7 4h2.5v2.5H7zm5 0h2.5v2.5H12zm-2.5 2.5h2.5v2.5H9.5zm5 0H17v2.5H14.5zm-7.5 2.5h2.5v2.5H7zm5 0h2.5v2.5H12z"
+    fill="#000000"
+  />
+</svg>
+`;
+
   const latlngs = [];
   points.forEach(p => {
-    const bg    = (p.isStart || p.isEnd) ? '#000000' : '#ffffff';
-    const color = (p.isStart || p.isEnd) ? '#ffffff' : '#1a3b70';
-    const border = (p.isStart || p.isEnd) ? '2px solid #F0C11D' : '2px solid #1a3b70';
-    const html = '<div style="'
-      + 'width:32px;height:32px;border-radius:50%;'
-      + 'background:' + bg + ';color:' + color + ';'
-      + 'display:flex;align-items:center;justify-content:center;'
-      + 'font-weight:700;font-size:13px;font-family:system-ui,sans-serif;'
-      + 'border:' + border + ';'
-      + 'box-shadow:0 2px 8px rgba(0,0,0,0.45);'
-      + '">' + p.label + '</div>';
+    const cls = p.isStart ? 'stop-marker start' : (p.isEnd ? 'stop-marker end' : 'stop-marker');
+    let markerContent = p.label;
+    if (p.isStart) {
+      markerContent = startIconSvg;
+    } else if (p.isEnd) {
+      markerContent = finishIconSvg;
+    }
     const icon = L.divIcon({
       className: '',
-      html: html,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -18]
+      html: '<div class="' + cls + '">' + markerContent + '</div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -16]
     });
     const m = L.marker([p.lat, p.lng], { icon }).addTo(map);
-    const title = p.isStart ? 'Start' : (p.isEnd ? 'End' : 'Stop ' + p.label);
+    const title = p.isStart ? 'Start Point' : (p.isEnd ? 'End Point' : 'Stop ' + p.label);
     m.bindPopup('<b>' + title + '</b><br/>' + (p.name || '') + '<br/><span style="color:#666">' + (p.address || '') + '</span>');
     latlngs.push([p.lat, p.lng]);
   });
@@ -177,16 +254,16 @@ class _RouteMapViewState extends State<RouteMapView> {
     return [[lat1, lng1], [lat2, lng2]];
   }
 
-  function drawSegment(coords) {
+  function drawSegment(coords, outlineColor, pathColor) {
     L.polyline(coords, {
-      color: '#113559',
+      color: outlineColor,
       weight: 6,
       opacity: 0.9,
       lineCap: 'round',
       lineJoin: 'round'
     }).addTo(map);
     L.polyline(coords, {
-      color: '#F0C11D',
+      color: pathColor,
       weight: 4,
       opacity: 1.0,
       lineCap: 'round',
@@ -195,16 +272,16 @@ class _RouteMapViewState extends State<RouteMapView> {
   }
 
   async function drawRoutes() {
-    // Linear segments: 0→1→2→...→n-1
-    for (let i = 0; i < points.length - 1; i++) {
-      const p1 = points[i];
-      const p2 = points[i + 1];
-      drawSegment(await fetchWalkingSegment(p1.lat, p1.lng, p2.lat, p2.lng));
+    // middle stops only (exclude start at index 0 and end at last index)
+    const stops = points.slice(1, points.length - 1);
+    if (stops.length < 2) return;
+
+    for (let i = 0; i < stops.length; i++) {
+      const p1 = stops[i];
+      const p2 = stops[(i + 1) % stops.length]; // wraps last stop back to first
+      const coords = await fetchWalkingSegment(p1.lat, p1.lng, p2.lat, p2.lng);
+      drawSegment(coords, '#113559', '#F0C11D');
     }
-    // Closing segment: last point → first point (circular path)
-    const first = points[0];
-    const last = points[points.length - 1];
-    drawSegment(await fetchWalkingSegment(last.lat, last.lng, first.lat, first.lng));
   }
 
   if (latlngs.length > 1) { drawRoutes(); }
@@ -215,6 +292,7 @@ class _RouteMapViewState extends State<RouteMapView> {
   let userCircle = null;
 
   function updateUserMarker(latlng, accuracy) {
+    userLatLng = latlng;
     const radius = accuracy / 2;
     if (userMarker) {
       userMarker.setLatLng(latlng);
@@ -432,6 +510,9 @@ class _RouteMapViewState extends State<RouteMapView> {
                       ),
                       onWebViewCreated: (controller) {
                         _webViewController = controller;
+                      },
+                      onLoadStop: (controller, url) {
+                        _startLocationUpdates();
                       },
                       onGeolocationPermissionsShowPrompt:
                           (controller, origin) async {
