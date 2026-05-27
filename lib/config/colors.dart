@@ -7,6 +7,7 @@ class MyColors {
   static Color secondaryLight = Color.fromARGB(255, 106, 148, 232);
   static Color black = Color(0xff3C3C3C);
   static Color white = Colors.white70;
+  static Color red = Color.fromARGB(255, 226, 58, 58);
 }
 
 class PopupActionsButtons {
@@ -42,6 +43,8 @@ class OtherButtons {
   static String card4 = "assets/buttons/other/card4.png";
   static String card5 = "assets/buttons/other/card5.png";
 
+  static String map = "assets/buttons/other/map.png";
+  static String previewRoute = "assets/buttons/other/previewroute.png";
   static String navigate1 = "assets/buttons/other/navigate1.png";
   static String navigate2 = "assets/buttons/other/navigate2.png";
   static String navigate3 = "assets/buttons/other/navigate3.png";

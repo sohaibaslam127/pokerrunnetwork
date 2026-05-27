@@ -10,6 +10,7 @@ import 'package:pokerrunnetwork/models/analysis.dart';
 import 'package:pokerrunnetwork/models/sponsors.dart';
 import 'package:pokerrunnetwork/models/stops.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
+import 'package:pokerrunnetwork/page/home/route_map_view.dart';
 import 'package:pokerrunnetwork/page/home/stop_view.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
@@ -523,7 +524,10 @@ class _GameViewState extends State<GameView> {
                           children: [
                             Icon(
                               RemixIcons.map_pin_2_line,
-                              color: const Color(0xFFEF6C4A),
+
+                              color: distance < miles
+                                  ? Colors.green.withValues(alpha: 0.75)
+                                  : MyColors.red.withValues(alpha: 0.75),
                               size: 18.sp,
                             ),
                             SizedBox(width: 2.5.w),
@@ -552,10 +556,8 @@ class _GameViewState extends State<GameView> {
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: distance < miles
-                                      ? Colors.green.withValues(alpha: 0.45)
-                                      : MyColors.secondary.withValues(
-                                          alpha: 0.35,
-                                        ),
+                                      ? Colors.green.withValues(alpha: 0.75)
+                                      : MyColors.red.withValues(alpha: 0.75),
                                 ),
                               ),
                               child: Column(
@@ -598,19 +600,23 @@ class _GameViewState extends State<GameView> {
                     Expanded(
                       child: onPress(
                         ontap: () {
-                          openMaps(
-                            context,
-                            stopsModel.name,
-                            stopsModel.stopLocation.latitude,
-                            stopsModel.stopLocation.longitude,
-                            _prevStopName,
-                            currentUser.location.latitude,
-                            currentUser.location.longitude,
-                          );
+                          if (stopNumber == 1) {
+                            Get.to(RouteMapView(currentGame.latestEvent));
+                          } else {
+                            openMaps(
+                              context,
+                              stopsModel.name,
+                              stopsModel.stopLocation.latitude,
+                              stopsModel.stopLocation.longitude,
+                              _prevStopName,
+                              currentUser.location.latitude,
+                              currentUser.location.longitude,
+                            );
+                          }
                         },
                         child: Image.asset(
                           stopNumber == 1
-                              ? OtherButtons.navigate1
+                              ? OtherButtons.previewRoute
                               : stopNumber == 2
                               ? OtherButtons.navigate2
                               : stopNumber == 3
