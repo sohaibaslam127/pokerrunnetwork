@@ -18,7 +18,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 void toast(BuildContext context, String title, String message, {int type = 3}) {
   EasyLoading.dismiss();
-  final topInset = MediaQuery.of(context).padding.top;
 
   Snackify.show(
     context: context,
@@ -26,11 +25,11 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
     title: text_widget(
       title.toUpperCase(),
       color: Colors.white,
-      fontSize: 16.sp,
+      fontSize: 15.sp,
       fontWeight: FontWeight.bold,
     ),
     offset: Offset(3.w, 3.h),
-    subtitle: text_widget(message, color: Colors.white, fontSize: 15.sp),
+    subtitle: text_widget(message, color: Colors.white, fontSize: 13.5.sp),
     duration: const Duration(seconds: 2),
     backgroundGradient: LinearGradient(
       colors: type == 0

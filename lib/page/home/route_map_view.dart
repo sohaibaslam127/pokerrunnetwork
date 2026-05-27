@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
@@ -26,9 +29,14 @@ class RouteMapView extends StatefulWidget {
 }
 
 class _RouteMapViewState extends State<RouteMapView> {
+  static final _routingChannel = MethodChannel('apple_maps_routing');
+
   late final List<StopsModel> _validStops;
   InAppWebViewController? _webViewController;
   StreamSubscription<LocationData>? _locationSub;
+
+  // null = still loading, [] = no routes needed
+  List<List<List<double>>>? _routeSegments;
 
   @override
   void initState() {
@@ -39,6 +47,129 @@ class _RouteMapViewState extends State<RouteMapView> {
               s.stopLocation.latitude != 0.0 || s.stopLocation.longitude != 0.0,
         )
         .toList();
+    _fetchRoutes();
+  }
+
+  Future<void> _fetchRoutes() async {
+    // middle stops only — exclude start (index 0) and end (last)
+    final stops = _validStops.length > 2
+        ? _validStops.sublist(1, _validStops.length - 1)
+        : <StopsModel>[];
+
+    debugPrint(
+      '[RouteMap] validStops=${_validStops.length} middleStops=${stops.length}',
+    );
+
+    if (stops.length < 2) {
+      debugPrint('[RouteMap] Not enough middle stops — skipping routing');
+      if (mounted) setState(() => _routeSegments = []);
+      return;
+    }
+
+    final segments = <List<List<double>>>[];
+    for (int i = 0; i < stops.length; i++) {
+      final p1 = stops[i];
+      final p2 = stops[(i + 1) % stops.length];
+      final coords = Platform.isIOS
+          ? await _fetchAppleRoute(
+              p1.stopLocation.latitude,
+              p1.stopLocation.longitude,
+              p2.stopLocation.latitude,
+              p2.stopLocation.longitude,
+            )
+          : await _fetchGoogleRoute(
+              p1.stopLocation.latitude,
+              p1.stopLocation.longitude,
+              p2.stopLocation.latitude,
+              p2.stopLocation.longitude,
+            );
+      segments.add(coords);
+    }
+
+    if (mounted) setState(() => _routeSegments = segments);
+  }
+
+  Future<List<List<double>>> _fetchAppleRoute(
+    double lat1,
+    double lng1,
+    double lat2,
+    double lng2,
+  ) async {
+    try {
+      final raw = await _routingChannel.invokeMethod<List>('getWalkingRoute', {
+        'lat1': lat1,
+        'lng1': lng1,
+        'lat2': lat2,
+        'lng2': lng2,
+      });
+      return raw!
+          .map((c) => (c as List).map((v) => (v as num).toDouble()).toList())
+          .toList();
+    } catch (e) {
+      debugPrint('[RouteMap] Apple MKDirections failed: $e');
+      return [
+        [lat1, lng1],
+        [lat2, lng2],
+      ];
+    }
+  }
+
+  Future<List<List<double>>> _fetchGoogleRoute(
+    double lat1,
+    double lng1,
+    double lat2,
+    double lng2,
+  ) async {
+    const apiKey = 'AIzaSyBe5djPy8Cpm6fZMl14cmjw4ZewHtKFPI0';
+    try {
+      final res = await Dio().get(
+        'https://maps.googleapis.com/maps/api/directions/json',
+        queryParameters: {
+          'origin': '$lat1,$lng1',
+          'destination': '$lat2,$lng2',
+          'mode': 'walking',
+          'key': apiKey,
+        },
+      );
+      final routes = res.data['routes'] as List?;
+      if (routes == null || routes.isEmpty)
+        return [
+          [lat1, lng1],
+          [lat2, lng2],
+        ];
+      final encoded = routes[0]['overview_polyline']['points'] as String;
+      return _decodePolyline(encoded);
+    } catch (e) {
+      debugPrint('[RouteMap] Google Directions failed: $e');
+      return [
+        [lat1, lng1],
+        [lat2, lng2],
+      ];
+    }
+  }
+
+  List<List<double>> _decodePolyline(String encoded) {
+    final result = <List<double>>[];
+    int index = 0, lat = 0, lng = 0;
+    while (index < encoded.length) {
+      int shift = 0, b = 0, result0 = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result0 |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      lat += (result0 & 1) != 0 ? ~(result0 >> 1) : (result0 >> 1);
+      shift = 0;
+      result0 = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result0 |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      lng += (result0 & 1) != 0 ? ~(result0 >> 1) : (result0 >> 1);
+      result.add([lat / 1e5, lng / 1e5]);
+    }
+    return result;
   }
 
   Future<void> _startLocationUpdates() async {
@@ -240,19 +371,8 @@ class _RouteMapViewState extends State<RouteMapView> {
     map.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] });
   }
 
-  async function fetchWalkingSegment(lat1, lng1, lat2, lng2) {
-    try {
-      const url = 'https://router.project-osrm.org/route/v1/foot/'
-        + lng1 + ',' + lat1 + ';' + lng2 + ',' + lat2
-        + '?overview=full&geometries=geojson';
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.code === 'Ok' && data.routes && data.routes[0]) {
-        return data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-      }
-    } catch (_) {}
-    return [[lat1, lng1], [lat2, lng2]];
-  }
+  // Route segments pre-fetched natively via Apple Maps walking directions
+  const routeSegments = ${jsonEncode(_routeSegments ?? [])};
 
   function drawSegment(coords, outlineColor, pathColor) {
     L.polyline(coords, {
@@ -271,20 +391,9 @@ class _RouteMapViewState extends State<RouteMapView> {
     }).addTo(map);
   }
 
-  async function drawRoutes() {
-    // middle stops only (exclude start at index 0 and end at last index)
-    const stops = points.slice(1, points.length - 1);
-    if (stops.length < 2) return;
-
-    for (let i = 0; i < stops.length; i++) {
-      const p1 = stops[i];
-      const p2 = stops[(i + 1) % stops.length]; // wraps last stop back to first
-      const coords = await fetchWalkingSegment(p1.lat, p1.lng, p2.lat, p2.lng);
-      drawSegment(coords, '#113559', '#F0C11D');
-    }
-  }
-
-  if (latlngs.length > 1) { drawRoutes(); }
+  routeSegments.forEach(coords => {
+    drawSegment(coords, '#113559', '#F0C11D');
+  });
 
   // Live Location
   let userLatLng = null;
@@ -492,6 +601,21 @@ class _RouteMapViewState extends State<RouteMapView> {
                       color: MyColors.white.withValues(alpha: 0.7),
                       textAlign: TextAlign.center,
                     ),
+                  ),
+                )
+              : _routeSegments == null
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(color: MyColors.primary),
+                      SizedBox(height: 1.5.h),
+                      text_widget(
+                        "Calculating walking route...",
+                        fontSize: 13.sp,
+                        color: MyColors.white.withValues(alpha: 0.7),
+                      ),
+                    ],
                   ),
                 )
               : Stack(

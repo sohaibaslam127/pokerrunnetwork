@@ -33,13 +33,14 @@ final mapApiKey = Platform.isAndroid
     : "AIzaSyCnUqH6cLCs3mjzRLLbPQYcPIoePD299Ps";
 
 double serviceFee = 0.0;
-double miles = 0.062137;
+double miles = 0.062;
+// double miles = 45.00;
 String helpLineNumber = "";
 String helpLineEmail = "";
 String website = "";
 double coriderFee = -1.0;
 
-bool enableAds = true;
+bool enableAds = false;
 String latestAppVersion = "";
 bool needApproval = true;
 bool autoFillCards = false;

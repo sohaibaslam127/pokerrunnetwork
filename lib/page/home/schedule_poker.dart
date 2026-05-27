@@ -426,7 +426,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                           ),
                           SizedBox(height: 1.h),
                           text_widget(
-                            "You must be within 0.062 miles of the start location to begin your Poker Run.\n\nOnce started, navigate to each stop on the route to unlock your cards.",
+                            "You must be within $miles miles of the start location to begin your Poker Run.\n\nOnce started, navigate to each stop on the route to unlock your cards.",
                             fontSize: 14.sp,
                             color: MyColors.white.withValues(alpha: 0.55),
                             height: 1.6,

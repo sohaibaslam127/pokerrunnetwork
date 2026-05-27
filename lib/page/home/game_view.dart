@@ -38,6 +38,7 @@ class _GameViewState extends State<GameView> {
   // Distances to all 5 intermediate stops — used during first-stop selection
   final Map<int, double> _allDistances = {1: 99, 2: 99, 3: 99, 4: 99, 5: 99};
   bool _calculatingAllDistances = false;
+  bool _distancesReady = false;
   bool _autoSelectDone = false;
 
   NRandom ran = NRandom(52, 4);
@@ -79,7 +80,7 @@ class _GameViewState extends State<GameView> {
 
   // True only between leaving initial point and drawing first card.
   bool get _isFirstStopPhase =>
-      currentGame.game.routeSequence.isEmpty &&
+      // currentGame.game.routeSequence.isEmpty &&
       currentGame.game.currentStop == 1;
 
   // Maps the position counter (currentStop 1–5) to the real stops[] index.
@@ -125,7 +126,6 @@ class _GameViewState extends State<GameView> {
 
   Future<void> _autoSelectNearest() async {
     if (_autoSelectDone) return;
-    _autoSelectDone = true;
 
     int minStop = 1;
     double minDist = _allDistances[1] ?? 99.0;
@@ -137,8 +137,13 @@ class _GameViewState extends State<GameView> {
       }
     }
 
-    currentGame.game.routeSequence = _computeSequence(minStop);
-    await FirestoreServices.I.updateGamePlayer(currentGame.game);
+    _distancesReady = true;
+
+    if (minDist < miles) {
+      _autoSelectDone = true;
+      currentGame.game.routeSequence = _computeSequence(minStop);
+      await FirestoreServices.I.updateGamePlayer(currentGame.game);
+    }
 
     if (mounted) setState(() {});
   }
@@ -149,7 +154,11 @@ class _GameViewState extends State<GameView> {
 
     if (_isFirstStopPhase) {
       _refreshAllDistances();
-      return _buildAutoSelectingView();
+      if (!_distancesReady) return _buildAutoSelectingView();
+      final nearestIdx = _allDistances.entries
+          .reduce((a, b) => a.value <= b.value ? a : b)
+          .key;
+      return _buildNavigateToNearestView(nearestIdx);
     }
 
     final actualIdx = _actualIdx;
@@ -269,6 +278,184 @@ class _GameViewState extends State<GameView> {
                   fontWeight: FontWeight.w500,
                 ),
               ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNavigateToNearestView(int stopIdx) {
+    final stop = currentGame.latestEvent.stops[stopIdx];
+    final dist = _allDistances[stopIdx] ?? 99.0;
+
+    return Stack(
+      children: [
+        Image.asset(
+          "assets/background/darkbackground.jpg",
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: _buildAppBar(showLeaveAtResult: false),
+          body: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    RemixIcons.map_pin_2_line,
+                    color: MyColors.primary,
+                    size: 36.sp,
+                  ),
+                  SizedBox(height: 1.5.h),
+                  text_widget(
+                    "Navigate to your nearest stop",
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 0.8.h),
+                  text_widget(
+                    "Your game will start automatically\nonce you arrive.",
+                    fontSize: 13.sp,
+                    color: Colors.white.withValues(alpha: 0.60),
+                    textAlign: TextAlign.center,
+                    height: 1.5,
+                  ),
+                  SizedBox(height: 2.5.h),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(4.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: MyColors.primary.withValues(alpha: 0.35),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 2.5.w,
+                                vertical: 0.35.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: MyColors.primary.withValues(alpha: 0.18),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: MyColors.primary.withValues(
+                                    alpha: 0.40,
+                                  ),
+                                ),
+                              ),
+                              child: text_widget(
+                                "Nearest Stop",
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w600,
+                                color: MyColors.primary,
+                              ),
+                            ),
+                            const Spacer(),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 2.5.w,
+                                vertical: 0.35.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: MyColors.secondary.withValues(
+                                  alpha: 0.15,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: MyColors.secondary.withValues(
+                                    alpha: 0.30,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    RemixIcons.route_line,
+                                    size: 12.sp,
+                                    color: MyColors.secondary,
+                                  ),
+                                  SizedBox(width: 1.w),
+                                  text_widget(
+                                    "${dist.toStringAsFixed(2)} mi",
+                                    fontSize: 11.5.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: MyColors.secondary,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 1.h),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              RemixIcons.map_pin_fill,
+                              color: const Color(0xFFEF6C4A),
+                              size: 18.sp,
+                            ),
+                            SizedBox(width: 2.w),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  text_widget(
+                                    stop.name,
+                                    fontSize: 14.5.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    maxline: 1,
+                                  ),
+                                  SizedBox(height: 0.2.h),
+                                  text_widget(
+                                    stop.address,
+                                    fontSize: 12.5.sp,
+                                    color: Colors.white.withValues(alpha: 0.60),
+                                    height: 1.35,
+                                    maxline: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 1.5.h),
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 1.2.h),
+                          decoration: BoxDecoration(
+                            color: MyColors.primary,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: text_widget(
+                            "I am on my way to my first stop",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
