@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -35,13 +37,36 @@ class _GameViewState extends State<GameView> {
   String finalUrl = "";
   double distance = 0;
 
-  // Distances to all 5 intermediate stops — used during first-stop selection
+  // ── First-stop detection state ───────────────────────────────────────────
   final Map<int, double> _allDistances = {1: 99, 2: 99, 3: 99, 4: 99, 5: 99};
   bool _calculatingAllDistances = false;
-  bool _distancesReady = false;
-  bool _autoSelectDone = false;
+  int? _nearestInRadius;
+  bool _picking = false;
+  Timer? _proximityTimer;
 
   NRandom ran = NRandom(52, 4);
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isFirstStopPhase) {
+      _refreshAllDistances();
+      // Poll every 4 s so the card updates as the user walks between stops
+      _proximityTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+        if (mounted && _isFirstStopPhase) {
+          _refreshAllDistances();
+        } else {
+          _proximityTimer?.cancel();
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _proximityTimer?.cancel();
+    super.dispose();
+  }
 
   void randomCard() {
     int number = ran.getNextIndex();
@@ -69,8 +94,8 @@ class _GameViewState extends State<GameView> {
     return SponsorsModel()..link = "https://www.tomorrowbyte.com/";
   }
 
-  // Builds the circular route sequence from a chosen start stop.
-  // e.g. startStop=4 → [4, 5, 1, 2, 3]
+  // Computes the circular route starting from [startStop].
+  // startStop=4  →  [4, 5, 1, 2, 3]
   List<int> _computeSequence(int startStop) {
     const all = [1, 2, 3, 4, 5];
     final idx = all.indexOf(startStop);
@@ -78,13 +103,14 @@ class _GameViewState extends State<GameView> {
     return [...all.sublist(idx), ...all.sublist(0, idx)];
   }
 
-  // True only between leaving initial point and drawing first card.
+  // True only between leaving initial point and the user confirming their first stop.
+  // currentStop may still be 0 if Firestore write from schedule_poker hasn't completed.
   bool get _isFirstStopPhase =>
-      // currentGame.game.routeSequence.isEmpty &&
-      currentGame.game.currentStop == 1;
+      currentGame.game.routeSequence.isEmpty &&
+      (currentGame.game.currentStop == 0 || currentGame.game.currentStop == 1);
 
   // Maps the position counter (currentStop 1–5) to the real stops[] index.
-  // When currentStop == 6 (final), falls back to 6 (stops[6]).
+  // currentStop == 6 falls through to 6 (final stop).
   int get _actualIdx {
     final seq = currentGame.game.routeSequence;
     final pos = currentGame.game.currentStop;
@@ -92,7 +118,7 @@ class _GameViewState extends State<GameView> {
     return seq[pos - 1];
   }
 
-  // Label for the "coming from" field in openMaps — purely cosmetic.
+  // Label for the openMaps "from" field — cosmetic only.
   String get _prevStopName {
     if (stopNumber <= 1) return currentGame.latestEvent.stops[0].name;
     final seq = currentGame.game.routeSequence;
@@ -102,8 +128,17 @@ class _GameViewState extends State<GameView> {
     return currentGame.latestEvent.stops[seq[stopNumber - 2]].name;
   }
 
+  // Fires off parallel distance calculations to all 5 intermediate stops.
   void _refreshAllDistances() {
     if (_calculatingAllDistances) return;
+    // GPS hasn't fixed yet — retry in 2 s instead of calculating from (0,0)
+    if (currentUser.location.latitude == 0.0 &&
+        currentUser.location.longitude == 0.0) {
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted && _isFirstStopPhase) _refreshAllDistances();
+      });
+      return;
+    }
     _calculatingAllDistances = true;
     int done = 0;
     for (int i = 1; i <= 5; i++) {
@@ -118,47 +153,41 @@ class _GameViewState extends State<GameView> {
         done++;
         if (done == 5) {
           _calculatingAllDistances = false;
-          _autoSelectNearest();
+          _updateNearestStop();
         }
       });
     }
   }
 
-  Future<void> _autoSelectNearest() async {
-    if (_autoSelectDone) return;
+  // After all distances arrive: finds overall nearest + nearest within 0.062 mi.
+  // Updates state so the card re-renders automatically.
+  void _updateNearestStop() {
+    int? inRadius;
+    double inRadiusDist = double.infinity;
 
-    int minStop = 1;
-    double minDist = _allDistances[1] ?? 99.0;
-    for (int i = 2; i <= 5; i++) {
+    for (int i = 1; i <= 5; i++) {
       final d = _allDistances[i] ?? 99.0;
-      if (d < minDist) {
-        minDist = d;
-        minStop = i;
+      if (d < miles && d < inRadiusDist) {
+        inRadiusDist = d;
+        inRadius = i;
       }
     }
 
-    _distancesReady = true;
-
-    if (minDist < miles) {
-      _autoSelectDone = true;
-      currentGame.game.routeSequence = _computeSequence(minStop);
-      await FirestoreServices.I.updateGamePlayer(currentGame.game);
+    if (mounted) {
+      setState(() {
+        _nearestInRadius = inRadius;
+      });
     }
-
-    if (mounted) setState(() {});
   }
+
+  // ── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     stopNumber = currentGame.game.currentStop;
 
     if (_isFirstStopPhase) {
-      _refreshAllDistances();
-      if (!_distancesReady) return _buildAutoSelectingView();
-      final nearestIdx = _allDistances.entries
-          .reduce((a, b) => a.value <= b.value ? a : b)
-          .key;
-      return _buildNavigateToNearestView(nearestIdx);
+      return _buildLocatingView();
     }
 
     final actualIdx = _actualIdx;
@@ -253,7 +282,15 @@ class _GameViewState extends State<GameView> {
     );
   }
 
-  Widget _buildAutoSelectingView() {
+  // ── Locating spinner (shown while first distance batch is in-flight) ─────
+
+  Widget _buildLocatingView() {
+    final inRadius = _nearestInRadius;
+    final stop = inRadius != null
+        ? currentGame.latestEvent.stops[inRadius]
+        : null;
+    final dist = inRadius != null ? (_allDistances[inRadius] ?? 99.0) : null;
+
     return Stack(
       children: [
         Image.asset(
@@ -269,77 +306,39 @@ class _GameViewState extends State<GameView> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: MyColors.primary),
-                SizedBox(height: 2.h),
+                // ── Animated icon + instructions ──────────────────────────
+                _PulsingLocationIcon(color: MyColors.primary),
+                SizedBox(height: 3.h),
                 text_widget(
-                  "Finding your nearest stop…",
-                  fontSize: 14.sp,
-                  color: Colors.white.withValues(alpha: 0.75),
-                  fontWeight: FontWeight.w500,
+                  "Walk to your stop",
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  textAlign: TextAlign.center,
                 ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNavigateToNearestView(int stopIdx) {
-    final stop = currentGame.latestEvent.stops[stopIdx];
-    final dist = _allDistances[stopIdx] ?? 99.0;
-
-    return Stack(
-      children: [
-        Image.asset(
-          "assets/background/darkbackground.jpg",
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: _buildAppBar(showLeaveAtResult: false),
-          body: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    RemixIcons.map_pin_2_line,
-                    color: MyColors.primary,
-                    size: 36.sp,
-                  ),
-                  SizedBox(height: 1.5.h),
-                  text_widget(
-                    "Navigate to your nearest stop",
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 0.8.h),
-                  text_widget(
-                    "Your game will start automatically\nonce you arrive.",
-                    fontSize: 13.sp,
-                    color: Colors.white.withValues(alpha: 0.60),
-                    textAlign: TextAlign.center,
-                    height: 1.5,
-                  ),
-                  SizedBox(height: 2.5.h),
+                SizedBox(height: 0.8.h),
+                text_widget(
+                  "We'll detect it automatically\nonce you arrive.",
+                  fontSize: 13.sp,
+                  color: Colors.white.withValues(alpha: 0.55),
+                  textAlign: TextAlign.center,
+                  height: 1.55,
+                ),
+                // ── Stop card — only when within 0.062 mi ─────────────────
+                if (stop != null && dist != null) ...[
+                  SizedBox(height: 3.h),
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(4.w),
+                    margin: EdgeInsets.symmetric(horizontal: 5.w),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.05),
+                      color: Colors.green.withValues(alpha: 0.07),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: MyColors.primary.withValues(alpha: 0.35),
+                        color: Colors.green.withValues(alpha: 0.40),
                       ),
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -349,19 +348,17 @@ class _GameViewState extends State<GameView> {
                                 vertical: 0.35.h,
                               ),
                               decoration: BoxDecoration(
-                                color: MyColors.primary.withValues(alpha: 0.18),
+                                color: Colors.green.withValues(alpha: 0.18),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                  color: MyColors.primary.withValues(
-                                    alpha: 0.40,
-                                  ),
+                                  color: Colors.green.withValues(alpha: 0.45),
                                 ),
                               ),
                               child: text_widget(
-                                "Nearest Stop",
+                                "You're Here!",
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w600,
-                                color: MyColors.primary,
+                                color: Colors.greenAccent,
                               ),
                             ),
                             const Spacer(),
@@ -371,14 +368,10 @@ class _GameViewState extends State<GameView> {
                                 vertical: 0.35.h,
                               ),
                               decoration: BoxDecoration(
-                                color: MyColors.secondary.withValues(
-                                  alpha: 0.15,
-                                ),
+                                color: Colors.green.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                  color: MyColors.secondary.withValues(
-                                    alpha: 0.30,
-                                  ),
+                                  color: Colors.green.withValues(alpha: 0.40),
                                 ),
                               ),
                               child: Row(
@@ -387,27 +380,27 @@ class _GameViewState extends State<GameView> {
                                   Icon(
                                     RemixIcons.route_line,
                                     size: 12.sp,
-                                    color: MyColors.secondary,
+                                    color: Colors.greenAccent,
                                   ),
                                   SizedBox(width: 1.w),
                                   text_widget(
-                                    "${dist.toStringAsFixed(2)} mi",
+                                    "${dist?.toStringAsFixed(2)} mi",
                                     fontSize: 11.5.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: MyColors.secondary,
+                                    color: Colors.greenAccent,
                                   ),
                                 ],
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 1.h),
+                        SizedBox(height: 1.2.h),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(
                               RemixIcons.map_pin_fill,
-                              color: const Color(0xFFEF6C4A),
+                              color: Colors.redAccent,
                               size: 18.sp,
                             ),
                             SizedBox(width: 2.w),
@@ -416,15 +409,15 @@ class _GameViewState extends State<GameView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   text_widget(
-                                    stop.name,
-                                    fontSize: 14.5.sp,
+                                    stop?.name ?? "",
+                                    fontSize: 15.sp,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     maxline: 1,
                                   ),
-                                  SizedBox(height: 0.2.h),
+                                  SizedBox(height: 0.3.h),
                                   text_widget(
-                                    stop.address,
+                                    stop?.address ?? "",
                                     fontSize: 12.5.sp,
                                     color: Colors.white.withValues(alpha: 0.60),
                                     height: 1.35,
@@ -436,26 +429,56 @@ class _GameViewState extends State<GameView> {
                           ],
                         ),
                         SizedBox(height: 1.5.h),
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(vertical: 1.2.h),
-                          decoration: BoxDecoration(
-                            color: MyColors.primary,
-                            borderRadius: BorderRadius.circular(10),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 7.w),
+                          child: Divider(
+                            color: Colors.white.withValues(alpha: 0.08),
                           ),
-                          child: text_widget(
-                            "I am on my way to my first stop",
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                            textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 1.2.h),
+                        onPress(
+                          ontap: () async {
+                            if (_picking) return;
+                            final lockStop = _nearestInRadius;
+                            if (lockStop == null) return;
+                            _picking = true;
+                            try {
+                              currentGame.game.routeSequence = _computeSequence(
+                                lockStop,
+                              );
+                              if (currentGame.game.currentStop == 0) {
+                                currentGame.game.currentStop = 1;
+                              }
+                              await FirestoreServices.I.updateGamePlayer(
+                                currentGame.game,
+                              );
+                            } finally {
+                              _picking = false;
+                            }
+                            if (mounted) setState(() {});
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: 1.3.h),
+                            decoration: BoxDecoration(
+                              color: MyColors.primary,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: text_widget(
+                              "I'm on my stop",
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
+                  SizedBox(height: 5.h),
                 ],
-              ),
+              ],
             ),
           ),
         ),
@@ -463,7 +486,10 @@ class _GameViewState extends State<GameView> {
     );
   }
 
-  // ── Normal stop view (stops 1–6) ─────────────────────────────────────────
+  // ── Normal stop view (position 1–6 of the route) ─────────────────────────
+  // stopNumber    = position in the user's route (always 1 → 2 → … → 5 → 6)
+  // _actualIdx    = the real stops[] index for that position
+  // stopsModel    = actual stop data (name, address, sponsor, coords)
 
   Widget _buildNormalView(
     BuildContext context,
@@ -489,7 +515,7 @@ class _GameViewState extends State<GameView> {
                   children: [
                     SizedBox(height: 1.5.h),
 
-                    // ── Stop header + progress ────────────────────────────
+                    // ── Stop header + progress dots ───────────────────────
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 4.w),
                       child: Column(
@@ -711,7 +737,6 @@ class _GameViewState extends State<GameView> {
                           children: [
                             Icon(
                               RemixIcons.map_pin_2_line,
-
                               color: distance < miles
                                   ? Colors.green.withValues(alpha: 0.75)
                                   : MyColors.red.withValues(alpha: 0.75),
@@ -781,14 +806,14 @@ class _GameViewState extends State<GameView> {
                   ],
                 ),
 
-                // ── Navigate + Card buttons ───────────────────────────────
+                // ── Navigate + Card action buttons ────────────────────────
                 Row(
                   children: [
                     Expanded(
                       child: onPress(
                         ontap: () {
                           if (stopNumber == 1) {
-                            Get.to(RouteMapView(currentGame.latestEvent));
+                            Get.to(RouteMapView(currentGame.latestEvent, routeSequence: currentGame.game.routeSequence));
                           } else {
                             openMaps(
                               context,
@@ -872,6 +897,87 @@ class _GameViewState extends State<GameView> {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ── Animated pulsing location pin ────────────────────────────────────────────
+
+class _PulsingLocationIcon extends StatefulWidget {
+  final Color color;
+  const _PulsingLocationIcon({required this.color});
+
+  @override
+  State<_PulsingLocationIcon> createState() => _PulsingLocationIconState();
+}
+
+class _PulsingLocationIconState extends State<_PulsingLocationIcon>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+  late final Animation<double> _opacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: false);
+
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 2.2,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+    _opacity = Tween<double>(
+      begin: 0.55,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 100,
+      height: 100,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _ctrl,
+            builder: (_, _) => Transform.scale(
+              scale: _scale.value,
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: widget.color.withValues(alpha: _opacity.value),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            width: 90,
+            height: 90,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: widget.color.withValues(alpha: 0.18),
+              border: Border.all(
+                color: widget.color.withValues(alpha: 0.60),
+                width: 1.5,
+              ),
+            ),
+            child: Icon(Icons.location_pin, size: 30, color: MyColors.red),
+          ),
+        ],
+      ),
     );
   }
 }

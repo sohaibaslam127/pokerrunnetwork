@@ -249,7 +249,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                               ),
                               const Spacer(),
                               onPress(
-                                ontap: () => Get.to(RouteMapView(widget.event)),
+                                ontap: () => Get.to(RouteMapView(widget.event, routeSequence: currentGame.game.routeSequence)),
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 3.w,

@@ -22,7 +22,11 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class RouteMapView extends StatefulWidget {
   final EventModel event;
-  const RouteMapView(this.event, {super.key});
+  // Indices into event.stops for the middle stops in play order.
+  // e.g. [5, 1, 2, 3, 4] means the player started at stop 5.
+  // Empty = show stops in original order.
+  final List<int> routeSequence;
+  const RouteMapView(this.event, {this.routeSequence = const [], super.key});
 
   @override
   State<RouteMapView> createState() => _RouteMapViewState();
@@ -31,45 +35,62 @@ class RouteMapView extends StatefulWidget {
 class _RouteMapViewState extends State<RouteMapView> {
   static final _routingChannel = MethodChannel('apple_maps_routing');
 
-  late final List<StopsModel> _validStops;
+  // Ordered list: [Initial, ...middle in play order..., Final]
+  late final List<StopsModel> _orderedStops;
   InAppWebViewController? _webViewController;
   StreamSubscription<LocationData>? _locationSub;
 
   // null = still loading, [] = no routes needed
   List<List<List<double>>>? _routeSegments;
+  // 'green' for first/last segment, 'gold' for middle segments
+  List<String> _segmentColors = [];
 
   @override
   void initState() {
     super.initState();
-    _validStops = widget.event.stops
-        .where(
-          (s) =>
-              s.stopLocation.latitude != 0.0 || s.stopLocation.longitude != 0.0,
-        )
-        .toList();
+    _buildOrderedStops();
     _fetchRoutes();
   }
 
+  void _buildOrderedStops() {
+    bool isValid(StopsModel s) =>
+        s.stopLocation.latitude != 0.0 || s.stopLocation.longitude != 0.0;
+
+    final allValid = widget.event.stops.where(isValid).toList();
+
+    if (widget.routeSequence.isEmpty || allValid.length < 3) {
+      _orderedStops = allValid;
+      return;
+    }
+
+    final start = widget.event.stops.first;
+    final end = widget.event.stops.last;
+    final ordered = <StopsModel>[start];
+    for (final idx in widget.routeSequence) {
+      if (idx > 0 && idx < widget.event.stops.length - 1) {
+        final s = widget.event.stops[idx];
+        if (isValid(s)) ordered.add(s);
+      }
+    }
+    ordered.add(end);
+    _orderedStops = ordered;
+  }
+
   Future<void> _fetchRoutes() async {
-    // middle stops only — exclude start (index 0) and end (last)
-    final stops = _validStops.length > 2
-        ? _validStops.sublist(1, _validStops.length - 1)
-        : <StopsModel>[];
+    debugPrint('[RouteMap] orderedStops=${_orderedStops.length}');
 
-    debugPrint(
-      '[RouteMap] validStops=${_validStops.length} middleStops=${stops.length}',
-    );
-
-    if (stops.length < 2) {
-      debugPrint('[RouteMap] Not enough middle stops — skipping routing');
+    if (_orderedStops.length < 2) {
       if (mounted) setState(() => _routeSegments = []);
       return;
     }
 
     final segments = <List<List<double>>>[];
-    for (int i = 0; i < stops.length; i++) {
-      final p1 = stops[i];
-      final p2 = stops[(i + 1) % stops.length];
+    final colors = <String>[];
+    final totalSegments = _orderedStops.length - 1;
+
+    for (int i = 0; i < totalSegments; i++) {
+      final p1 = _orderedStops[i];
+      final p2 = _orderedStops[i + 1];
       final coords = Platform.isIOS
           ? await _fetchAppleRoute(
               p1.stopLocation.latitude,
@@ -84,9 +105,16 @@ class _RouteMapViewState extends State<RouteMapView> {
               p2.stopLocation.longitude,
             );
       segments.add(coords);
+      // First leg (Initial→first stop) and last leg (last stop→Final) = green
+      colors.add(i == 0 || i == totalSegments - 1 ? 'green' : 'gold');
     }
 
-    if (mounted) setState(() => _routeSegments = segments);
+    if (mounted) {
+      setState(() {
+        _routeSegments = segments;
+        _segmentColors = colors;
+      });
+    }
   }
 
   Future<List<List<double>>> _fetchAppleRoute(
@@ -204,16 +232,18 @@ class _RouteMapViewState extends State<RouteMapView> {
   }
 
   String _buildHtml() {
-    final points = _validStops.asMap().entries.map((entry) {
+    final points = _orderedStops.asMap().entries.map((entry) {
       final i = entry.key;
       final s = entry.value;
       final isStart = i == 0;
-      final isEnd = i == _validStops.length - 1;
+      final isEnd = i == _orderedStops.length - 1;
+      // Show the real stop number from the original stops list
+      final actualIdx = widget.event.stops.indexOf(s);
       final label = isStart
           ? 'S'
           : isEnd
           ? 'F'
-          : '$i';
+          : '$actualIdx';
       return {
         'lat': s.stopLocation.latitude,
         'lng': s.stopLocation.longitude,
@@ -281,29 +311,26 @@ class _RouteMapViewState extends State<RouteMapView> {
 <body>
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
 <script>
   const points = $pointsJson;
   const map = L.map('map', { zoomControl: false, attributionControl: true });
 
-  // High-resolution clean Satellite base imagery
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri',
+  // Google satellite (lyrs=s = pure imagery, no POI/labels)
+  L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    attribution: '&copy; Google Maps',
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    maxNativeZoom: 20,
     maxZoom: 20
   }).addTo(map);
 
-  // Clean, transparent reference labels & roads overlay (No commercial/POI clutter)
+  // Road & address labels only — no POI clutter
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; CARTO',
     subdomains: 'abcd',
+    maxNativeZoom: 19,
     maxZoom: 20
   }).addTo(map);
-
-  // // Show All Places on map using google satelite view
-  // L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-  //   attribution: '&copy; Google Maps',
-  //   subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-  //   maxZoom: 20
-  // }).addTo(map);
 
   // Start Icon (Golf Flag)
   const startIconSvg = `
@@ -371,8 +398,9 @@ class _RouteMapViewState extends State<RouteMapView> {
     map.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] });
   }
 
-  // Route segments pre-fetched natively via Apple Maps walking directions
+  // Route segments pre-fetched natively (green=first/last leg, gold=middle legs)
   const routeSegments = ${jsonEncode(_routeSegments ?? [])};
+  const segmentColors = ${jsonEncode(_segmentColors)};
 
   function drawSegment(coords, outlineColor, pathColor) {
     L.polyline(coords, {
@@ -382,17 +410,38 @@ class _RouteMapViewState extends State<RouteMapView> {
       lineCap: 'round',
       lineJoin: 'round'
     }).addTo(map);
-    L.polyline(coords, {
+
+    const line = L.polyline(coords, {
       color: pathColor,
       weight: 4,
       opacity: 1.0,
       lineCap: 'round',
       lineJoin: 'round'
     }).addTo(map);
+
+    // Directional arrow at the midpoint of each segment
+    L.polylineDecorator(line, {
+      patterns: [{
+        offset: '50%',
+        repeat: 0,
+        symbol: L.Symbol.arrowHead({
+          pixelSize: 14,
+          polygon: false,
+          pathOptions: {
+            stroke: true,
+            color: '#ffffff',
+            weight: 2.5,
+            opacity: 0.95,
+            fill: false
+          }
+        })
+      }]
+    }).addTo(map);
   }
 
-  routeSegments.forEach(coords => {
-    drawSegment(coords, '#113559', '#F0C11D');
+  routeSegments.forEach((coords, idx) => {
+    const isGreen = segmentColors[idx] === 'green';
+    drawSegment(coords, isGreen ? '#1a6b3c' : '#113559', isGreen ? '#2ecc71' : '#F0C11D');
   });
 
   // Live Location
@@ -456,7 +505,7 @@ class _RouteMapViewState extends State<RouteMapView> {
   }
 
   Future<void> _openInExternalMap() async {
-    if (_validStops.isEmpty) return;
+    if (_orderedStops.isEmpty) return;
     final maps = await MapLauncher.installedMaps;
     if (maps.isEmpty) {
       if (!mounted) return;
@@ -464,11 +513,11 @@ class _RouteMapViewState extends State<RouteMapView> {
       return;
     }
 
-    final origin = _validStops.first;
-    final destination = _validStops.last;
-    final waypoints = _validStops.length > 2
-        ? _validStops
-              .sublist(1, _validStops.length - 1)
+    final origin = _orderedStops.first;
+    final destination = _orderedStops.last;
+    final waypoints = _orderedStops.length > 2
+        ? _orderedStops
+              .sublist(1, _orderedStops.length - 1)
               .map(
                 (s) => Waypoint(
                   s.stopLocation.latitude,
@@ -591,7 +640,7 @@ class _RouteMapViewState extends State<RouteMapView> {
               child: Container(height: 2, color: Colors.white12),
             ),
           ),
-          body: _validStops.isEmpty
+          body: _orderedStops.isEmpty
               ? Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -701,7 +750,7 @@ class _RouteMapViewState extends State<RouteMapView> {
                                     ),
                                   ),
                                   child: text_widget(
-                                    "${_validStops.length - 2} stop${_validStops.length == 1 ? '' : 's'} • dashed line shows stop sequence (golf-cart paths inside clubs)",
+                                    "${_orderedStops.length - 2} stop${_orderedStops.length - 2 == 1 ? '' : 's'} • green = start/end legs, gold = middle stops",
                                     fontSize: 14.sp,
                                     color: Colors.white.withValues(alpha: 0.75),
                                     height: 1.3,
