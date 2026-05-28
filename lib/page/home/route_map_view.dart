@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
@@ -17,7 +19,6 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class RouteMapView extends StatefulWidget {
   final EventModel event;
@@ -503,53 +504,112 @@ class _RouteMapViewState extends State<RouteMapView> {
 ''';
   }
 
-  // Returns a URL-safe label for each stop position in play order.
-  // Position 0 → "Initial+Point", last → "Final+Point", others → "Stop+N"
-  String _stopLabel(int i) {
-    if (i == 0) return 'Initial+Point';
-    if (i == _orderedStops.length - 1) return 'Final+Point';
-    return 'Stop+$i';
-  }
-
-  // Builds the full play-order URL and opens it.
-  // iOS  → Apple Maps  maps://?dirflg=d&saddr=Name@lat,lng&daddr=Name@lat,lng…
-  // Android / fallback → Google Maps https://www.google.com/maps/dir/lat,lng/…
   Future<void> _openInExternalMap() async {
     if (_orderedStops.isEmpty) return;
-
-    if (Platform.isIOS) {
-      // Apple Maps supports "Name@lat,lng" per saddr/daddr param
-      final buf = StringBuffer('maps://?dirflg=d');
-      for (int i = 0; i < _orderedStops.length; i++) {
-        final s = _orderedStops[i];
-        final coord = '${s.stopLocation.latitude},${s.stopLocation.longitude}';
-        final named = '${_stopLabel(i)}@$coord';
-        final location = i == 0 ? '&saddr=$named' : '&daddr=$named';
-        debugPrint("location: $location");
-        buf.write(location);
-      }
-      final appleUri = Uri.parse(buf.toString());
-      if (await canLaunchUrl(appleUri)) {
-        await launchUrl(appleUri);
-        return;
-      }
-    }
-
-    // Android or iOS fallback: coordinate-only slash-separated stops
-    final coords = _orderedStops
-        .map((s) => '${s.stopLocation.latitude},${s.stopLocation.longitude}')
-        .toList();
-    final googleUri = Uri.parse(
-      'https://www.google.com/maps/dir/${coords.join('/')}',
-    );
-    if (await canLaunchUrl(googleUri)) {
-      await launchUrl(googleUri, mode: LaunchMode.externalApplication);
+    final maps = await MapLauncher.installedMaps;
+    if (maps.isEmpty) {
+      if (!mounted) return;
+      toast(context, "No map app", "No maps app is installed on this device");
       return;
     }
 
-    if (mounted) {
-      toast(context, "No map app", "Could not open a maps app on this device");
+    final origin = _orderedStops.first;
+    final destination = _orderedStops.last;
+    final waypoints = <Waypoint>[];
+
+    if (_orderedStops.length > 2) {
+      for (int i = 1; i < _orderedStops.length - 1; i++) {
+        final s = _orderedStops[i];
+        waypoints.add(
+          Waypoint(
+            s.stopLocation.latitude,
+            s.stopLocation.longitude,
+            'Stop $i',
+          ),
+        );
+      }
     }
+
+    Future<void> launch(AvailableMap m) async {
+      await m.showDirections(
+        destination: Coords(
+          destination.stopLocation.latitude,
+          destination.stopLocation.longitude,
+        ),
+        destinationTitle: "Final Point",
+        origin: Coords(
+          origin.stopLocation.latitude,
+          origin.stopLocation.longitude,
+        ),
+        originTitle: "Initial Point",
+        waypoints: waypoints,
+        directionsMode: DirectionsMode.walking,
+      );
+    }
+
+    if (maps.length == 1) {
+      await launch(maps.first);
+      return;
+    }
+
+    final appleList = maps.where((m) => m.mapName == 'Apple Maps');
+    if (appleList.isNotEmpty) {
+      await launch(appleList.first);
+      return;
+    }
+
+    final googleList = maps.where((m) => m.mapName == 'Google Maps');
+    if (googleList.isNotEmpty) {
+      await launch(googleList.first);
+      return;
+    }
+
+    if (!mounted) return;
+    await showCupertinoModalPopup(
+      context: context,
+      builder: (context) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.0),
+        child: CupertinoActionSheet(
+          actions: maps
+              .map(
+                (e) => Container(
+                  color: MyColors.black,
+                  child: CupertinoActionSheetAction(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await launch(e);
+                    },
+                    child: text_widget(
+                      "Open in ${e.mapName}",
+                      color: MyColors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 17.sp,
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+          cancelButton: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13),
+              color: Colors.black26,
+            ),
+            child: CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: text_widget(
+                'Cancel',
+                color: MyColors.black,
+                fontWeight: FontWeight.w700,
+                fontSize: 18.sp,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -607,20 +667,7 @@ class _RouteMapViewState extends State<RouteMapView> {
                   ),
                 )
               : _routeSegments == null
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircularProgressIndicator(color: MyColors.primary),
-                      SizedBox(height: 1.5.h),
-                      text_widget(
-                        "Calculating walking route...",
-                        fontSize: 13.sp,
-                        color: MyColors.white.withValues(alpha: 0.7),
-                      ),
-                    ],
-                  ),
-                )
+              ? const _RouteLoadingView()
               : Stack(
                   children: [
                     InAppWebView(
@@ -774,6 +821,157 @@ class _RouteMapViewState extends State<RouteMapView> {
         ),
         child: Icon(icon, color: color ?? const Color(0xFF1C1C1F), size: 18.sp),
       ),
+    );
+  }
+}
+
+// ── Animated loading screen shown while route segments are being fetched ──────
+
+class _RouteLoadingView extends StatefulWidget {
+  const _RouteLoadingView();
+
+  @override
+  State<_RouteLoadingView> createState() => _RouteLoadingViewState();
+}
+
+class _RouteLoadingViewState extends State<_RouteLoadingView>
+    with TickerProviderStateMixin {
+  late final AnimationController _pulseCtrl;
+  late final AnimationController _dotsCtrl;
+  late final Animation<double> _pulseAnim;
+
+  static const _messages = [
+    'Fetching road data…',
+    'Building your route…',
+    'Calculating distances…',
+    'Almost ready…',
+  ];
+  int _msgIndex = 0;
+  Timer? _msgTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1100),
+    )..repeat(reverse: true);
+
+    _pulseAnim = Tween<double>(
+      begin: 0.88,
+      end: 1.14,
+    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+
+    _dotsCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat();
+
+    _msgTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (mounted) {
+        setState(() => _msgIndex = (_msgIndex + 1) % _messages.length);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pulseCtrl.dispose();
+    _dotsCtrl.dispose();
+    _msgTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Pulsing radar inside a glowing ring
+          ScaleTransition(
+            scale: _pulseAnim,
+            child: Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: MyColors.primary.withValues(alpha: 0.14),
+                border: Border.all(
+                  color: MyColors.primary.withValues(alpha: 0.35),
+                  width: 1.5,
+                ),
+              ),
+              child: Icon(Icons.radar, color: MyColors.primary, size: 32),
+            ),
+          ),
+          SizedBox(height: 2.8.h),
+
+          // Three staggered bouncing dots
+          _AnimatedRouteDots(controller: _dotsCtrl),
+          SizedBox(height: 2.4.h),
+
+          // Cycling status text
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 350),
+            transitionBuilder: (child, anim) =>
+                FadeTransition(opacity: anim, child: child),
+            child: KeyedSubtree(
+              key: ValueKey(_msgIndex),
+              child: text_widget(
+                _messages[_msgIndex],
+                fontSize: 14.sp,
+                color: MyColors.white.withValues(alpha: 0.65),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnimatedRouteDots extends AnimatedWidget {
+  const _AnimatedRouteDots({required AnimationController controller})
+    : super(listenable: controller);
+
+  @override
+  Widget build(BuildContext context) {
+    final t = (listenable as AnimationController).value;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(3, (i) {
+        // Each dot is offset by 1/3 of the cycle
+        final phase = ((t + i / 3) % 1.0);
+        // Smooth arc: rise then fall
+        final arc = phase < 0.5 ? phase * 2 : (1.0 - phase) * 2;
+        final offset = arc * 8.0;
+        final opacity = 0.35 + arc * 0.65;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Transform.translate(
+            offset: Offset(0, -offset),
+            child: Opacity(
+              opacity: opacity.clamp(0.35, 1.0),
+              child: Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: i == 0
+                      ? const Color(0xFF2ecc71) // green = start
+                      : i == 2
+                      ? MyColors
+                            .white // white = end
+                      : MyColors.primary, // brand = middle
+                ),
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 }
