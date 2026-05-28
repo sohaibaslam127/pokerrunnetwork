@@ -13,11 +13,11 @@ String appId = Platform.isAndroid
 
 String adUnitId = kDebugMode
     ? (Platform.isAndroid
-        ? "ca-app-pub-3940256099942544/2247696110"
-        : "ca-app-pub-3940256099942544/3986624511")
+          ? "ca-app-pub-3940256099942544/2247696110"
+          : "ca-app-pub-3940256099942544/3986624511")
     : (Platform.isAndroid
-        ? "ca-app-pub-2555335650225733/4266111318"
-        : "ca-app-pub-2555335650225733/6860485065");
+          ? "ca-app-pub-2555335650225733/4266111318"
+          : "ca-app-pub-2555335650225733/6860485065");
 
 final mapApiKey = Platform.isAndroid
     ? "AIzaSyBe5djPy8Cpm6fZMl14cmjw4ZewHtKFPI0"
@@ -31,7 +31,7 @@ String website = "";
 double coriderFee = -1.0;
 
 String defaultSponsor = "https://thepokerrunapp.com";
-bool enableAds = true;
+bool enableAds = false;
 String latestAppVersion = "";
 bool needApproval = true;
 bool autoFillCards = false;

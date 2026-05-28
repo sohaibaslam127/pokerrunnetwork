@@ -691,7 +691,7 @@ class _RouteMapViewState extends State<RouteMapView> {
                     ),
                     Positioned(
                       right: 4.w,
-                      bottom: 12.h,
+                      bottom: 13.h,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -722,64 +722,10 @@ class _RouteMapViewState extends State<RouteMapView> {
                     Positioned(
                       left: 4.w,
                       right: 4.w,
-                      bottom: 4.h,
+                      bottom: 1.5.h,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 3.w,
-                                    vertical: 1.2.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.75),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.12,
-                                      ),
-                                    ),
-                                  ),
-                                  child: text_widget(
-                                    "${_orderedStops.length - 2} stop${_orderedStops.length - 2 == 1 ? '' : 's'} • green = start/end legs, gold = middle stops",
-                                    fontSize: 14.sp,
-                                    color: Colors.white.withValues(alpha: 0.75),
-                                    height: 1.3,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 2.w),
-                              onPress(
-                                ontap: _openInExternalMap,
-                                child: Container(
-                                  width: 11.w,
-                                  height: 11.w,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFEF6C4A),
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.35,
-                                        ),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    RemixIcons.external_link_line,
-                                    color: Colors.white,
-                                    size: 18.sp,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 1.5.h),
                           customButon(
                             btnText: "Continue To Sponsors",
                             onTap: () {
