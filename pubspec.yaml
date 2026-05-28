@@ -35,6 +35,7 @@ dependencies:
   shimmer_animation: ^2.2.2+1
   dio:
   map_launcher:
+  flutter_inappwebview: ^6.1.5
   logger: ^2.0.2+1
 
 dev_dependencies:

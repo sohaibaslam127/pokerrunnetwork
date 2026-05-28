@@ -1,9 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
+import 'package:location/location.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
@@ -18,38 +23,224 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class RouteMapView extends StatefulWidget {
   final EventModel event;
-  const RouteMapView(this.event, {super.key});
+  // Indices into event.stops for the middle stops in play order.
+  // Empty = show stops in original order.
+  final List<int> routeSequence;
+  const RouteMapView(this.event, {this.routeSequence = const [], super.key});
 
   @override
   State<RouteMapView> createState() => _RouteMapViewState();
 }
 
 class _RouteMapViewState extends State<RouteMapView> {
-  late final List<StopsModel> _validStops;
+  static final _routingChannel = MethodChannel('apple_maps_routing');
+
+  // Ordered list: [Initial, ...middle in play order..., Final]
+  late final List<StopsModel> _orderedStops;
   InAppWebViewController? _webViewController;
+  StreamSubscription<LocationData>? _locationSub;
+
+  // null = still loading, [] = no routes needed
+  List<List<List<double>>>? _routeSegments;
+  // 'green' for first/last segment, 'gold' for middle segments
+  List<String> _segmentColors = [];
 
   @override
   void initState() {
     super.initState();
-    _validStops = widget.event.stops
-        .where(
-          (s) =>
-              s.stopLocation.latitude != 0.0 || s.stopLocation.longitude != 0.0,
-        )
-        .toList();
+    _buildOrderedStops();
+    _fetchRoutes();
+  }
+
+  void _buildOrderedStops() {
+    bool isValid(StopsModel s) =>
+        s.stopLocation.latitude != 0.0 || s.stopLocation.longitude != 0.0;
+
+    final allValid = widget.event.stops.where(isValid).toList();
+
+    if (widget.routeSequence.isEmpty || allValid.length < 3) {
+      _orderedStops = allValid;
+      return;
+    }
+
+    final start = widget.event.stops.first;
+    final end = widget.event.stops.last;
+    final ordered = <StopsModel>[start];
+    for (final idx in widget.routeSequence) {
+      if (idx > 0 && idx < widget.event.stops.length - 1) {
+        final s = widget.event.stops[idx];
+        if (isValid(s)) ordered.add(s);
+      }
+    }
+    ordered.add(end);
+    _orderedStops = ordered;
+  }
+
+  Future<void> _fetchRoutes() async {
+    if (_orderedStops.length < 2) {
+      if (mounted) setState(() => _routeSegments = []);
+      return;
+    }
+
+    final segments = <List<List<double>>>[];
+    final colors = <String>[];
+    final totalSegments = _orderedStops.length - 1;
+
+    for (int i = 0; i < totalSegments; i++) {
+      final p1 = _orderedStops[i];
+      final p2 = _orderedStops[i + 1];
+      final coords = Platform.isIOS
+          ? await _fetchAppleRoute(
+              p1.stopLocation.latitude,
+              p1.stopLocation.longitude,
+              p2.stopLocation.latitude,
+              p2.stopLocation.longitude,
+            )
+          : await _fetchGoogleRoute(
+              p1.stopLocation.latitude,
+              p1.stopLocation.longitude,
+              p2.stopLocation.latitude,
+              p2.stopLocation.longitude,
+            );
+      segments.add(coords);
+      colors.add(i == 0 || i == totalSegments - 1 ? 'green' : 'gold');
+    }
+
+    if (mounted) {
+      setState(() {
+        _routeSegments = segments;
+        _segmentColors = colors;
+      });
+    }
+  }
+
+  Future<List<List<double>>> _fetchAppleRoute(
+    double lat1,
+    double lng1,
+    double lat2,
+    double lng2,
+  ) async {
+    try {
+      final raw = await _routingChannel.invokeMethod<List>('getWalkingRoute', {
+        'lat1': lat1,
+        'lng1': lng1,
+        'lat2': lat2,
+        'lng2': lng2,
+      });
+      return raw!
+          .map((c) => (c as List).map((v) => (v as num).toDouble()).toList())
+          .toList();
+    } catch (e) {
+      debugPrint('[RouteMap] Apple MKDirections failed: $e');
+      return [
+        [lat1, lng1],
+        [lat2, lng2],
+      ];
+    }
+  }
+
+  Future<List<List<double>>> _fetchGoogleRoute(
+    double lat1,
+    double lng1,
+    double lat2,
+    double lng2,
+  ) async {
+    const apiKey = 'AIzaSyBe5djPy8Cpm6fZMl14cmjw4ZewHtKFPI0';
+    try {
+      final res = await Dio().get(
+        'https://maps.googleapis.com/maps/api/directions/json',
+        queryParameters: {
+          'origin': '$lat1,$lng1',
+          'destination': '$lat2,$lng2',
+          'mode': 'walking',
+          'key': apiKey,
+        },
+      );
+      final routes = res.data['routes'] as List?;
+      if (routes == null || routes.isEmpty) {
+        return [
+          [lat1, lng1],
+          [lat2, lng2],
+        ];
+      }
+      final encoded = routes[0]['overview_polyline']['points'] as String;
+      return _decodePolyline(encoded);
+    } catch (e) {
+      debugPrint('[RouteMap] Google Directions failed: $e');
+      return [
+        [lat1, lng1],
+        [lat2, lng2],
+      ];
+    }
+  }
+
+  List<List<double>> _decodePolyline(String encoded) {
+    final result = <List<double>>[];
+    int index = 0, lat = 0, lng = 0;
+    while (index < encoded.length) {
+      int shift = 0, b = 0, result0 = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result0 |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      lat += (result0 & 1) != 0 ? ~(result0 >> 1) : (result0 >> 1);
+      shift = 0;
+      result0 = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result0 |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      lng += (result0 & 1) != 0 ? ~(result0 >> 1) : (result0 >> 1);
+      result.add([lat / 1e5, lng / 1e5]);
+    }
+    return result;
+  }
+
+  Future<void> _startLocationUpdates() async {
+    final loc = Location();
+    bool serviceEnabled = await loc.serviceEnabled();
+    if (!serviceEnabled) serviceEnabled = await loc.requestService();
+    if (!serviceEnabled) return;
+
+    PermissionStatus permission = await loc.hasPermission();
+    if (permission == PermissionStatus.denied) {
+      permission = await loc.requestPermission();
+    }
+    if (permission != PermissionStatus.granted) return;
+
+    await loc.changeSettings(accuracy: LocationAccuracy.high, interval: 3000);
+
+    _locationSub = loc.onLocationChanged.listen((data) {
+      final lat = data.latitude;
+      final lng = data.longitude;
+      final acc = data.accuracy ?? 10.0;
+      if (lat == null || lng == null) return;
+      _webViewController?.evaluateJavascript(
+        source: 'updateUserMarker(L.latLng($lat, $lng), $acc);',
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _locationSub?.cancel();
+    super.dispose();
   }
 
   String _buildHtml() {
-    final points = _validStops.asMap().entries.map((entry) {
+    final points = _orderedStops.asMap().entries.map((entry) {
       final i = entry.key;
       final s = entry.value;
       final isStart = i == 0;
-      final isEnd = i == _validStops.length - 1;
+      final isEnd = i == _orderedStops.length - 1;
+      final actualIdx = widget.event.stops.indexOf(s);
       final label = isStart
           ? 'S'
           : isEnd
           ? 'F'
-          : '$i';
+          : '$actualIdx';
       return {
         'lat': s.stopLocation.latitude,
         'lng': s.stopLocation.longitude,
@@ -84,7 +275,7 @@ class _RouteMapViewState extends State<RouteMapView> {
   }
   .stop-marker.start { background: #2ecc71; color: #ffffff; }
   .stop-marker.end { background: #000000; color: #ffffff; }
-  
+
   .live-location-marker {
     display: flex; align-items: center; justify-content: center;
   }
@@ -117,68 +308,51 @@ class _RouteMapViewState extends State<RouteMapView> {
 <body>
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
 <script>
   const points = $pointsJson;
   const map = L.map('map', { zoomControl: false, attributionControl: true });
 
-  // High-resolution clean Satellite base imagery
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri',
+  // Google satellite imagery (pure imagery, no POI/labels)
+  L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    attribution: '&copy; Google Maps',
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    maxNativeZoom: 20,
     maxZoom: 20
   }).addTo(map);
 
-  // Clean, transparent reference labels & roads overlay (No commercial/POI clutter)
+  // Road & address labels only — no POI clutter
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; CARTO',
     subdomains: 'abcd',
+    maxNativeZoom: 19,
     maxZoom: 20
   }).addTo(map);
 
-  // // Show All Places on map using google satelite view
-  // L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-  //   attribution: '&copy; Google Maps',
-  //   subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-  //   maxZoom: 20
-  // }).addTo(map);
-
-  // Start Race Icon (Crossed Waving Flags)
+  // Start Icon (Golf Flag)
   const startIconSvg = `
-<svg
-  viewBox="0 0 24 24"
-  width="20"
-  height="20"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="1.8"
-  stroke-linecap="round"
-  stroke-linejoin="round"
+<svg width="22" height="22" viewBox="-3 0 20 20" xmlns="http://www.w3.org/2000/svg"
   style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
 >
-  <!-- Crossed flagpoles -->
-  <path d="M4 20l8-12M20 20l-8-12"/>
-  <!-- Left flag waving -->
-  <path d="M12 8c-1.5-1.5-3.5-1.5-5 0s-1 3.5 1.5 5c1.5 1.5 3.5 1.5 5 0Z" fill="currentColor"/>
-  <!-- Right flag waving -->
-  <path d="M12 8c1.5-1.5 3.5-1.5 5 0s1 3.5-1.5 5c-1.5 1.5-3.5 1.5-5 0Z" fill="currentColor"/>
+  <g transform="translate(-5 -2)">
+    <path fill="#1e428a" d="M12,4v6l6-3Z"/>
+    <path d="M12,13c-3.31,0-6,1.79-6,4s2.69,4,6,4,6-1.79,6-4a3.59,3.59,0,0,0-2-3" fill="none" stroke="#1e428a" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <path d="M12,3V17M12,4v6l6-3Z" fill="none" stroke="#1e428a" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+  </g>
 </svg>
 `;
 
-  // Finish Race Icon (Checkered Flag with Black & White Checks)
+  // Finish Race Icon (Checkered Flag)
   const finishIconSvg = `
 <svg
-  viewBox="0 0 24 24"
-  width="20"
-  height="20"
+  viewBox="-3 0 24 24"
+  width="22"
+  height="22"
   fill="currentColor"
   style="display:inline-block; vertical-align:middle; margin-bottom:2px;"
 >
-  <!-- Flag Pole -->
   <path d="M6 2a1 1 0 0 1 1 1v18a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1z"/>
-
-  <!-- Checkered Flag White Base -->
   <path d="M7 4h10v8H7V4z"/>
-
-  <!-- Black Checkered Squares -->
   <path
     d="M7 4h2.5v2.5H7zm5 0h2.5v2.5H12zm-2.5 2.5h2.5v2.5H9.5zm5 0H17v2.5H14.5zm-7.5 2.5h2.5v2.5H7zm5 0h2.5v2.5H12z"
     fill="#000000"
@@ -216,47 +390,51 @@ class _RouteMapViewState extends State<RouteMapView> {
     map.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] });
   }
 
-  async function fetchWalkingSegment(lat1, lng1, lat2, lng2) {
-    try {
-      const url = 'https://router.project-osrm.org/route/v1/foot/'
-        + lng1 + ',' + lat1 + ';' + lng2 + ',' + lat2
-        + '?overview=full&geometries=geojson';
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.code === 'Ok' && data.routes && data.routes[0]) {
-        return data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-      }
-    } catch (_) {}
-    return [[lat1, lng1], [lat2, lng2]];
+  // Route segments pre-fetched natively (green=first/last leg, gold=middle legs)
+  const routeSegments = ${jsonEncode(_routeSegments ?? [])};
+  const segmentColors = ${jsonEncode(_segmentColors)};
+
+  function drawSegment(coords, outlineColor, pathColor) {
+    L.polyline(coords, {
+      color: outlineColor,
+      weight: 6,
+      opacity: 0.9,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(map);
+
+    const line = L.polyline(coords, {
+      color: pathColor,
+      weight: 4,
+      opacity: 1.0,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(map);
+
+    // Directional arrow at the midpoint of each segment
+    L.polylineDecorator(line, {
+      patterns: [{
+        offset: '50%',
+        repeat: 0,
+        symbol: L.Symbol.arrowHead({
+          pixelSize: 14,
+          polygon: false,
+          pathOptions: {
+            stroke: true,
+            color: '#ffffff',
+            weight: 2.5,
+            opacity: 0.95,
+            fill: false
+          }
+        })
+      }]
+    }).addTo(map);
   }
 
-  async function drawRoutes() {
-    for (let i = 0; i < points.length - 1; i++) {
-      const p1 = points[i];
-      const p2 = points[i + 1];
-      const coords = await fetchWalkingSegment(p1.lat, p1.lng, p2.lat, p2.lng);
-      
-      // Dark navy outline for high contrast with the primary yellow path on satellite view
-      L.polyline(coords, {
-        color: '#113559',
-        weight: 6,
-        opacity: 0.9,
-        lineCap: 'round',
-        lineJoin: 'round'
-      }).addTo(map);
-
-      // Main active route path (Primary color: Gold/Yellow)
-      L.polyline(coords, {
-        color: '#F0C11D',
-        weight: 4,
-        opacity: 1.0,
-        lineCap: 'round',
-        lineJoin: 'round'
-      }).addTo(map);
-    }
-  }
-
-  if (latlngs.length > 1) { drawRoutes(); }
+  routeSegments.forEach((coords, idx) => {
+    const isGreen = segmentColors[idx] === 'green';
+    drawSegment(coords, isGreen ? '#1a6b3c' : '#113559', isGreen ? '#2ecc71' : '#F0C11D');
+  });
 
   // Live Location
   let userLatLng = null;
@@ -264,6 +442,7 @@ class _RouteMapViewState extends State<RouteMapView> {
   let userCircle = null;
 
   function updateUserMarker(latlng, accuracy) {
+    userLatLng = latlng;
     const radius = accuracy / 2;
     if (userMarker) {
       userMarker.setLatLng(latlng);
@@ -318,7 +497,7 @@ class _RouteMapViewState extends State<RouteMapView> {
   }
 
   Future<void> _openInExternalMap() async {
-    if (_validStops.isEmpty) return;
+    if (_orderedStops.isEmpty) return;
     final maps = await MapLauncher.installedMaps;
     if (maps.isEmpty) {
       if (!mounted) return;
@@ -326,20 +505,22 @@ class _RouteMapViewState extends State<RouteMapView> {
       return;
     }
 
-    final origin = _validStops.first;
-    final destination = _validStops.last;
-    final waypoints = _validStops.length > 2
-        ? _validStops
-              .sublist(1, _validStops.length - 1)
-              .map(
-                (s) => Waypoint(
-                  s.stopLocation.latitude,
-                  s.stopLocation.longitude,
-                  s.name,
-                ),
-              )
-              .toList()
-        : <Waypoint>[];
+    final origin = _orderedStops.first;
+    final destination = _orderedStops.last;
+    final waypoints = <Waypoint>[];
+
+    if (_orderedStops.length > 2) {
+      for (int i = 1; i < _orderedStops.length - 1; i++) {
+        final s = _orderedStops[i];
+        waypoints.add(
+          Waypoint(
+            s.stopLocation.latitude,
+            s.stopLocation.longitude,
+            'Stop $i',
+          ),
+        );
+      }
+    }
 
     Future<void> launch(AvailableMap m) async {
       await m.showDirections(
@@ -360,6 +541,19 @@ class _RouteMapViewState extends State<RouteMapView> {
 
     if (maps.length == 1) {
       await launch(maps.first);
+      return;
+    }
+
+    // Prefer Apple Maps, then Google Maps, then show picker
+    final appleList = maps.where((m) => m.mapName == 'Apple Maps');
+    if (appleList.isNotEmpty) {
+      await launch(appleList.first);
+      return;
+    }
+
+    final googleList = maps.where((m) => m.mapName == 'Google Maps');
+    if (googleList.isNotEmpty) {
+      await launch(googleList.first);
       return;
     }
 
@@ -423,7 +617,6 @@ class _RouteMapViewState extends State<RouteMapView> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-
           appBar: AppBar(
             backgroundColor: Colors.white10,
             elevation: 0,
@@ -453,7 +646,7 @@ class _RouteMapViewState extends State<RouteMapView> {
               child: Container(height: 2, color: Colors.white12),
             ),
           ),
-          body: _validStops.isEmpty
+          body: _orderedStops.isEmpty
               ? Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -465,6 +658,8 @@ class _RouteMapViewState extends State<RouteMapView> {
                     ),
                   ),
                 )
+              : _routeSegments == null
+              ? const _RouteLoadingView()
               : Stack(
                   children: [
                     InAppWebView(
@@ -482,6 +677,9 @@ class _RouteMapViewState extends State<RouteMapView> {
                       onWebViewCreated: (controller) {
                         _webViewController = controller;
                       },
+                      onLoadStop: (controller, url) {
+                        _startLocationUpdates();
+                      },
                       onGeolocationPermissionsShowPrompt:
                           (controller, origin) async {
                             return GeolocationPermissionShowPromptResponse(
@@ -493,7 +691,7 @@ class _RouteMapViewState extends State<RouteMapView> {
                     ),
                     Positioned(
                       right: 4.w,
-                      bottom: 15.h,
+                      bottom: 12.h,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -524,8 +722,9 @@ class _RouteMapViewState extends State<RouteMapView> {
                     Positioned(
                       left: 4.w,
                       right: 4.w,
-                      top: 2.h,
+                      bottom: 4.h,
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Row(
                             children: [
@@ -545,7 +744,7 @@ class _RouteMapViewState extends State<RouteMapView> {
                                     ),
                                   ),
                                   child: text_widget(
-                                    "${_validStops.length - 2} stop${_validStops.length == 1 ? '' : 's'} • dashed line shows stop sequence (golf-cart paths inside clubs)",
+                                    "${_orderedStops.length - 2} stop${_orderedStops.length - 2 == 1 ? '' : 's'} • green = start/end legs, gold = middle stops",
                                     fontSize: 14.sp,
                                     color: Colors.white.withValues(alpha: 0.75),
                                     height: 1.3,
@@ -556,7 +755,8 @@ class _RouteMapViewState extends State<RouteMapView> {
                               onPress(
                                 ontap: _openInExternalMap,
                                 child: Container(
-                                  padding: EdgeInsets.all(2.5.w),
+                                  width: 11.w,
+                                  height: 11.w,
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFEF6C4A),
                                     shape: BoxShape.circle,
@@ -573,25 +773,21 @@ class _RouteMapViewState extends State<RouteMapView> {
                                   child: Icon(
                                     RemixIcons.external_link_line,
                                     color: Colors.white,
-                                    size: 20.sp,
+                                    size: 18.sp,
                                   ),
                                 ),
                               ),
                             ],
                           ),
+                          SizedBox(height: 1.5.h),
+                          customButon(
+                            btnText: "Continue To Sponsors",
+                            onTap: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              Get.to(() => PokerSponsers(widget.event));
+                            },
+                          ),
                         ],
-                      ),
-                    ),
-                    Positioned(
-                      left: 4.w,
-                      right: 4.w,
-                      bottom: 3.h,
-                      child: customButon(
-                        btnText: "Continue To Sponsors",
-                        onTap: () {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          Get.to(() => PokerSponsers(widget.event));
-                        },
                       ),
                     ),
                   ],
@@ -624,6 +820,275 @@ class _RouteMapViewState extends State<RouteMapView> {
           ],
         ),
         child: Icon(icon, color: color ?? const Color(0xFF1C1C1F), size: 18.sp),
+      ),
+    );
+  }
+}
+
+// ── Animated loading screen shown while route segments are being fetched ──────
+
+class _RouteLoadingView extends StatefulWidget {
+  const _RouteLoadingView();
+
+  @override
+  State<_RouteLoadingView> createState() => _RouteLoadingViewState();
+}
+
+class _RouteLoadingViewState extends State<_RouteLoadingView>
+    with TickerProviderStateMixin {
+  late final AnimationController _pulseCtrl;
+  late final AnimationController _dotsCtrl;
+
+  static const _messages = [
+    'Fetching road data…',
+    'Building your route…',
+    'Calculating distances…',
+    'Almost ready…',
+  ];
+  int _msgIndex = 0;
+  Timer? _msgTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1600),
+    )..repeat();
+
+    _dotsCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat();
+
+    _msgTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (mounted) {
+        setState(() => _msgIndex = (_msgIndex + 1) % _messages.length);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pulseCtrl.dispose();
+    _dotsCtrl.dispose();
+    _msgTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _SonarRings(controller: _pulseCtrl),
+            SizedBox(height: 3.5.h),
+            text_widget(
+              "Mapping Your Route",
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+            SizedBox(height: 0.8.h),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              transitionBuilder: (child, anim) => SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0, 0.4),
+                  end: Offset.zero,
+                ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
+                child: FadeTransition(opacity: anim, child: child),
+              ),
+              child: KeyedSubtree(
+                key: ValueKey(_msgIndex),
+                child: text_widget(
+                  _messages[_msgIndex],
+                  fontSize: 13.sp,
+                  color: MyColors.white.withValues(alpha: 0.50),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            SizedBox(height: 4.h),
+            _TravelingRouteStrip(controller: _dotsCtrl),
+            SizedBox(height: 1.5.h),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                text_widget(
+                  "Start",
+                  fontSize: 11.sp,
+                  color: const Color(0xFF2ecc71),
+                  fontWeight: FontWeight.w600,
+                ),
+                const Spacer(),
+                text_widget(
+                  "Finish",
+                  fontSize: 11.sp,
+                  color: MyColors.white.withValues(alpha: 0.55),
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Three staggered expanding rings + centered radar icon
+class _SonarRings extends AnimatedWidget {
+  const _SonarRings({required AnimationController controller})
+    : super(listenable: controller);
+
+  @override
+  Widget build(BuildContext context) {
+    final t = (listenable as AnimationController).value;
+    return SizedBox(
+      width: 160,
+      height: 160,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          ...List.generate(3, (i) {
+            final phase = (t + i / 3) % 1.0;
+            final size = 64.0 + phase * 96.0;
+            final opacity = (1.0 - phase) * 0.45;
+            return Center(
+              child: Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: MyColors.primary.withValues(alpha: opacity),
+                    width: 1.5,
+                  ),
+                ),
+              ),
+            );
+          }),
+          Container(
+            width: 68,
+            height: 68,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: MyColors.primary.withValues(alpha: 0.15),
+              border: Border.all(
+                color: MyColors.primary.withValues(alpha: 0.55),
+                width: 1.5,
+              ),
+            ),
+            child: Icon(Icons.radar, color: MyColors.primary, size: 30),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Five stop-dots connected by a line with a glowing dot sweeping across
+class _TravelingRouteStrip extends AnimatedWidget {
+  const _TravelingRouteStrip({required AnimationController controller})
+    : super(listenable: controller);
+
+  static const _stops = 5;
+  static const _spacing = 44.0;
+  static const _dotR = 5.0;
+  static const _glowR = 7.0;
+  static const _totalW = (_stops - 1) * _spacing + _dotR * 2;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = (listenable as AnimationController).value;
+    final travelX = t * (_totalW - _glowR * 2);
+
+    return SizedBox(
+      width: _totalW,
+      height: 28,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned.fill(
+            child: Center(
+              child: Container(
+                height: 2,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(1),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: (28 - 2) / 2,
+            width: travelX + _glowR,
+            height: 2,
+            child: Container(
+              decoration: BoxDecoration(
+                color: MyColors.primary.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ),
+          ...List.generate(_stops, (i) {
+            final x = i * _spacing;
+            final isStart = i == 0;
+            final isEnd = i == _stops - 1;
+            final passed = travelX >= x;
+            return Positioned(
+              left: x,
+              top: (28 - _dotR * 2) / 2,
+              child: Container(
+                width: _dotR * 2,
+                height: _dotR * 2,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isStart
+                      ? const Color(0xFF2ecc71)
+                      : isEnd
+                      ? Colors.white.withValues(alpha: passed ? 1.0 : 0.35)
+                      : MyColors.primary.withValues(alpha: passed ? 0.9 : 0.3),
+                  boxShadow: passed && isStart
+                      ? [
+                          BoxShadow(
+                            color: const Color(
+                              0xFF2ecc71,
+                            ).withValues(alpha: 0.6),
+                            blurRadius: 6,
+                          ),
+                        ]
+                      : null,
+                ),
+              ),
+            );
+          }),
+          Positioned(
+            left: travelX,
+            top: (28 - _glowR * 2) / 2,
+            child: Container(
+              width: _glowR * 2,
+              height: _glowR * 2,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: MyColors.primary,
+                boxShadow: [
+                  BoxShadow(
+                    color: MyColors.primary.withValues(alpha: 0.75),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

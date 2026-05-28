@@ -34,6 +34,26 @@ class _PartnerListState extends State<PartnerList> {
   List<bool> faqs = [false, false, false, false, false];
   bool status4 = false;
   int current = 0;
+
+  // Resolves the actual stop name a player is currently at using their routeSequence.
+  // currentStop is a 1-based position counter; routeSequence maps it to the real stops[] index.
+  String _resolveStopLabel(GamePlayerModel game, EventModel event) {
+    final pos = game.currentStop;
+    final seq = game.routeSequence;
+    int actualIdx;
+    if (seq.isNotEmpty && pos >= 1 && pos <= seq.length) {
+      actualIdx = seq[pos - 1];
+    } else {
+      actualIdx = pos;
+    }
+    if (actualIdx > 0 &&
+        actualIdx < event.stops.length &&
+        event.stops[actualIdx].name.isNotEmpty) {
+      return "Stop $pos: ${event.stops[actualIdx].name}";
+    }
+    return "Stop $pos of ${event.stops.length - 1}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -205,7 +225,7 @@ class _PartnerListState extends State<PartnerList> {
                                     : Text(
                                         game.rank == ""
                                             ? game.currentStop > 0
-                                                  ? "Current Stop: ${game.currentStop}"
+                                                  ? _resolveStopLabel(game, widget.eventModel)
                                                   : !game.approved
                                                   ? (() {
                                                       double total = 0.0;
