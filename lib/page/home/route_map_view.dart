@@ -838,7 +838,6 @@ class _RouteLoadingViewState extends State<_RouteLoadingView>
     with TickerProviderStateMixin {
   late final AnimationController _pulseCtrl;
   late final AnimationController _dotsCtrl;
-  late final Animation<double> _pulseAnim;
 
   static const _messages = [
     'Fetching road data…',
@@ -853,19 +852,16 @@ class _RouteLoadingViewState extends State<_RouteLoadingView>
   void initState() {
     super.initState();
 
+    // Continuous 0→1 for expanding sonar rings
     _pulseCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1100),
-    )..repeat(reverse: true);
+      duration: const Duration(milliseconds: 1600),
+    )..repeat();
 
-    _pulseAnim = Tween<double>(
-      begin: 0.88,
-      end: 1.14,
-    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
-
+    // Traveling dot across the route strip
     _dotsCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 2000),
     )..repeat();
 
     _msgTimer = Timer.periodic(const Duration(seconds: 2), (_) {
@@ -886,46 +882,122 @@ class _RouteLoadingViewState extends State<_RouteLoadingView>
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Pulsing radar inside a glowing ring
-          ScaleTransition(
-            scale: _pulseAnim,
-            child: Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: MyColors.primary.withValues(alpha: 0.14),
-                border: Border.all(
-                  color: MyColors.primary.withValues(alpha: 0.35),
-                  width: 1.5,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Sonar rings + radar icon
+            _SonarRings(controller: _pulseCtrl),
+            SizedBox(height: 3.5.h),
+
+            // Title
+            text_widget(
+              "Mapping Your Route",
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+            SizedBox(height: 0.8.h),
+
+            // Cycling status text — slides up + fades
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              transitionBuilder: (child, anim) => SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0, 0.4),
+                  end: Offset.zero,
+                ).animate(CurvedAnimation(parent: anim, curve: Curves.easeOut)),
+                child: FadeTransition(opacity: anim, child: child),
+              ),
+              child: KeyedSubtree(
+                key: ValueKey(_msgIndex),
+                child: text_widget(
+                  _messages[_msgIndex],
+                  fontSize: 13.sp,
+                  color: MyColors.white.withValues(alpha: 0.50),
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-              child: Icon(Icons.radar, color: MyColors.primary, size: 32),
             ),
-          ),
-          SizedBox(height: 2.8.h),
+            SizedBox(height: 4.h),
 
-          // Three staggered bouncing dots
-          _AnimatedRouteDots(controller: _dotsCtrl),
-          SizedBox(height: 2.4.h),
+            // Route strip with traveling glow dot
+            _TravelingRouteStrip(controller: _dotsCtrl),
+            SizedBox(height: 1.5.h),
 
-          // Cycling status text
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 350),
-            transitionBuilder: (child, anim) =>
-                FadeTransition(opacity: anim, child: child),
-            child: KeyedSubtree(
-              key: ValueKey(_msgIndex),
-              child: text_widget(
-                _messages[_msgIndex],
-                fontSize: 14.sp,
-                color: MyColors.white.withValues(alpha: 0.65),
-                fontWeight: FontWeight.w500,
+            // "S" / "F" labels under the strip
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                text_widget(
+                  "Start",
+                  fontSize: 11.sp,
+                  color: const Color(0xFF2ecc71),
+                  fontWeight: FontWeight.w600,
+                ),
+                const Spacer(),
+                text_widget(
+                  "Finish",
+                  fontSize: 11.sp,
+                  color: MyColors.white.withValues(alpha: 0.55),
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Three staggered expanding rings + centered radar icon
+class _SonarRings extends AnimatedWidget {
+  const _SonarRings({required AnimationController controller})
+    : super(listenable: controller);
+
+  @override
+  Widget build(BuildContext context) {
+    final t = (listenable as AnimationController).value;
+    return SizedBox(
+      width: 160,
+      height: 160,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // 3 rings, each staggered by 1/3 of the cycle
+          ...List.generate(3, (i) {
+            final phase = (t + i / 3) % 1.0;
+            final size = 64.0 + phase * 96.0;
+            final opacity = (1.0 - phase) * 0.45;
+            return Center(
+              child: Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: MyColors.primary.withValues(alpha: opacity),
+                    width: 1.5,
+                  ),
+                ),
+              ),
+            );
+          }),
+          // Filled center circle
+          Container(
+            width: 68,
+            height: 68,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: MyColors.primary.withValues(alpha: 0.15),
+              border: Border.all(
+                color: MyColors.primary.withValues(alpha: 0.55),
+                width: 1.5,
               ),
             ),
+            child: Icon(Icons.radar, color: MyColors.primary, size: 30),
           ),
         ],
       ),
@@ -933,45 +1005,108 @@ class _RouteLoadingViewState extends State<_RouteLoadingView>
   }
 }
 
-class _AnimatedRouteDots extends AnimatedWidget {
-  const _AnimatedRouteDots({required AnimationController controller})
+// Five stop-dots connected by a line with a glowing dot sweeping across
+class _TravelingRouteStrip extends AnimatedWidget {
+  const _TravelingRouteStrip({required AnimationController controller})
     : super(listenable: controller);
+
+  static const _stops = 5;
+  static const _spacing = 44.0;
+  static const _dotR = 5.0;
+  static const _glowR = 7.0;
+  static const _totalW = (_stops - 1) * _spacing + _dotR * 2;
 
   @override
   Widget build(BuildContext context) {
     final t = (listenable as AnimationController).value;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(3, (i) {
-        // Each dot is offset by 1/3 of the cycle
-        final phase = ((t + i / 3) % 1.0);
-        // Smooth arc: rise then fall
-        final arc = phase < 0.5 ? phase * 2 : (1.0 - phase) * 2;
-        final offset = arc * 8.0;
-        final opacity = 0.35 + arc * 0.65;
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Transform.translate(
-            offset: Offset(0, -offset),
-            child: Opacity(
-              opacity: opacity.clamp(0.35, 1.0),
+    final travelX = t * (_totalW - _glowR * 2);
+
+    return SizedBox(
+      width: _totalW,
+      height: 28,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Background track line
+          Positioned.fill(
+            child: Center(
               child: Container(
-                width: 9,
-                height: 9,
+                height: 2,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: i == 0
-                      ? const Color(0xFF2ecc71) // green = start
-                      : i == 2
-                      ? MyColors
-                            .white // white = end
-                      : MyColors.primary, // brand = middle
+                  color: Colors.white.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(1),
                 ),
               ),
             ),
           ),
-        );
-      }),
+          // Lit portion of track (left of glow dot)
+          Positioned(
+            left: 0,
+            top: (28 - 2) / 2,
+            width: travelX + _glowR,
+            height: 2,
+            child: Container(
+              decoration: BoxDecoration(
+                color: MyColors.primary.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(1),
+              ),
+            ),
+          ),
+          // Stop dots
+          ...List.generate(_stops, (i) {
+            final x = i * _spacing;
+            final isStart = i == 0;
+            final isEnd = i == _stops - 1;
+            final passed = travelX >= x;
+            return Positioned(
+              left: x,
+              top: (28 - _dotR * 2) / 2,
+              child: Container(
+                width: _dotR * 2,
+                height: _dotR * 2,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isStart
+                      ? const Color(0xFF2ecc71)
+                      : isEnd
+                      ? Colors.white.withValues(alpha: passed ? 1.0 : 0.35)
+                      : MyColors.primary.withValues(alpha: passed ? 0.9 : 0.3),
+                  boxShadow: passed && isStart
+                      ? [
+                          BoxShadow(
+                            color: const Color(
+                              0xFF2ecc71,
+                            ).withValues(alpha: 0.6),
+                            blurRadius: 6,
+                          ),
+                        ]
+                      : null,
+                ),
+              ),
+            );
+          }),
+          // Traveling glow dot
+          Positioned(
+            left: travelX,
+            top: (28 - _glowR * 2) / 2,
+            child: Container(
+              width: _glowR * 2,
+              height: _glowR * 2,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: MyColors.primary,
+                boxShadow: [
+                  BoxShadow(
+                    color: MyColors.primary.withValues(alpha: 0.75),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
