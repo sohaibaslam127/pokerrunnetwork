@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
-import 'package:map_launcher/map_launcher.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
@@ -19,6 +17,7 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RouteMapView extends StatefulWidget {
   final EventModel event;
@@ -504,98 +503,53 @@ class _RouteMapViewState extends State<RouteMapView> {
 ''';
   }
 
+  // Returns a URL-safe label for each stop position in play order.
+  // Position 0 → "Initial+Point", last → "Final+Point", others → "Stop+N"
+  String _stopLabel(int i) {
+    if (i == 0) return 'Initial+Point';
+    if (i == _orderedStops.length - 1) return 'Final+Point';
+    return 'Stop+$i';
+  }
+
+  // Builds the full play-order URL and opens it.
+  // iOS  → Apple Maps  maps://?dirflg=d&saddr=Name@lat,lng&daddr=Name@lat,lng…
+  // Android / fallback → Google Maps https://www.google.com/maps/dir/lat,lng/…
   Future<void> _openInExternalMap() async {
     if (_orderedStops.isEmpty) return;
-    final maps = await MapLauncher.installedMaps;
-    if (maps.isEmpty) {
-      if (!mounted) return;
-      toast(context, "No map app", "No maps app is installed on this device");
-      return;
+
+    if (Platform.isIOS) {
+      // Apple Maps supports "Name@lat,lng" per saddr/daddr param
+      final buf = StringBuffer('maps://?dirflg=d');
+      for (int i = 0; i < _orderedStops.length; i++) {
+        final s = _orderedStops[i];
+        final coord = '${s.stopLocation.latitude},${s.stopLocation.longitude}';
+        final named = '${_stopLabel(i)}@$coord';
+        final location = i == 0 ? '&saddr=$named' : '&daddr=$named';
+        debugPrint("location: $location");
+        buf.write(location);
+      }
+      final appleUri = Uri.parse(buf.toString());
+      if (await canLaunchUrl(appleUri)) {
+        await launchUrl(appleUri);
+        return;
+      }
     }
 
-    final origin = _orderedStops.first;
-    final destination = _orderedStops.last;
-    final waypoints = _orderedStops.length > 2
-        ? _orderedStops
-              .sublist(1, _orderedStops.length - 1)
-              .map(
-                (s) => Waypoint(
-                  s.stopLocation.latitude,
-                  s.stopLocation.longitude,
-                  s.name,
-                ),
-              )
-              .toList()
-        : <Waypoint>[];
-
-    Future<void> launch(AvailableMap m) async {
-      await m.showDirections(
-        destination: Coords(
-          destination.stopLocation.latitude,
-          destination.stopLocation.longitude,
-        ),
-        destinationTitle: destination.name.isEmpty ? "End" : destination.name,
-        origin: Coords(
-          origin.stopLocation.latitude,
-          origin.stopLocation.longitude,
-        ),
-        originTitle: origin.name.isEmpty ? "Start" : origin.name,
-        waypoints: waypoints,
-        directionsMode: DirectionsMode.walking,
-      );
-    }
-
-    if (maps.length == 1) {
-      await launch(maps.first);
-      return;
-    }
-
-    if (!mounted) return;
-    await showCupertinoModalPopup(
-      context: context,
-      builder: (context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.0),
-        child: CupertinoActionSheet(
-          actions: maps
-              .map(
-                (e) => Container(
-                  color: MyColors.black,
-                  child: CupertinoActionSheetAction(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      await launch(e);
-                    },
-                    child: text_widget(
-                      "Open in ${e.mapName}",
-                      color: MyColors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 17.sp,
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
-          cancelButton: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(13),
-              color: Colors.black26,
-            ),
-            child: CupertinoActionSheetAction(
-              isDestructiveAction: true,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: text_widget(
-                'Cancel',
-                color: MyColors.black,
-                fontWeight: FontWeight.w700,
-                fontSize: 18.sp,
-              ),
-            ),
-          ),
-        ),
-      ),
+    // Android or iOS fallback: coordinate-only slash-separated stops
+    final coords = _orderedStops
+        .map((s) => '${s.stopLocation.latitude},${s.stopLocation.longitude}')
+        .toList();
+    final googleUri = Uri.parse(
+      'https://www.google.com/maps/dir/${coords.join('/')}',
     );
+    if (await canLaunchUrl(googleUri)) {
+      await launchUrl(googleUri, mode: LaunchMode.externalApplication);
+      return;
+    }
+
+    if (mounted) {
+      toast(context, "No map app", "Could not open a maps app on this device");
+    }
   }
 
   @override
