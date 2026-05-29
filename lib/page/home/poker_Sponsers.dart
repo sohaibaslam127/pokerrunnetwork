@@ -312,7 +312,7 @@ class _PokerSponsersState extends State<PokerSponsers> {
                                               ? "Final Sponsor"
                                               : "$number$suffix Sponsor",
                                           color: Color(0xff6C7278),
-                                          fontSize: 15.sp,
+                                          fontSize: 16.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
                                         SizedBox(width: 2.w),
@@ -339,7 +339,7 @@ class _PokerSponsersState extends State<PokerSponsers> {
                                               color: unlocked
                                                   ? Color(0xff137333)
                                                   : Color(0xffB00020),
-                                              fontSize: 11.5.sp,
+                                              fontSize: 12.sp,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -365,7 +365,7 @@ class _PokerSponsersState extends State<PokerSponsers> {
                                         text_widget(
                                           "*optional ",
                                           color: Colors.red.shade200,
-                                          fontSize: 13.sp,
+                                          fontSize: 13.5.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ],
@@ -514,7 +514,7 @@ class _PokerSponsersState extends State<PokerSponsers> {
                                     );
                                 EasyLoading.dismiss();
                                 if (result) {
-                                  Get.close(4);
+                                  Get.close(5);
                                   if (widget.eventModel.id.isEmpty) {
                                     toast(
                                       context,
@@ -582,14 +582,14 @@ class _LockedSlotCard extends StatelessWidget {
                 text_widget(
                   "Paid sponsor slot",
                   color: Color(0xff111827),
-                  fontSize: 13.5.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.bold,
                 ),
                 SizedBox(height: 0.3.h),
                 text_widget(
                   "Unlock for \$${price.toStringAsFixed(2)}",
                   color: Color(0xff6C7278),
-                  fontSize: 12.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ],

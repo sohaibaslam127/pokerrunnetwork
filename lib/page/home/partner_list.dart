@@ -184,13 +184,15 @@ class _PartnerListState extends State<PartnerList> {
                           trailing: Obx(
                             () => GestureDetector(
                               onTap: () async {
-                                if (!(game.iamCoRider &&
-                                        isPaid.value == false) &&
-                                    game.rank == "") {
-                                  game.approved = !game.approved;
-                                  await FirestoreServices.I.updateGamePlayer(
-                                    game,
-                                  );
+                                if (game.currentStop == 0) {
+                                  if (!(game.iamCoRider &&
+                                          isPaid.value == false) &&
+                                      game.rank == "") {
+                                    game.approved = !game.approved;
+                                    await FirestoreServices.I.updateGamePlayer(
+                                      game,
+                                    );
+                                  }
                                 }
                               },
                               child: Container(
@@ -225,7 +227,10 @@ class _PartnerListState extends State<PartnerList> {
                                     : Text(
                                         game.rank == ""
                                             ? game.currentStop > 0
-                                                  ? _resolveStopLabel(game, widget.eventModel)
+                                                  ? _resolveStopLabel(
+                                                      game,
+                                                      widget.eventModel,
+                                                    )
                                                   : !game.approved
                                                   ? (() {
                                                       double total = 0.0;
