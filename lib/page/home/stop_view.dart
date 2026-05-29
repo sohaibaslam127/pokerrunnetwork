@@ -33,187 +33,191 @@ class _StopViewState extends State<StopView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Image.asset(
-          "assets/background/darkbackground.jpg",
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.white10,
-            elevation: 0,
-            leadingWidth: 8.w,
-            title: text_widget(
-              "Card for stop ${currentGame.game.currentStop}".capitalize!,
-              fontSize: 17.sp,
-              color: Colors.white.withValues(alpha: 0.80),
-              fontWeight: FontWeight.w600,
-            ),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(0),
-              child: Container(height: 2, color: Colors.white12),
-            ),
+    return PopScope(
+      canPop: false,
+      child: Stack(
+        children: [
+          Image.asset(
+            "assets/background/darkbackground.jpg",
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
           ),
-          body: Column(
-            children: [
-              Spacer(),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 3.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 2.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List.generate(5, (index) {
-                            final hasCard =
-                                index < currentGame.game.cards.length;
-                            return Padding(
-                              padding: EdgeInsets.only(top: 1.h),
-                              child: hasCard
-                                  ? Image.asset(
-                                      pokerCards[currentGame.game.cards[index]],
-                                      width: 13.5.w,
-                                      height: 80,
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Container(
-                                      width: 13.5.w,
-                                      height: 80,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade600,
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.white10,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              leadingWidth: 8.w,
+              title: text_widget(
+                "Card for stop ${currentGame.game.currentStop}".capitalize!,
+                fontSize: 17.sp,
+                color: Colors.white.withValues(alpha: 0.80),
+                fontWeight: FontWeight.w600,
+              ),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(0),
+                child: Container(height: 2, color: Colors.white12),
+              ),
+            ),
+            body: Column(
+              children: [
+                Spacer(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 2.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(5, (index) {
+                              final hasCard =
+                                  index < currentGame.game.cards.length;
+                              return Padding(
+                                padding: EdgeInsets.only(top: 1.h),
+                                child: hasCard
+                                    ? Image.asset(
+                                        pokerCards[currentGame.game.cards[index]],
+                                        width: 13.5.w,
+                                        height: 80,
+                                        fit: BoxFit.fill,
+                                      )
+                                    : Container(
+                                        width: 13.5.w,
+                                        height: 80,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade600,
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                          borderRadius: BorderRadius.circular(6),
                                         ),
-                                        borderRadius: BorderRadius.circular(6),
                                       ),
-                                    ),
-                            );
-                          }),
-                        ),
-                        SizedBox(width: 2.w),
-                        Center(
-                          child: Image.asset(
-                            pokerCards[currentGame
-                                .game
-                                .cards[currentGame.game.currentStop - 1]],
-                            width: 76.w,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 3.h),
-                  ],
-                ),
-              ),
-              Spacer(),
-              onPress(
-                ontap: () async {
-                  count = 0;
-                  currentGame.game.currentStop += 1;
-                  await FirestoreServices.I.updateGamePlayer(currentGame.game);
-                  Get.back();
-                },
-                child: Image.asset(OtherButtons.keepThisCard),
-              ),
-              if (currentGame.game.changeCard && count < 1) ...[
-                onPress(
-                  ontap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => CupertinoAlertDialog(
-                        title: Text("Change Card"),
-                        content: Text(
-                          "Do you want to replace your card with different card?",
-                        ),
-                        actions: <Widget>[
-                          CupertinoDialogAction(
-                            child: Text("No"),
-                            onPressed: () {
-                              Get.back();
-                            },
-                          ),
-                          CupertinoDialogAction(
-                            isDefaultAction: true,
-                            child: Text("Replace Card"),
-                            onPressed: () async {
-                              Get.back();
-                              if (count == 1) {
-                                toast(
-                                  context,
-                                  "Card Change Limit",
-                                  "Note: Only 1 permanent card change per stop",
-                                );
-                                return;
-                              }
-                              count++;
-                              currentGame.game.changeCardAttempts++;
-                              currentGame.game.spends =
-                                  currentGame.game.spends +
-                                  currentGame.latestEvent.changeCardFee;
-                              randomCard();
-                              currentGame.game.cards.removeAt(
-                                currentGame.game.cards.length - 2,
                               );
-                              setState(() {});
-                            },
+                            }),
+                          ),
+                          SizedBox(width: 2.w),
+                          Center(
+                            child: Image.asset(
+                              pokerCards[currentGame
+                                  .game
+                                  .cards[currentGame.game.currentStop - 1]],
+                              width: 76.w,
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ],
                       ),
-                    );
-                  },
-                  child: Image.asset(OtherButtons.changeThisCard),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 3.w,
-                      vertical: 0.8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.amber.withValues(alpha: 0.25),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.amber.withValues(alpha: 0.75),
-                          size: 14.sp,
-                        ),
-                        SizedBox(width: 2.w),
-                        text_widget(
-                          "1 permanent card change allowed per stop",
-                          fontSize: 13.sp,
-                          color: Colors.amber.withValues(alpha: 0.85),
-                        ),
-                      ],
-                    ),
+                      SizedBox(height: 3.h),
+                    ],
                   ),
                 ),
-              ] else ...[
-                Spacer(flex: 3),
+                Spacer(),
+                onPress(
+                  ontap: () async {
+                    count = 0;
+                    currentGame.game.currentStop += 1;
+                    await FirestoreServices.I.updateGamePlayer(currentGame.game);
+                    Get.back();
+                  },
+                  child: Image.asset(OtherButtons.keepThisCard),
+                ),
+                if (currentGame.game.changeCard && count < 1) ...[
+                  onPress(
+                    ontap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => CupertinoAlertDialog(
+                          title: Text("Change Card"),
+                          content: Text(
+                            "Do you want to replace your card with different card?",
+                          ),
+                          actions: <Widget>[
+                            CupertinoDialogAction(
+                              child: Text("No"),
+                              onPressed: () {
+                                Get.back();
+                              },
+                            ),
+                            CupertinoDialogAction(
+                              isDefaultAction: true,
+                              child: Text("Replace Card"),
+                              onPressed: () async {
+                                Get.back();
+                                if (count == 1) {
+                                  toast(
+                                    context,
+                                    "Card Change Limit",
+                                    "Note: Only 1 permanent card change per stop",
+                                  );
+                                  return;
+                                }
+                                count++;
+                                currentGame.game.changeCardAttempts++;
+                                currentGame.game.spends =
+                                    currentGame.game.spends +
+                                    currentGame.latestEvent.changeCardFee;
+                                randomCard();
+                                currentGame.game.cards.removeAt(
+                                  currentGame.game.cards.length - 2,
+                                );
+                                setState(() {});
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Image.asset(OtherButtons.changeThisCard),
+                  ),
+  
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 3.w,
+                        vertical: 0.8.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.amber.withValues(alpha: 0.25),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.info_outline_rounded,
+                            color: Colors.amber.withValues(alpha: 0.75),
+                            size: 14.sp,
+                          ),
+                          SizedBox(width: 2.w),
+                          text_widget(
+                            "1 permanent card change allowed per stop",
+                            fontSize: 13.sp,
+                            color: Colors.amber.withValues(alpha: 0.85),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ] else ...[
+                  Spacer(flex: 3),
+                ],
+                Spacer(flex: 2),
               ],
-              Spacer(flex: 2),
-            ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

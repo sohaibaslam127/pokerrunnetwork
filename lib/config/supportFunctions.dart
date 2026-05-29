@@ -6,9 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:map_launcher/map_launcher.dart';
-
 import 'package:pokerrunnetwork/config/colors.dart';
-import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/services/locationsServices.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';

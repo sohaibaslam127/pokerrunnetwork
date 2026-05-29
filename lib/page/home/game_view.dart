@@ -11,6 +11,7 @@ import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/analysis.dart';
 import 'package:pokerrunnetwork/models/sponsors.dart';
 import 'package:pokerrunnetwork/models/stops.dart';
+import 'package:pokerrunnetwork/page/home/all_hands_page.dart';
 import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/page/home/route_map_view.dart';
 import 'package:pokerrunnetwork/page/home/stop_view.dart';
@@ -222,63 +223,91 @@ class _GameViewState extends State<GameView> {
       backgroundColor: Colors.white10,
       elevation: 0,
       automaticallyImplyLeading: false,
-      leadingWidth: 8.w,
-      title: text_widget(
-        currentGame.latestEvent.pokerName.capitalize!,
-        fontSize: 17.sp,
-        color: Colors.white.withValues(alpha: 0.80),
-        fontWeight: FontWeight.w600,
+      title: Row(
+        children: [
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: onPress(
+                ontap: () {
+                  Get.to(() => const AllHandsPage());
+                },
+                child: text_widget(
+                  "SEE HAND",
+                  color: MyColors.primary,
+                  maxline: 1,
+                  textAlign: TextAlign.center,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15.sp,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 3.w),
+          Expanded(
+            flex: 2,
+            child: text_widget(
+              currentGame.latestEvent.pokerName.capitalize!,
+              fontSize: 17.sp,
+              textAlign: TextAlign.center,
+              color: Colors.white.withValues(alpha: 0.80),
+              fontWeight: FontWeight.w600,
+              maxline: 1,
+            ),
+          ),
+          SizedBox(width: 3.w),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: onPress(
+                ontap: () async {
+                  if (showLeaveAtResult) {
+                    await showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (ctx) => const PokerResultDialog(),
+                    );
+                    Get.offAll(() => const HomePage());
+                  } else {
+                    showPopup(
+                      context,
+                      "If you exit this game, you will lose all progress and must re-register to play this event?",
+                      PopupActionsButtons.cancel,
+                      PopupActionsButtons.exit,
+                      () => Get.back(),
+                      () async {
+                        Get.back();
+                        EasyLoading.show(status: "Leaving...");
+                        currentGame.latestEvent.userIds.remove(currentUser.id);
+                        await FirestoreServices.I.updateEvent(
+                          context,
+                          currentGame.latestEvent,
+                          false,
+                          false,
+                        );
+                        EasyLoading.dismiss();
+                        Get.offAll(HomePage());
+                      },
+                    );
+                  }
+                },
+                child: text_widget(
+                  showLeaveAtResult ? "LEAVE" : "EXIT",
+                  color: Colors.redAccent,
+                  maxline: 1,
+                  textAlign: TextAlign.center,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15.sp,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0),
         child: Container(height: 2, color: Colors.white12),
       ),
-      actions: [
-        onPress(
-          ontap: () async {
-            if (showLeaveAtResult) {
-              await showDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (ctx) => const PokerResultDialog(),
-              );
-              Get.offAll(() => const HomePage());
-            } else {
-              showPopup(
-                context,
-                "If you exit this game, you will lose all progress and must re-register to play this event?",
-                PopupActionsButtons.cancel,
-                PopupActionsButtons.exit,
-                () => Get.back(),
-                () async {
-                  Get.back();
-                  EasyLoading.show(status: "Leaving...");
-                  currentGame.latestEvent.userIds.remove(currentUser.id);
-                  await FirestoreServices.I.updateEvent(
-                    context,
-                    currentGame.latestEvent,
-                    false,
-                    false,
-                  );
-                  EasyLoading.dismiss();
-                  Get.offAll(HomePage());
-                },
-              );
-            }
-          },
-          child: Padding(
-            padding: EdgeInsets.only(right: 2.w),
-            child: text_widget(
-              showLeaveAtResult ? "LEAVE  " : "EXIT  ",
-              color: Colors.redAccent,
-              maxline: 1,
-              textAlign: TextAlign.center,
-              fontWeight: FontWeight.bold,
-              fontSize: 15.sp,
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -304,180 +333,199 @@ class _GameViewState extends State<GameView> {
           appBar: _buildAppBar(showLeaveAtResult: false),
           body: Center(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                // ── Animated icon + instructions ──────────────────────────
-                _PulsingLocationIcon(color: MyColors.primary),
-                SizedBox(height: 3.h),
-                text_widget(
-                  "Walk to your stop",
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 0.8.h),
-                text_widget(
-                  "We'll detect it automatically\nonce you arrive.",
-                  fontSize: 13.sp,
-                  color: Colors.white.withValues(alpha: 0.55),
-                  textAlign: TextAlign.center,
-                  height: 1.55,
-                ),
-                // ── Stop card — only when within 0.062 mi ─────────────────
-                if (stop != null && dist != null) ...[
-                  SizedBox(height: 3.h),
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(4.w),
-                    margin: EdgeInsets.symmetric(horizontal: 5.w),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.07),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: Colors.green.withValues(alpha: 0.40),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // ── Animated icon + instructions ──────────────────────────
+                      Spacer(flex: 2),
+                      _PulsingLocationIcon(color: MyColors.primary),
+                      SizedBox(height: 3.h),
+                      text_widget(
+                        "Go to your first stop",
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: MyColors.primary,
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 2.5.w,
-                                vertical: 0.35.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withValues(alpha: 0.18),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.green.withValues(alpha: 0.45),
-                                ),
-                              ),
-                              child: text_widget(
-                                "You're Here!",
-                                fontSize: 11.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.greenAccent,
-                              ),
+                      SizedBox(height: 0.8.h),
+                      text_widget(
+                        "We'll detect it automatically\nonce you arrive.",
+                        fontSize: 14.sp,
+                        color: Colors.white.withValues(alpha: 0.55),
+                        textAlign: TextAlign.center,
+                        height: 1.55,
+                      ),
+                      // ── Stop card — only when within 0.062 mi ─────────────────
+                      if (stop != null && dist != null) ...[
+                        SizedBox(height: 3.h),
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(4.w),
+                          margin: EdgeInsets.symmetric(horizontal: 5.w),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withValues(alpha: 0.07),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Colors.green.withValues(alpha: 0.40),
                             ),
-                            const Spacer(),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 2.5.w,
-                                vertical: 0.35.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.green.withValues(alpha: 0.40),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
                                 children: [
-                                  Icon(
-                                    RemixIcons.route_line,
-                                    size: 12.sp,
-                                    color: Colors.greenAccent,
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 2.5.w,
+                                      vertical: 0.35.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.withValues(
+                                        alpha: 0.18,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: Colors.green.withValues(
+                                          alpha: 0.45,
+                                        ),
+                                      ),
+                                    ),
+                                    child: text_widget(
+                                      "You're Here!",
+                                      fontSize: 11.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.greenAccent,
+                                    ),
                                   ),
-                                  SizedBox(width: 1.w),
-                                  text_widget(
-                                    "${dist?.toStringAsFixed(2)} mi",
-                                    fontSize: 11.5.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.greenAccent,
+                                  const Spacer(),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 2.5.w,
+                                      vertical: 0.35.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.withValues(
+                                        alpha: 0.15,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: Colors.green.withValues(
+                                          alpha: 0.40,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          RemixIcons.route_line,
+                                          size: 12.sp,
+                                          color: Colors.greenAccent,
+                                        ),
+                                        SizedBox(width: 1.w),
+                                        text_widget(
+                                          "${dist?.toStringAsFixed(2)} mi",
+                                          fontSize: 11.5.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.greenAccent,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 1.2.h),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              RemixIcons.map_pin_fill,
-                              color: Colors.redAccent,
-                              size: 18.sp,
-                            ),
-                            SizedBox(width: 2.w),
-                            Expanded(
-                              child: Column(
+                              SizedBox(height: 1.2.h),
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  text_widget(
-                                    stop?.name ?? "",
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    maxline: 1,
+                                  Icon(
+                                    RemixIcons.map_pin_fill,
+                                    color: Colors.redAccent,
+                                    size: 18.sp,
                                   ),
-                                  SizedBox(height: 0.3.h),
-                                  text_widget(
-                                    stop?.address ?? "",
-                                    fontSize: 12.5.sp,
-                                    color: Colors.white.withValues(alpha: 0.60),
-                                    height: 1.35,
-                                    maxline: 2,
+                                  SizedBox(width: 2.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        text_widget(
+                                          stop?.name ?? "",
+                                          fontSize: 15.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          maxline: 1,
+                                        ),
+                                        SizedBox(height: 0.3.h),
+                                        text_widget(
+                                          stop?.address ?? "",
+                                          fontSize: 12.5.sp,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.60,
+                                          ),
+                                          height: 1.35,
+                                          maxline: 2,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 1.5.h),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 7.w),
-                          child: Divider(
-                            color: Colors.white.withValues(alpha: 0.08),
+                              SizedBox(height: 1.5.h),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 7.w),
+                                child: Divider(
+                                  color: Colors.white.withValues(alpha: 0.08),
+                                ),
+                              ),
+                              SizedBox(height: 1.2.h),
+                              customButon(
+                                btnText: "I'm at my first stop!",
+                                onTap: () async {
+                                  if (_picking) return;
+                                  final lockStop = _nearestInRadius;
+                                  if (lockStop == null) return;
+                                  _picking = true;
+                                  try {
+                                    currentGame.game.routeSequence =
+                                        _computeSequence(lockStop);
+                                    if (currentGame.game.currentStop == 0) {
+                                      currentGame.game.currentStop = 1;
+                                    }
+                                    await FirestoreServices.I.updateGamePlayer(
+                                      currentGame.game,
+                                    );
+                                  } finally {
+                                    _picking = false;
+                                  }
+                                  if (mounted) setState(() {});
+                                },
+                                fontSize: 17,
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(height: 1.2.h),
-                        onPress(
-                          ontap: () async {
-                            if (_picking) return;
-                            final lockStop = _nearestInRadius;
-                            if (lockStop == null) return;
-                            _picking = true;
-                            try {
-                              currentGame.game.routeSequence = _computeSequence(
-                                lockStop,
-                              );
-                              if (currentGame.game.currentStop == 0) {
-                                currentGame.game.currentStop = 1;
-                              }
-                              await FirestoreServices.I.updateGamePlayer(
-                                currentGame.game,
-                              );
-                            } finally {
-                              _picking = false;
-                            }
-                            if (mounted) setState(() {});
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(vertical: 1.3.h),
-                            decoration: BoxDecoration(
-                              color: MyColors.primary,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: text_widget(
-                              "I'm on my stop",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
+                        Spacer(flex: 3),
                       ],
-                    ),
+                    ],
                   ),
-                  SizedBox(height: 5.h),
-                ],
+                ),
+                Padding(
+                  padding: EdgeInsets.all(5.w),
+                  child: customButon(
+                    btnText: "See Map",
+                    onTap: () async {
+                      Get.to(
+                        RouteMapView(
+                          currentGame.latestEvent,
+                          routeSequence: currentGame.game.routeSequence,
+                        ),
+                      );
+                    },
+                    fontSize: 17,
+                  ),
+                ),
               ],
             ),
           ),
@@ -813,7 +861,12 @@ class _GameViewState extends State<GameView> {
                       child: onPress(
                         ontap: () {
                           if (stopNumber == 1) {
-                            Get.to(RouteMapView(currentGame.latestEvent, routeSequence: currentGame.game.routeSequence));
+                            Get.to(
+                              RouteMapView(
+                                currentGame.latestEvent,
+                                routeSequence: currentGame.game.routeSequence,
+                              ),
+                            );
                           } else {
                             openMaps(
                               context,

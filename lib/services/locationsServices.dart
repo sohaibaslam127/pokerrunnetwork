@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:app_settings/app_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart' as location;
 import 'package:pokerrunnetwork/config/colors.dart';
-
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';

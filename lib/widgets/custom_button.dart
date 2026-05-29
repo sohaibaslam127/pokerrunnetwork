@@ -22,6 +22,7 @@ Widget customButon({
   bool isIcon = false,
   String? btnText,
   Function? onTap,
+  double? fontSize,
   String? icon,
 }) {
   return onPress(
@@ -59,7 +60,7 @@ Widget customButon({
                     )
                   : text_widget(
                       btnText ?? "",
-                      fontSize: 17.5.sp,
+                      fontSize: fontSize ?? 17.5.sp,
                       textAlign: TextAlign.center,
                       fontWeight: FontWeight.w700,
                       color: Color(0xff113559),
