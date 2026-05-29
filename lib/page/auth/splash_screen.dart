@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'package:easy_admob_ads_flutter/easy_admob_ads_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ import 'package:pokerrunnetwork/services/remortConfig.dart';
 import 'package:pokerrunnetwork/services/stripeServices.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,11 +31,13 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String version = "", buildNumber = "";
+
   @override
   void initState() {
     super.initState();
-    init().then((appRun) {
+    init().then((appRun) async {
       if (appRun) {
+        await _checkForUpdate();
         Widget destination;
         if (currentUser.id.isEmpty) {
           destination = LoginPage();
@@ -50,6 +54,92 @@ class _SplashScreenState extends State<SplashScreen> {
     AdIdRegistry.initialize(
       ios: {AdType.native: adUnitId},
       android: {AdType.native: adUnitId},
+    );
+  }
+
+  /// Returns true if [latest] is a newer version than [current].
+  /// Both strings must be in "X.Y.Z+build" format.
+  bool _isNewerVersion(String latest, String current) {
+    List<int> parse(String v) {
+      final parts = v.split('+');
+      final nums = parts[0].split('.').map((s) => int.tryParse(s) ?? 0).toList();
+      nums.add(parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0);
+      return nums;
+    }
+
+    final l = parse(latest);
+    final c = parse(current);
+    for (int i = 0; i < l.length && i < c.length; i++) {
+      if (l[i] > c[i]) return true;
+      if (l[i] < c[i]) return false;
+    }
+    return false;
+  }
+
+  Future<void> _checkForUpdate() async {
+    if (latestAppVersion.isEmpty) return;
+
+    final currentVersion = '$version+$buildNumber';
+    if (!_isNewerVersion(latestAppVersion, currentVersion)) return;
+
+    await Get.dialog(
+      PopScope(
+        canPop: false,
+        child: Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.system_update, size: 48, color: Colors.orange),
+                const SizedBox(height: 16),
+                text_widget(
+                  "Update Required",
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                const SizedBox(height: 10),
+                text_widget(
+                  "A new version ($latestAppVersion) of Poker Run Player is available. Please update to continue.",
+                  fontSize: 14.sp,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    onPressed: () async {
+                      final uri = Uri.parse(
+                        Platform.isAndroid
+                            ? 'https://play.google.com/store/apps/details?id=com.pokerrunplayer'
+                            : 'https://apps.apple.com/app/poker-run-player/id6478165986',
+                      );
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    child: text_widget(
+                      "Update Now",
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.sp,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible: false,
     );
   }
 
