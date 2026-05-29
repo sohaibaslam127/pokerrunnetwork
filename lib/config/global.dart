@@ -34,7 +34,6 @@ final mapApiKey = Platform.isAndroid
 
 double serviceFee = 0.0;
 double miles = 0.062;
-// double miles = 45.00;
 String helpLineNumber = "";
 String helpLineEmail = "";
 String website = "";

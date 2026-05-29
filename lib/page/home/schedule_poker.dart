@@ -442,55 +442,57 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
               ),
               onPress(
                 ontap: () async {
-                  // if (click) return;
-                  // click = true;
-                  // currentGame.game.currentStop = 0;
-                  // if (currentGame.game.approved) {
-                  //   click = false;
-                  //   toast(
-                  //     context,
-                  //     "Check in",
-                  //     "Check in with organizer at starting point of event",
-                  //   );
-                  // } else if (DateTime.now().compareTo(
-                  //       currentGame.latestEvent.eventDate,
-                  //     ) >=
-                  //     0) {
-                  //   if (await calculateDistance(
-                  //         currentGame
-                  //             .latestEvent
-                  //             .stops[currentGame.game.currentStop]
-                  //             .stopLocation
-                  //             .latitude,
-                  //         currentGame
-                  //             .latestEvent
-                  //             .stops[currentGame.game.currentStop]
-                  //             .stopLocation
-                  //             .longitude,
-                  //         currentUser.location.latitude,
-                  //         currentUser.location.longitude,
-                  //       ) <=
-                  //       miles) {
-                  currentGame.game.currentStop = 1;
-                  await FirestoreServices.I.updateGamePlayer(currentGame.game);
-                  click = false;
-                  Get.off(GameView());
-                  //     } else {
-                  //       click = false;
-                  //       toast(
-                  //         context,
-                  //         "Check In",
-                  //         "Navigate to the starting location and check in with the organizer",
-                  //       );
-                  //     }
-                  //   } else {
-                  //     click = false;
-                  //     toast(
-                  //       context,
-                  //       "Poker Run",
-                  //       "Poker Run will start at ${DateFormat("d MMM yy, h:mm aaa").format(currentGame.latestEvent.eventDate)}",
-                  //     );
-                  //   }
+                  if (click) return;
+                  click = true;
+                  currentGame.game.currentStop = 0;
+                  if (!currentGame.game.approved) {
+                    click = false;
+                    toast(
+                      context,
+                      "Check in",
+                      "Check in with organizer at starting point of event",
+                    );
+                  } else if (DateTime.now().compareTo(
+                        currentGame.latestEvent.eventDate,
+                      ) >=
+                      0) {
+                    if (await calculateDistance(
+                          currentGame
+                              .latestEvent
+                              .stops[currentGame.game.currentStop]
+                              .stopLocation
+                              .latitude,
+                          currentGame
+                              .latestEvent
+                              .stops[currentGame.game.currentStop]
+                              .stopLocation
+                              .longitude,
+                          currentUser.location.latitude,
+                          currentUser.location.longitude,
+                        ) <=
+                        miles) {
+                      currentGame.game.currentStop = 1;
+                      await FirestoreServices.I.updateGamePlayer(
+                        currentGame.game,
+                      );
+                      click = false;
+                      Get.off(GameView());
+                    } else {
+                      click = false;
+                      toast(
+                        context,
+                        "Check In",
+                        "Navigate to the starting location and check in with the organizer",
+                      );
+                    }
+                  } else {
+                    click = false;
+                    toast(
+                      context,
+                      "Poker Run",
+                      "Poker Run will start at ${DateFormat("d MMM yy, h:mm aaa").format(currentGame.latestEvent.eventDate)}",
+                    );
+                  }
                 },
                 child: Image.asset(OtherButtons.startYourPokerRun),
               ),
