@@ -8,7 +8,7 @@ class RemoteConfigService {
     await remoteConfig.setConfigSettings(
       RemoteConfigSettings(
         fetchTimeout: const Duration(seconds: 15),
-        minimumFetchInterval: const Duration(hours: 12),
+        minimumFetchInterval: const Duration(seconds: 15),
       ),
     );
 
@@ -16,9 +16,10 @@ class RemoteConfigService {
       'serviceFee': serviceFee,
       'miles': miles,
       'enableAds': enableAds,
-      'latestAppVersion': latestAppVersion,
+      'appVersionPlayer': appVersionPlayer,
       'needApproval': needApproval,
       'autoFillCards': autoFillCards,
+      'defaultSponsor': defaultSponsor,
     });
 
     try {
@@ -29,8 +30,9 @@ class RemoteConfigService {
 
     serviceFee = remoteConfig.getDouble('serviceFee');
     miles = remoteConfig.getDouble('miles');
+    defaultSponsor = remoteConfig.getString('defaultSponsor');
     enableAds = remoteConfig.getBool('enableAds');
-    latestAppVersion = remoteConfig.getString('latestAppVersion');
+    appVersionPlayer = remoteConfig.getString('appVersionPlayer');
     autoFillCards = remoteConfig.getBool('autoFillCards');
     needApproval = remoteConfig.getBool('needApproval');
   }

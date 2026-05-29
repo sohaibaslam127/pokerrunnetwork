@@ -375,6 +375,18 @@ class FirestoreServices {
     }
   }
 
+  Stream<EventModel> eventStream(String eventId) {
+    if (eventId.isEmpty) return Stream.value(EventModel());
+    return _instance
+        .collection('events')
+        .doc(eventId)
+        .snapshots()
+        .map(
+          (doc) =>
+              doc.exists ? EventModel.toModel(doc.data() ?? {}) : EventModel(),
+        );
+  }
+
   Stream<GamePlayerModel> gamePlayerStream(String pokerId, String userId) {
     if (pokerId.isEmpty || userId.isEmpty) {
       return Stream.value(GamePlayerModel());

@@ -44,6 +44,7 @@ class _GameViewState extends State<GameView> {
   int? _nearestInRadius;
   bool _picking = false;
   Timer? _proximityTimer;
+  StreamSubscription? _eventSub;
 
   NRandom ran = NRandom(52, 4);
 
@@ -61,11 +62,23 @@ class _GameViewState extends State<GameView> {
         }
       });
     }
+    _listenForGameCompletion();
+  }
+
+  void _listenForGameCompletion() {
+    final eventId = currentGame.latestEvent.id;
+    if (eventId.isEmpty) return;
+    _eventSub = FirestoreServices.I.eventStream(eventId).listen((event) {
+      if (event.status == 2 && autoFillCards) {
+        FirestoreServices.I.autoFillCards(eventId);
+      }
+    });
   }
 
   @override
   void dispose() {
     _proximityTimer?.cancel();
+    _eventSub?.cancel();
     super.dispose();
   }
 
@@ -92,7 +105,7 @@ class _GameViewState extends State<GameView> {
       global.shuffle();
       return global.first;
     }
-    return SponsorsModel()..link = "https://www.tomorrowbyte.com/";
+    return SponsorsModel()..link = defaultSponsor;
   }
 
   // Computes the circular route starting from [startStop].
@@ -197,8 +210,10 @@ class _GameViewState extends State<GameView> {
     SponsorsModel? fallbackSponsor;
     String fallbackSponsorUrl = "";
     if (finalUrl.isEmpty) {
-      fallbackSponsor = _pickSponsorFor(actualIdx);
-      fallbackSponsorUrl = normalizeUrl(fallbackSponsor.link);
+      if (!enableAds) {
+        fallbackSponsor = _pickSponsorFor(actualIdx);
+        fallbackSponsorUrl = normalizeUrl(fallbackSponsor.link);
+      }
     }
 
     calculateDistance(
@@ -506,8 +521,8 @@ class _GameViewState extends State<GameView> {
                             ],
                           ),
                         ),
-                        Spacer(flex: 3),
                       ],
+                      Spacer(flex: 2),
                     ],
                   ),
                 ),
@@ -642,60 +657,62 @@ class _GameViewState extends State<GameView> {
 
                     SizedBox(height: .5.h),
 
-                    // ── Sponsor chip ──────────────────────────────────────
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3.w),
-                      child: onPress(
-                        ontap: () {
-                          if (finalUrl.isNotEmpty) {
-                            launchMyUrl(finalUrl);
-                          } else if (fallbackSponsorUrl.isNotEmpty) {
-                            launchMyUrl(fallbackSponsorUrl);
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 3.5.w,
-                            vertical: 0.8.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.06),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.10),
+                    if (finalUrl.isNotEmpty ||
+                        fallbackSponsorUrl.isNotEmpty) ...[
+                      // ── Sponsor chip ──────────────────────────────────────
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3.w),
+                        child: onPress(
+                          ontap: () {
+                            if (finalUrl.isNotEmpty) {
+                              launchMyUrl(finalUrl);
+                            } else if (fallbackSponsorUrl.isNotEmpty) {
+                              launchMyUrl(fallbackSponsorUrl);
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 3.5.w,
+                              vertical: 0.8.h,
                             ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.campaign_outlined,
-                                color: MyColors.white.withValues(alpha: 0.55),
-                                size: 16.sp,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.06),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.10),
                               ),
-                              SizedBox(width: 2.w),
-                              Expanded(
-                                child: text_widget(
-                                  "Sponsored by ${(finalUrl.isNotEmpty ? stopsModel.sponserName : (fallbackSponsor?.name ?? stopsModel.sponserName)).capitalize}",
-                                  color: Colors.white.withValues(alpha: 0.75),
-                                  maxline: 1,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 13.5.sp,
-                                ),
-                              ),
-                              if (finalUrl.isNotEmpty ||
-                                  fallbackSponsorUrl.isNotEmpty)
+                            ),
+                            child: Row(
+                              children: [
                                 Icon(
-                                  RemixIcons.external_link_line,
-                                  color: MyColors.primary,
-                                  size: 15.sp,
+                                  Icons.campaign_outlined,
+                                  color: MyColors.white.withValues(alpha: 0.55),
+                                  size: 16.sp,
                                 ),
-                            ],
+                                SizedBox(width: 2.w),
+                                Expanded(
+                                  child: text_widget(
+                                    "Sponsored by ${(finalUrl.isNotEmpty ? stopsModel.sponserName : (fallbackSponsor?.name ?? stopsModel.sponserName)).capitalize}",
+                                    color: Colors.white.withValues(alpha: 0.75),
+                                    maxline: 1,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 13.5.sp,
+                                  ),
+                                ),
+                                if (finalUrl.isNotEmpty ||
+                                    fallbackSponsorUrl.isNotEmpty)
+                                  Icon(
+                                    RemixIcons.external_link_line,
+                                    color: MyColors.primary,
+                                    size: 15.sp,
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-
-                    SizedBox(height: 1.h),
+                      SizedBox(height: 1.h),
+                    ],
 
                     // ── WebView / Ad ──────────────────────────────────────
                     SizedBox(

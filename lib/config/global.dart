@@ -38,8 +38,10 @@ String website = "";
 
 double serviceFee = 0.0;
 double miles = 0.062;
+String defaultSponsor = "";
 bool enableAds = false;
-String latestAppVersion = "";
+
+String appVersionPlayer = "";
 bool needApproval = true;
 bool autoFillCards = false;
 
