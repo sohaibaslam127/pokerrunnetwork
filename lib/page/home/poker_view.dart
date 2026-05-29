@@ -249,7 +249,13 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
                               ),
                               const Spacer(),
                               onPress(
-                                ontap: () => Get.to(RouteMapView(widget.event, routeSequence: currentGame.game.routeSequence)),
+                                ontap: () => Get.to(
+                                  RouteMapView(
+                                    widget.event,
+                                    routeSequence:
+                                        currentGame.game.routeSequence,
+                                  ),
+                                ),
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 3.w,
@@ -556,7 +562,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
       tranModel,
       currentUser.email,
       widget.event.currency.currencyCode ?? 'usd',
-      0, //! serviceFee, make app free to use
+      serviceFee,
     );
 
     if (success) {

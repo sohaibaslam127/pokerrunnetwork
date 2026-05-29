@@ -15,7 +15,6 @@ class RemoteConfigService {
     await remoteConfig.setDefaults({
       'serviceFee': serviceFee,
       'miles': miles,
-      'coriderFee': coriderFee,
       'enableAds': enableAds,
       'latestAppVersion': latestAppVersion,
       'needApproval': needApproval,
@@ -29,7 +28,6 @@ class RemoteConfigService {
     }
 
     serviceFee = remoteConfig.getDouble('serviceFee');
-    coriderFee = remoteConfig.getDouble('coriderFee');
     miles = remoteConfig.getDouble('miles');
     enableAds = remoteConfig.getBool('enableAds');
     latestAppVersion = remoteConfig.getString('latestAppVersion');
