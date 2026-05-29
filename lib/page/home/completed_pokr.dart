@@ -309,34 +309,39 @@ class _FindPokerState extends State<CompletedPokr> {
                                           left: 1.w,
                                           right: 1.w,
                                         ),
-                                        child: SizedBox(
-                                          height: 9.h,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: List.generate(5, (index) {
-                                              if (index <
-                                                  event
-                                                      .eventWinner!
-                                                      .cards
-                                                      .length) {
-                                                final cardKey = event
-                                                    .eventWinner!
-                                                    .cards[index];
-                                                return Expanded(
-                                                  child: Image.asset(
-                                                    pokerCards[cardKey],
-                                                  ),
-                                                );
-                                              }
-                                              return Expanded(
-                                                child: Image.asset(
-                                                  pokerCards[0],
-                                                  color: Colors.grey,
-                                                ),
-                                              );
-                                            }),
+                                        child: FutureBuilder(
+                                          future: FirestoreServices.I.getGamePlayer(
+                                            event.id,
+                                            event.eventWinner?.userId ?? '',
                                           ),
+                                          builder: (context, snapshot) {
+                                            final cards = snapshot.hasData &&
+                                                    snapshot.data!.cards.isNotEmpty
+                                                ? snapshot.data!.cards
+                                                : event.eventWinner?.cards ?? [];
+                                            return SizedBox(
+                                              height: 9.h,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                children: List.generate(5, (i) {
+                                                  if (i < cards.length) {
+                                                    return Expanded(
+                                                      child: Image.asset(
+                                                        pokerCards[cards[i]],
+                                                      ),
+                                                    );
+                                                  }
+                                                  return Expanded(
+                                                    child: Image.asset(
+                                                      pokerCards[0],
+                                                      color: Colors.grey,
+                                                    ),
+                                                  );
+                                                }),
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
                                       SizedBox(height: 2.h),

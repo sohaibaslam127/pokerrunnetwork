@@ -45,6 +45,8 @@ class _GameViewState extends State<GameView> {
   bool _picking = false;
   Timer? _proximityTimer;
   StreamSubscription? _eventSub;
+  String _subscribedEventId = '';
+  bool _gameCompletionHandled = false;
 
   NRandom ran = NRandom(52, 4);
 
@@ -53,7 +55,7 @@ class _GameViewState extends State<GameView> {
     super.initState();
     if (_isFirstStopPhase) {
       _refreshAllDistances();
-      // Poll every 4 s so the card updates as the user walks between stops
+      // Poll every 4s so the card updates as the user walks between stops
       _proximityTimer = Timer.periodic(const Duration(seconds: 4), (_) {
         if (mounted && _isFirstStopPhase) {
           _refreshAllDistances();
@@ -67,9 +69,13 @@ class _GameViewState extends State<GameView> {
 
   void _listenForGameCompletion() {
     final eventId = currentGame.latestEvent.id;
-    if (eventId.isEmpty) return;
+    if (eventId.isEmpty || eventId == _subscribedEventId) return;
+    _subscribedEventId = eventId;
+    _gameCompletionHandled = false;
+    _eventSub?.cancel();
     _eventSub = FirestoreServices.I.eventStream(eventId).listen((event) async {
-      if (event.status != 2 || !autoFillCards) return;
+      if (event.status != 2 || _gameCompletionHandled) return;
+      _gameCompletionHandled = true;
       _eventSub?.cancel();
 
       // Fill remaining cards for THIS player locally
@@ -139,25 +145,12 @@ class _GameViewState extends State<GameView> {
                     height: 1.4,
                   ),
                   SizedBox(height: 3.h),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: MyColors.primary,
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 1.5.h),
-                      ),
-                      onPressed: () => Get.back(),
-                      child: text_widget(
-                        "See My Hand",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15.sp,
-                        color: Colors.black,
-                      ),
-                    ),
+                  customButon(
+                    onTap: () {
+                      Get.back();
+                    },
+                    btnText: "See My Hand",
+                    fontSize: 16.sp,
                   ),
                 ],
               ),
@@ -303,6 +296,7 @@ class _GameViewState extends State<GameView> {
 
   @override
   Widget build(BuildContext context) {
+    _listenForGameCompletion();
     stopNumber = currentGame.game.currentStop;
 
     if (_isFirstStopPhase) {
@@ -545,7 +539,7 @@ class _GameViewState extends State<GameView> {
                                         ),
                                         SizedBox(width: 1.w),
                                         text_widget(
-                                          "${dist?.toStringAsFixed(2)} mi",
+                                          "${dist.toStringAsFixed(2)} mi",
                                           fontSize: 11.5.sp,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.greenAccent,
@@ -571,7 +565,7 @@ class _GameViewState extends State<GameView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         text_widget(
-                                          stop?.name ?? "",
+                                          stop.name,
                                           fontSize: 15.sp,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
@@ -579,7 +573,7 @@ class _GameViewState extends State<GameView> {
                                         ),
                                         SizedBox(height: 0.3.h),
                                         text_widget(
-                                          stop?.address ?? "",
+                                          stop.address,
                                           fontSize: 12.5.sp,
                                           color: Colors.white.withValues(
                                             alpha: 0.60,
