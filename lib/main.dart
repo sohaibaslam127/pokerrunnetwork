@@ -6,6 +6,7 @@ import 'package:pokerrunnetwork/page/auth/splash_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.white,
@@ -34,9 +35,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// Heysarge@rocketmail.com
-// Calcutta1313$
 
 // different location starting, nearby stop will be stop 1
 // => when user get to any hole and get the card then it will be his first stop,

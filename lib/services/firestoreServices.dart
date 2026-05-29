@@ -38,38 +38,9 @@ class FirestoreServices {
           helpLineEmail = data['supportEmail'];
         }
 
-        if (data['serviceFee'] != null &&
-            data['serviceFee'].toString().trim().isNotEmpty) {
-          serviceFee = (data['serviceFee'] as num).toDouble();
-        }
-
         if (data['website'] != null &&
             data['website'].toString().trim().isNotEmpty) {
           website = data['website'];
-        }
-
-        if (data['coriderFee'] != null &&
-            data['coriderFee'].toString().trim().isNotEmpty) {
-          coriderFee = (data['coriderFee'] as num).toDouble();
-        }
-
-        if (coriderFee == -1) {
-          coriderFee = serviceFee;
-        }
-
-        if (data['enableAds'] != null &&
-            data['enableAds'].toString().trim().isNotEmpty) {
-          enableAds = data['enableAds'];
-        }
-
-        if (data['latestAppVersion'] != null &&
-            data['latestAppVersion'].toString().trim().isNotEmpty) {
-          latestAppVersion = data['latestAppVersion'];
-        }
-
-        if (data['needApproval'] != null &&
-            data['needApproval'].toString().trim().isNotEmpty) {
-          needApproval = data['needApproval'];
         }
       }
     }

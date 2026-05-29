@@ -8,9 +8,10 @@ class RemoteConfigService {
     await remoteConfig.setConfigSettings(
       RemoteConfigSettings(
         fetchTimeout: const Duration(seconds: 15),
-        minimumFetchInterval: const Duration(seconds: 5),
+        minimumFetchInterval: const Duration(hours: 12),
       ),
     );
+
     await remoteConfig.setDefaults({
       'serviceFee': serviceFee,
       'miles': miles,
@@ -20,7 +21,13 @@ class RemoteConfigService {
       'needApproval': needApproval,
       'autoFillCards': autoFillCards,
     });
-    await remoteConfig.fetchAndActivate();
+
+    try {
+      await remoteConfig.fetchAndActivate();
+    } catch (_) {
+      return;
+    }
+
     serviceFee = remoteConfig.getDouble('serviceFee');
     coriderFee = remoteConfig.getDouble('coriderFee');
     miles = remoteConfig.getDouble('miles');
