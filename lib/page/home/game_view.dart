@@ -68,10 +68,115 @@ class _GameViewState extends State<GameView> {
   void _listenForGameCompletion() {
     final eventId = currentGame.latestEvent.id;
     if (eventId.isEmpty) return;
-    _eventSub = FirestoreServices.I.eventStream(eventId).listen((event) {
-      if (event.status == 2 && autoFillCards) {
-        FirestoreServices.I.autoFillCards(eventId);
+    _eventSub = FirestoreServices.I.eventStream(eventId).listen((event) async {
+      if (event.status != 2 || !autoFillCards) return;
+      _eventSub?.cancel();
+
+      // Fill remaining cards for THIS player locally
+      if (currentGame.game.currentStop < 6) {
+        for (int i = currentGame.game.currentStop; i < 6; i++) {
+          randomCard();
+        }
+        currentGame.game.currentStop = 6;
       }
+
+      // Calculate and save poker hand for this player
+      final myHand = Analysis().converter(
+        List<int>.from(currentGame.game.cards),
+      );
+      currentGame.game.rank = myHand.rank;
+      currentGame.game.rankValue = myHand.score;
+      await FirestoreServices.I.updateGamePlayer(currentGame.game);
+
+      // Fill remaining cards for all other participants still in progress
+      await FirestoreServices.I.autoFillCards(eventId);
+
+      if (!mounted) return;
+
+      // 1. Info popup — game completed by organizer
+      await Get.dialog(
+        PopScope(
+          canPop: false,
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.symmetric(horizontal: 6.w),
+            child: Container(
+              padding: EdgeInsets.all(6.w),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [MyColors.secondaryDark, MyColors.black],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: MyColors.primary.withValues(alpha: 0.50),
+                  width: 1.5,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.flag_rounded,
+                    color: MyColors.primary,
+                    size: 30.sp,
+                  ),
+                  SizedBox(height: 2.h),
+                  text_widget(
+                    "Game Completed!",
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 1.5.h),
+                  text_widget(
+                    "The organizer has completed the Poker Run. Your remaining cards have been filled and your hand is ready!",
+                    fontSize: 14.sp,
+                    color: Colors.white.withValues(alpha: 0.80),
+                    textAlign: TextAlign.center,
+                    height: 1.4,
+                  ),
+                  SizedBox(height: 3.h),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: MyColors.primary,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 1.5.h),
+                      ),
+                      onPressed: () => Get.back(),
+                      child: text_widget(
+                        "See My Hand",
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.sp,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+
+      if (!mounted) return;
+
+      // 2. Poker result dialog
+      await showDialog(
+        context: Get.context!,
+        barrierDismissible: true,
+        builder: (ctx) => const PokerResultDialog(),
+      );
+
+      Get.offAll(() => const HomePage());
     });
   }
 
