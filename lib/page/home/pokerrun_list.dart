@@ -160,7 +160,7 @@ class _SchedulePokerState extends State<PokerRunList> {
                           children: [
                             Expanded(
                               child: text_widget(
-                                eventModel.pokerName.capitalize!,
+                                eventModel.pokerName.capitalize ?? "",
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -210,10 +210,7 @@ class _SchedulePokerState extends State<PokerRunList> {
                                     SizedBox(width: 1.3.w),
                                     Expanded(
                                       child: text_widget(
-                                        eventModel
-                                                .eventWinner
-                                                ?.roadName
-                                                .capitalizeFirst! ??
+                                        eventModel.eventWinner?.roadName?.capitalizeFirst ??
                                             "No One Join The Game",
                                         fontSize: 14.7.sp,
                                         maxline: 1,
@@ -251,10 +248,7 @@ class _SchedulePokerState extends State<PokerRunList> {
                                     ),
                                     SizedBox(width: 1.3.w),
                                     text_widget(
-                                      eventModel
-                                              .eventWinner
-                                              ?.rank
-                                              .capitalize! ??
+                                      eventModel.eventWinner?.rank?.capitalize ??
                                           "",
                                       fontSize: 14.7.sp,
                                       fontWeight: FontWeight.w400,
@@ -273,8 +267,9 @@ class _SchedulePokerState extends State<PokerRunList> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: List.generate(5, (index) {
-                                    if (index <
-                                        eventModel.eventWinner!.cards.length) {
+                                    if (eventModel.eventWinner != null &&
+                                        index <
+                                            eventModel.eventWinner!.cards.length) {
                                       final cardKey =
                                           eventModel.eventWinner!.cards[index];
                                       return Expanded(

@@ -124,7 +124,11 @@ class _CoManagerPageState extends State<CoManagerPage> {
                     ),
                     child: ListTile(
                       title: text_widget(
-                        widget.eventModel.coManagerNames[dataIndex].capitalize!,
+                        (dataIndex < widget.eventModel.coManagerNames.length
+                                ? widget.eventModel.coManagerNames[dataIndex]
+                                : "")
+                            .capitalize ??
+                            "",
                         fontSize: 16.5.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,

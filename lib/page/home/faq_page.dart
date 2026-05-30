@@ -43,12 +43,17 @@ class _FaqPageState extends State<FaqPage> {
   }
 
   void playYoutubeVideo(BuildContext context, String url) {
-    final videoId = YoutubePlayer.convertUrlToId(url);
+    final videoId = YoutubePlayerController.convertUrlToId(url);
     if (videoId == null) return;
 
-    final controller = YoutubePlayerController(
-      initialVideoId: videoId,
-      flags: const YoutubePlayerFlags(autoPlay: true, mute: false),
+    final controller = YoutubePlayerController.fromVideoId(
+      videoId: videoId,
+      autoPlay: true,
+      params: const YoutubePlayerParams(
+        mute: false,
+        showControls: true,
+        showFullscreenButton: true,
+      ),
     );
 
     showDialog(
@@ -59,14 +64,10 @@ class _FaqPageState extends State<FaqPage> {
         insetPadding: const EdgeInsets.symmetric(horizontal: 16),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(14),
-          child: YoutubePlayer(
-            controller: controller,
-            showVideoProgressIndicator: true,
-            progressIndicatorColor: MyColors.primary,
-          ),
+          child: YoutubePlayer(controller: controller),
         ),
       ),
-    ).then((_) => controller.dispose());
+    ).then((_) => controller.close());
   }
 
   @override
@@ -139,9 +140,11 @@ class _FaqPageState extends State<FaqPage> {
                       ...() {
                         List<Widget> children = [];
                         for (int i = 0; i < videos.length; i++) {
-                          final videoId = YoutubePlayer.convertUrlToId(
-                            videos[i]['link'],
-                          );
+                          final videoId =
+                              YoutubePlayerController.convertUrlToId(
+                                videos[i]['link'] ?? '',
+                              );
+                          if (videoId == null) continue;
                           children.add(
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -151,7 +154,7 @@ class _FaqPageState extends State<FaqPage> {
                               child: onPress(
                                 ontap: () => playYoutubeVideo(
                                   context,
-                                  videos[i]['link'],
+                                  videos[i]['link'] ?? '',
                                 ),
                                 child: Row(
                                   children: [
@@ -159,11 +162,12 @@ class _FaqPageState extends State<FaqPage> {
                                       alignment: Alignment.center,
                                       children: [
                                         ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           child: Image.network(
-                                            YoutubePlayer.getThumbnail(
-                                              videoId: videoId!,
+                                            YoutubePlayerController.getThumbnail(
+                                              videoId: videoId,
                                               quality: ThumbnailQuality.medium,
                                             ),
                                             width: 12.h,
@@ -192,9 +196,10 @@ class _FaqPageState extends State<FaqPage> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           text_widget(
-                                            videos[i]['title']
-                                                .toString()
-                                                .capitalizeFirst!,
+                                            (videos[i]['title']?.toString() ??
+                                                        '')
+                                                    .capitalizeFirst ??
+                                                '',
                                             color: Colors.white,
                                             fontSize: 16.sp,
                                             maxline: 1,
@@ -202,11 +207,14 @@ class _FaqPageState extends State<FaqPage> {
                                           ),
                                           SizedBox(height: 0.2.h),
                                           text_widget(
-                                            videos[i]['description']
-                                                .toString()
-                                                .capitalizeFirst!,
-                                            color:
-                                                Colors.white.withOpacity(0.7),
+                                            (videos[i]['description']
+                                                            ?.toString() ??
+                                                        '')
+                                                    .capitalizeFirst ??
+                                                '',
+                                            color: Colors.white.withOpacity(
+                                              0.7,
+                                            ),
                                             maxline: 3,
                                             fontSize: 14.sp,
                                           ),
