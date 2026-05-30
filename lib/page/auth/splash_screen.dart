@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_admob_ads_flutter/easy_admob_ads_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:pokerrunnetwork/services/3rd_party/ad_service.dart';
 import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/services/locationsServices.dart';
+import 'package:pokerrunnetwork/services/remortConfig.dart';
 import 'package:pokerrunnetwork/services/stripeServices.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -81,12 +83,21 @@ class _SplashScreenState extends State<SplashScreen> {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    await AdService.I.init();
+    await RemoteConfigService().init();
+    _initializeAds();
     await FirestoreServices.I.init();
     await StripeServices.I.init();
     await AuthServices.I.checkUser();
     await LocationServices.I.getUserLocation(context);
     return true;
+  }
+
+  Future<void> _initializeAds() async {
+    AdHelper.setupAdLogging();
+    AdIdRegistry.initialize(
+      ios: {AdType.native: adUnitId},
+      android: {AdType.native: adUnitId},
+    );
   }
 
   @override

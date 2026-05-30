@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:app_settings/app_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart' as location;
 import 'package:pokerrunnetwork/config/colors.dart';
-
 import 'package:pokerrunnetwork/config/global.dart';
-import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
 
@@ -45,7 +42,7 @@ class LocationServices {
         return;
       }
 
-      await _configureLocationSettings();
+      // await _configureLocationSettings();
       await _startListening();
     } catch (e, stackTrace) {
       log(
@@ -160,15 +157,6 @@ class LocationServices {
     return completer.future;
   }
 
-  /// Configures location tracking settings.
-  Future<void> _configureLocationSettings() async {
-    await _location.changeSettings(
-      accuracy: location.LocationAccuracy.high,
-      interval: 30000, // 30 seconds
-      distanceFilter: miles * (1609.34 / 3), // miles to meters
-    );
-  }
-
   /// Starts listening to location changes.
   Future<void> _startListening() async {
     // Cancel existing subscription before starting a new one
@@ -205,21 +193,7 @@ class LocationServices {
       await FirestoreServices.I.updateLocation();
       return;
     }
-
-    final double distanceMoved = calculateDistance(
-      currentUser.location.latitude,
-      currentUser.location.longitude,
-      newLocation.latitude,
-      newLocation.longitude,
-    );
-
-    // Always update local cache
     currentUser.location = newLocation;
-
-    // Update Firestore only if moved more than threshold
-    if (distanceMoved > miles) {
-      await FirestoreServices.I.updateLocation();
-    }
   }
 
   /// Stops listening to location updates.
