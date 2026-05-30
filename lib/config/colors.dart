@@ -7,6 +7,7 @@ class MyColors {
   static Color secondaryLight = Color.fromARGB(255, 106, 148, 232);
   static Color black = Color(0xff3C3C3C);
   static Color white = Colors.white70;
+  static Color success = Colors.green;
 }
 
 class PopupActionsButtons {

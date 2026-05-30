@@ -210,7 +210,9 @@ class _SchedulePokerState extends State<PokerRunList> {
                                     SizedBox(width: 1.3.w),
                                     Expanded(
                                       child: text_widget(
-                                        eventModel.eventWinner?.roadName
+                                        eventModel
+                                                .eventWinner
+                                                ?.roadName
                                                 .capitalizeFirst! ??
                                             "No One Join The Game",
                                         fontSize: 14.7.sp,
@@ -249,7 +251,9 @@ class _SchedulePokerState extends State<PokerRunList> {
                                     ),
                                     SizedBox(width: 1.3.w),
                                     text_widget(
-                                      eventModel.eventWinner?.rank
+                                      eventModel
+                                              .eventWinner
+                                              ?.rank
                                               .capitalize! ??
                                           "",
                                       fontSize: 14.7.sp,

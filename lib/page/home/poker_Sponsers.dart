@@ -475,10 +475,27 @@ class _PokerSponsersState extends State<PokerSponsers> {
                                 for (int i = 0; i < 6; i++) {
                                   final slot = i + 1;
                                   if (_isUnlocked(slot)) {
-                                    widget.eventModel.stops[slot].sponserName =
-                                        _nameControllers[i].text;
-                                    widget.eventModel.stops[slot].sponserLink =
-                                        _linkControllers[i].text;
+                                    if (isValidUrl(_linkControllers[i].text) ||
+                                        _linkControllers[i].text.isEmpty) {
+                                      widget
+                                              .eventModel
+                                              .stops[slot]
+                                              .sponserName =
+                                          _nameControllers[i].text;
+                                      widget
+                                              .eventModel
+                                              .stops[slot]
+                                              .sponserLink =
+                                          _linkControllers[i].text;
+                                    } else {
+                                      toast(
+                                        context,
+                                        "Invalid URL: ${_nameControllers[i].text}",
+                                        "Please enter a valid URL or leave it empty.",
+                                        type: 1,
+                                      );
+                                      return;
+                                    }
                                   } else {
                                     widget.eventModel.stops[slot].sponserName =
                                         "";
@@ -598,15 +615,15 @@ class _LockedSlotCard extends StatelessWidget {
           onPress(
             ontap: onUnlock,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: .75.h),
               decoration: BoxDecoration(
-                color: MyColors.primary,
+                color: MyColors.success,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: text_widget(
                 "Unlock",
                 color: Colors.white,
-                fontSize: 13.sp,
+                fontSize: 14.5.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),

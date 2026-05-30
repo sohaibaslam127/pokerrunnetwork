@@ -15,18 +15,18 @@ import 'package:url_launcher/url_launcher.dart';
 
 void toast(BuildContext context, String title, String message, {int type = 3}) {
   EasyLoading.dismiss();
-  final topInset = MediaQuery.of(context).padding.top;
+
   Snackify.show(
     context: context,
     type: SnackType.values[type],
     title: text_widget(
       title.toUpperCase(),
       color: Colors.white,
-      fontSize: 16.5.sp,
+      fontSize: 15.sp,
       fontWeight: FontWeight.bold,
     ),
-    offset: Offset(3.w, topInset > 44 ? 3.h : 0),
-    subtitle: text_widget(message, color: Colors.white, fontSize: 16.sp),
+    offset: Offset(3.w, 3.h),
+    subtitle: text_widget(message, color: Colors.white, fontSize: 13.5.sp),
     duration: const Duration(seconds: 2),
     backgroundGradient: LinearGradient(
       colors: type == 0
@@ -255,4 +255,28 @@ Future<File?> getImage() async {
     return null;
   }
   return File(image.path);
+}
+
+bool isValidUrl(String? url) {
+  if (url == null || url.trim().isEmpty) return false;
+  final cleanUrl = url.trim();
+
+  String urlToParse = cleanUrl;
+  if (!cleanUrl.startsWith(RegExp(r'https?://', caseSensitive: false))) {
+    urlToParse = 'http://$cleanUrl';
+  }
+
+  final uri = Uri.tryParse(urlToParse);
+  if (uri == null) return false;
+
+  final host = uri.host;
+  if (host.isEmpty) return false;
+
+  final parts = host.split('.');
+  if (parts.length < 2) return false;
+
+  final tld = parts.last;
+  if (tld.length < 2) return false;
+
+  return true;
 }
