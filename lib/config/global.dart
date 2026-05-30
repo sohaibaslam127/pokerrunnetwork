@@ -43,7 +43,6 @@ bool enableAds = false;
 
 String appVersionPlayer = "";
 bool needApproval = true;
-bool autoFillCards = false;
 
 List<String> pokerCards = [
   "assets/images/diamond/jack.png",

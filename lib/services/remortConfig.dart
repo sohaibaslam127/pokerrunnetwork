@@ -18,7 +18,6 @@ class RemoteConfigService {
       'enableAds': enableAds,
       'appVersionPlayer': appVersionPlayer,
       'needApproval': needApproval,
-      'autoFillCards': autoFillCards,
       'defaultSponsor': defaultSponsor,
     });
 
@@ -33,7 +32,6 @@ class RemoteConfigService {
     defaultSponsor = remoteConfig.getString('defaultSponsor');
     enableAds = remoteConfig.getBool('enableAds');
     appVersionPlayer = remoteConfig.getString('appVersionPlayer');
-    autoFillCards = remoteConfig.getBool('autoFillCards');
     needApproval = remoteConfig.getBool('needApproval');
   }
 }

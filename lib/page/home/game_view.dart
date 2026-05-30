@@ -78,24 +78,14 @@ class _GameViewState extends State<GameView> {
       _gameCompletionHandled = true;
       _eventSub?.cancel();
 
-      // Fill remaining cards for THIS player locally
-      if (currentGame.game.currentStop < 6) {
-        for (int i = currentGame.game.currentStop; i < 6; i++) {
-          randomCard();
-        }
-        currentGame.game.currentStop = 6;
-      }
-
-      // Calculate and save poker hand for this player
-      final myHand = Analysis().converter(
-        List<int>.from(currentGame.game.cards),
+      // Get remaining cards from database
+      final updatedPlayer = await FirestoreServices.I.getGamePlayer(
+        currentGame.game.pokerId,
+        currentGame.game.userId,
       );
-      currentGame.game.rank = myHand.rank;
-      currentGame.game.rankValue = myHand.score;
-      await FirestoreServices.I.updateGamePlayer(currentGame.game);
-
-      // Fill remaining cards for all other participants still in progress
-      await FirestoreServices.I.autoFillCards(eventId);
+      if (updatedPlayer.userId.isNotEmpty) {
+        currentGame.game = updatedPlayer;
+      }
 
       if (!mounted) return;
 

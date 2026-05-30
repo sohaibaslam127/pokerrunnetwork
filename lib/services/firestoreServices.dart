@@ -522,31 +522,6 @@ class FirestoreServices {
     await eventRef.delete();
   }
 
-  Future<void> autoFillCards(String eventId) async {
-    NRandom random = NRandom(52, 4);
-    QuerySnapshot<Map<String, dynamic>> snapshot = await _instance
-        .collection('events')
-        .doc(eventId)
-        .collection('participants')
-        .where('currentStop', isLessThan: 6)
-        .get();
-    if (snapshot.docs.isNotEmpty) {
-      for (var doc in snapshot.docs) {
-        GamePlayerModel gamePlayer = GamePlayerModel.toModel(doc.data());
-        for (var i = gamePlayer.currentStop; i < 6; i++) {
-          int number = random.getNextIndex();
-          gamePlayer.cards.add(number);
-        }
-        gamePlayer.currentStop = 6;
-        await _instance
-            .collection('events')
-            .doc(eventId)
-            .collection('participants')
-            .doc(doc.id)
-            .update(gamePlayer.toSaveJSON());
-      }
-    }
-  }
 
   Future<List<Map<String, dynamic>>> getFaqs() async {
     List<Map<String, dynamic>> faqs = [];

@@ -109,18 +109,6 @@ class PokerResultDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: List.generate(
-                //     currentGame.game.cards.length > 5
-                //         ? 5
-                //         : currentGame.game.cards.length,
-                //     (index) => Image.asset(
-                //       pokerCards[currentGame.game.cards[index]],
-                //       height: 88,
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: EdgeInsets.only(left: 1.w, right: 1.w),
                   child: SizedBox(
@@ -143,7 +131,7 @@ class PokerResultDialog extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Winners will be announced after everyone\nhas completed the Poker Run!',
+                  'Winners will be revealed once all participants have finished the Poker Run. You can check the results in the Completed Game section.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15.sp,
