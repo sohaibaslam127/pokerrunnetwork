@@ -130,13 +130,16 @@ class PokerResultDialog extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
-                Text(
-                  'Winners will be revealed once all participants have finished the Poker Run. You can check the results in the Completed Game section.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    color: Colors.grey,
-                    height: 1.5,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 7.w),
+                  child: Text(
+                    'Winners will be revealed once all participants have finished the Poker Run. You can check the results in the Completed Game section.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      color: Colors.grey,
+                      height: 1.5,
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
