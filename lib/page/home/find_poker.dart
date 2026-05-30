@@ -67,7 +67,7 @@ class _FindPokerState extends State<FindPoker> {
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22.0),
+            padding: EdgeInsets.symmetric(horizontal: 3.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -188,12 +188,10 @@ class _GameViewState extends State<GameView> {
       stopSpecific.shuffle();
       return stopSpecific.first;
     }
-    final global = enabled.where((s) => s.stop.isEmpty).toList();
-    if (global.isNotEmpty) {
-      global.shuffle();
-      return global.first;
-    }
-    return SponsorsModel()..link = defaultSponsor;
+
+    return SponsorsModel()
+      ..link = defaultSponsor
+      ..name = "default";
   }
 
   // Computes the circular route starting from [startStop].

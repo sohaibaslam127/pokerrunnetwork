@@ -146,7 +146,7 @@ class _FindPokerState extends State<CompletedPokr> {
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22.0),
+            padding: EdgeInsets.symmetric(horizontal: 3.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -310,20 +310,27 @@ class _FindPokerState extends State<CompletedPokr> {
                                           right: 1.w,
                                         ),
                                         child: FutureBuilder(
-                                          future: FirestoreServices.I.getGamePlayer(
-                                            event.id,
-                                            event.eventWinner?.userId ?? '',
-                                          ),
+                                          future: FirestoreServices.I
+                                              .getGamePlayer(
+                                                event.id,
+                                                event.eventWinner?.userId ?? '',
+                                              ),
                                           builder: (context, snapshot) {
-                                            final cards = snapshot.hasData &&
-                                                    snapshot.data!.cards.isNotEmpty
+                                            final cards =
+                                                snapshot.hasData &&
+                                                    snapshot
+                                                        .data!
+                                                        .cards
+                                                        .isNotEmpty
                                                 ? snapshot.data!.cards
-                                                : event.eventWinner?.cards ?? [];
+                                                : event.eventWinner?.cards ??
+                                                      [];
                                             return SizedBox(
                                               height: 9.h,
                                               child: Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.spaceBetween,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: List.generate(5, (i) {
                                                   if (i < cards.length) {
                                                     return Expanded(

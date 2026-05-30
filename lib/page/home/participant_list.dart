@@ -65,7 +65,7 @@ class _ParticipantListState extends State<ParticipantList> {
           ),
 
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22.0),
+            padding: EdgeInsets.symmetric(horizontal: 3.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
