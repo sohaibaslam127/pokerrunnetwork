@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/random.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
+import 'package:pokerrunnetwork/models/analysis.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/models/transaction.dart';
@@ -571,6 +572,11 @@ class FirestoreServices {
           gamePlayer.cards.add(number);
         }
         gamePlayer.currentStop = 6;
+        HandResult myHand = Analysis().converter(
+          List<int>.from(gamePlayer.cards),
+        );
+        gamePlayer.rank = myHand.rank;
+        gamePlayer.rankValue = myHand.score;
         await _instance
             .collection('events')
             .doc(eventId)

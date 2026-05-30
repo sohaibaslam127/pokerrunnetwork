@@ -6,6 +6,7 @@ import 'package:pokerrunnetwork/page/auth/splash_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.white,
@@ -14,7 +15,25 @@ Future<void> main() async {
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
+  _configureEasyLoading();
   runApp(const MyApp());
+}
+
+void _configureEasyLoading() {
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.threeBounce
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..indicatorSize = 42
+    ..radius = 16
+    ..backgroundColor = const Color(0xFF1E428A)
+    ..indicatorColor = const Color(0xffF0C11D)
+    ..textColor = const Color(0xffF0C11D)
+    ..progressColor = const Color(0xffF0C11D)
+    ..maskType = EasyLoadingMaskType.black
+    ..maskColor = Colors.black.withValues(alpha: 0.55)
+    ..userInteractions = false
+    ..dismissOnTap = false
+    ..animationStyle = EasyLoadingAnimationStyle.scale;
 }
 
 class MyApp extends StatelessWidget {
