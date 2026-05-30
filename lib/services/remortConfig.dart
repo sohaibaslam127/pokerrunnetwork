@@ -8,27 +8,26 @@ class RemoteConfigService {
     await remoteConfig.setConfigSettings(
       RemoteConfigSettings(
         fetchTimeout: const Duration(seconds: 15),
-        minimumFetchInterval: const Duration(seconds: 5),
+        minimumFetchInterval: const Duration(seconds: 15),
       ),
     );
+
     await remoteConfig.setDefaults({
-      'serviceFee': serviceFee,
-      'miles': miles,
-      'coriderFee': coriderFee,
-      'defaultSponsor': defaultSponsor,
       'enableAds': enableAds,
-      'latestAppVersion': latestAppVersion,
+      'appVersionNetwork': appVersionNetwork,
       'needApproval': needApproval,
       'autoFillCards': autoFillCards,
     });
-    await remoteConfig.fetchAndActivate();
-    serviceFee = remoteConfig.getDouble('serviceFee');
-    coriderFee = remoteConfig.getDouble('coriderFee');
-    defaultSponsor = remoteConfig.getString('defaultSponsor');
-    miles = remoteConfig.getDouble('miles');
+
+    try {
+      await remoteConfig.fetchAndActivate();
+    } catch (_) {
+      return;
+    }
+
     enableAds = remoteConfig.getBool('enableAds');
-    latestAppVersion = remoteConfig.getString('latestAppVersion');
-    autoFillCards = remoteConfig.getBool('autoFillCards');
+    appVersionNetwork = remoteConfig.getString('appVersionNetwork');
     needApproval = remoteConfig.getBool('needApproval');
+    autoFillCards = remoteConfig.getBool('autoFillCards');
   }
 }
