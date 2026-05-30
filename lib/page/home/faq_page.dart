@@ -43,12 +43,17 @@ class _FaqPageState extends State<FaqPage> {
   }
 
   void playYoutubeVideo(BuildContext context, String url) {
-    final videoId = YoutubePlayer.convertUrlToId(url);
+    final videoId = YoutubePlayerController.convertUrlToId(url);
     if (videoId == null) return;
 
-    final controller = YoutubePlayerController(
-      initialVideoId: videoId,
-      flags: const YoutubePlayerFlags(autoPlay: true, mute: false),
+    final controller = YoutubePlayerController.fromVideoId(
+      videoId: videoId,
+      autoPlay: true,
+      params: const YoutubePlayerParams(
+        mute: false,
+        showControls: true,
+        showFullscreenButton: true,
+      ),
     );
 
     showDialog(
@@ -59,14 +64,10 @@ class _FaqPageState extends State<FaqPage> {
         insetPadding: const EdgeInsets.symmetric(horizontal: 16),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(14),
-          child: YoutubePlayer(
-            controller: controller,
-            showVideoProgressIndicator: true,
-            progressIndicatorColor: MyColors.primary,
-          ),
+          child: YoutubePlayer(controller: controller),
         ),
       ),
-    ).then((_) => controller.dispose());
+    ).then((_) => controller.close());
   }
 
   @override
@@ -152,9 +153,12 @@ class _FaqPageState extends State<FaqPage> {
                         ),
                       ],
                       ...List.generate(videos.length, (index) {
-                        final videoId = YoutubePlayer.convertUrlToId(
+                        final videoId = YoutubePlayerController.convertUrlToId(
                           videos[index]['link'],
                         );
+                        if (videoId == null) {
+                          return const SizedBox.shrink();
+                        }
 
                         return Column(
                           children: [
@@ -166,7 +170,7 @@ class _FaqPageState extends State<FaqPage> {
                               child: onPress(
                                 ontap: () => playYoutubeVideo(
                                   context,
-                                  videos[index]['link'],
+                                  videos[index]['link'] ?? '',
                                 ),
                                 child: Row(
                                   children: [
@@ -178,8 +182,8 @@ class _FaqPageState extends State<FaqPage> {
                                             12,
                                           ),
                                           child: Image.network(
-                                            YoutubePlayer.getThumbnail(
-                                              videoId: videoId!,
+                                            YoutubePlayerController.getThumbnail(
+                                              videoId: videoId,
                                               quality: ThumbnailQuality.medium,
                                             ),
                                             width: 12.h,
@@ -208,9 +212,11 @@ class _FaqPageState extends State<FaqPage> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           text_widget(
-                                            videos[index]['title']
-                                                .toString()
-                                                .capitalizeFirst!,
+                                            (videos[index]['title']
+                                                            ?.toString() ??
+                                                        '')
+                                                    .capitalizeFirst ??
+                                                '',
                                             color: Colors.white,
                                             fontSize: 16.sp,
                                             maxline: 1,
@@ -218,9 +224,11 @@ class _FaqPageState extends State<FaqPage> {
                                           ),
                                           SizedBox(height: 0.2.h),
                                           text_widget(
-                                            videos[index]['description']
-                                                .toString()
-                                                .capitalizeFirst!,
+                                            (videos[index]['description']
+                                                            ?.toString() ??
+                                                        '')
+                                                    .capitalizeFirst ??
+                                                '',
                                             color: Colors.white.withValues(
                                               alpha: 0.7,
                                             ),
@@ -234,23 +242,21 @@ class _FaqPageState extends State<FaqPage> {
                                 ),
                               ),
                             ),
-                            ],
-                          );
-                        }),
-                        if (videos.isNotEmpty) ...[
-                          SizedBox(height: 1.h),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0,
-                            ),
-                            child: CustomAdInlineWidget(
-                              widgetKey: const Key("video_last_ad"),
-                            ),
+                          ],
+                        );
+                      }),
+                      if (videos.isNotEmpty) ...[
+                        SizedBox(height: 1.h),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: const Key("video_last_ad"),
                           ),
-                          SizedBox(height: 4.h),
-                        ],
+                        ),
+                        SizedBox(height: 4.h),
                       ],
-                    ),
+                    ],
+                  ),
 
                 /// ---------------- FAQS ----------------
                 if (isFaqs)
@@ -348,27 +354,25 @@ class _FaqPageState extends State<FaqPage> {
                                 ),
                               ),
                             ),
-                            ],
-                          );
-                        }),
-                        if (faqs.isNotEmpty) ...[
-                          SizedBox(height: 1.h),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0,
-                            ),
-                            child: CustomAdInlineWidget(
-                              widgetKey: const Key("faq_last_ad"),
-                            ),
+                          ],
+                        );
+                      }),
+                      if (faqs.isNotEmpty) ...[
+                        SizedBox(height: 1.h),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: CustomAdInlineWidget(
+                            widgetKey: const Key("faq_last_ad"),
                           ),
-                          SizedBox(height: 4.h),
-                        ],
+                        ),
+                        SizedBox(height: 4.h),
                       ],
-                    ),
-                  SizedBox(height: 1.h),
-                ],
-              ),
+                    ],
+                  ),
+                SizedBox(height: 1.h),
+              ],
             ),
+          ),
         ),
       ],
     );
