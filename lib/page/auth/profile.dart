@@ -210,6 +210,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               onTap: updateUser,
                               isIcon: false,
                               btnText: "Save Changes",
+                              fontSize: 16.sp,
                               icon: "assets/icons/p1.png",
                             ),
                           ],

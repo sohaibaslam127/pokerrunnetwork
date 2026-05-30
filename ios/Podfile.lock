@@ -1288,8 +1288,6 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 6.0.3)
-  - flutter_native_splash (2.4.3):
-    - Flutter
   - flutter_tts (0.0.1):
     - Flutter
   - Google-Mobile-Ads-SDK (12.14.0):
@@ -1511,7 +1509,6 @@ DEPENDENCIES:
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
-  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
@@ -1579,8 +1576,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
-  flutter_native_splash:
-    :path: ".symlinks/plugins/flutter_native_splash/ios"
   flutter_tts:
     :path: ".symlinks/plugins/flutter_tts/ios"
   google_mobile_ads:
@@ -1627,7 +1622,6 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: 76bdd9de8ff1da7a601236ee058253e36206978e
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
-  flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
   flutter_tts: 35ac3c7d42412733e795ea96ad2d7e05d0a75113
   Google-Mobile-Ads-SDK: 4534fd2dfcd3f705c5485a6633c5188d03d4eed2
   google_mobile_ads: df3008bafbe1f2ad6862f87334e560d2f047f902
