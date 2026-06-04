@@ -29,6 +29,7 @@ class EventModel {
   double changeCardFee = 0.00;
   double joinFee = 0.00;
   String countryCode = "US";
+  bool autoApproved = false;
   Country currency = Country(isoCode: 'US');
   double coRiderFee = 0.00;
   String pokerName = "";
@@ -59,6 +60,7 @@ class EventModel {
     }
     ownerName = jsonMap['ownerName'];
     createdAt = jsonMap['createdAt'].toDate();
+    autoApproved = jsonMap['autoApproved'] ?? false;
     coRiderFee = toDouble(jsonMap['coRiderFee']);
     coRider = jsonMap['coRider'];
     ownerImage = jsonMap['ownerImage'];
@@ -95,6 +97,7 @@ class EventModel {
     jsonMap['coManagers'] = coManagers;
     jsonMap['coManagerNames'] = coManagerNames;
     jsonMap['cancelReason'] = cancelReason;
+    jsonMap['autoApproved'] = autoApproved;
     jsonMap['coRider'] = coRider;
     jsonMap['coRiderFee'] = toDouble(coRiderFee);
     jsonMap['pokerName'] = pokerName;
@@ -120,6 +123,7 @@ class EventModel {
     List<String>? coManagers,
     List<String>? coManagerNames,
     String? ownerName,
+    bool? autoApproved,
     String? ownerImage,
     String? taxIdentificationNumber,
     DateTime? eventDate,
@@ -145,6 +149,7 @@ class EventModel {
     model.ownerId = ownerId ?? this.ownerId;
     model.ownerName = ownerName ?? this.ownerName;
     model.ownerImage = ownerImage ?? this.ownerImage;
+    model.autoApproved = autoApproved ?? this.autoApproved;
     model.taxIdentificationNumber =
         taxIdentificationNumber ?? this.taxIdentificationNumber;
 

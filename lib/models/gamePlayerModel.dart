@@ -53,7 +53,11 @@ class GamePlayerModel {
     jsonMap['changeCard'] = changeCard;
     jsonMap['userName'] = userName;
     jsonMap['currentLocation'] = currentLocation;
-    jsonMap['searchParameter'] = generateArray(roadName.trim().toLowerCase());
+    final List<String> searchTokens = [
+      ...generateArray(roadName.trim().toLowerCase(), true),
+      ...generateArray(userName.trim().toLowerCase(), true),
+    ];
+    jsonMap['searchParameter'] = searchTokens.toSet().toList();
     jsonMap['currentStop'] = toInt(currentStop);
     jsonMap['routeSequence'] = routeSequence;
     jsonMap['pokerId'] = pokerId;

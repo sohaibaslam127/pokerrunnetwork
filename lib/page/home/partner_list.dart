@@ -35,6 +35,23 @@ class _PartnerListState extends State<PartnerList> {
   bool status4 = false;
   int current = 0;
 
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
+  late bool _autoApproved;
+  bool _isTogglingAutoApprove = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _autoApproved = widget.eventModel.autoApproved;
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   // Resolves the actual stop name a player is currently at using their routeSequence.
   // currentStop is a 1-based position counter; routeSequence maps it to the real stops[] index.
   String _resolveStopLabel(GamePlayerModel game, EventModel event) {
@@ -52,6 +69,23 @@ class _PartnerListState extends State<PartnerList> {
       return "Stop $pos: ${event.stops[actualIdx].name}";
     }
     return "Stop $pos of ${event.stops.length - 1}";
+  }
+
+  Future<void> _toggleAutoApprove(bool value) async {
+    if (_isTogglingAutoApprove) return;
+    setState(() {
+      _isTogglingAutoApprove = true;
+      _autoApproved = value;
+    });
+
+    widget.eventModel.autoApproved = value;
+    await FirestoreServices.I.setEvent(context, widget.eventModel, null, false);
+
+    if (value) {
+      await FirestoreServices.I.approveAllParticipants(widget.eventModel.id);
+    }
+
+    setState(() => _isTogglingAutoApprove = false);
   }
 
   @override
@@ -98,365 +132,522 @@ class _PartnerListState extends State<PartnerList> {
             ),
           ),
           body: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: PaginateFirestore(
-              key: Key("members:${currentUser.id}:${widget.type}"),
-              isLive: true,
-              onEmpty: Center(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 30.h),
-                  child: text_widget(
-                    "No Event Found",
-                    color: Colors.white,
-                    fontSize: 18.sp,
+            padding: EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 7, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.25),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 7),
+                      Icon(
+                        RemixIcons.checkbox_circle_line,
+                        color: _autoApproved
+                            ? Colors.greenAccent
+                            : Colors.white54,
+                        size: 20.sp,
+                      ),
+                      SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            text_widget(
+                              "Auto-Approve Participants",
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                            text_widget(
+                              "Automatically approve all current and future participants",
+                              fontSize: 13.5.sp,
+                              color: Colors.white60,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 7),
+                      _isTogglingAutoApprove
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.greenAccent,
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            )
+                          : Switch(
+                              value: _autoApproved,
+                              onChanged: _toggleAutoApprove,
+                              activeColor: Colors.greenAccent,
+                              inactiveThumbColor: Colors.white54,
+                              inactiveTrackColor: Colors.white24,
+                            ),
+                      SizedBox(width: 7),
+                    ],
                   ),
                 ),
-              ),
-              initialLoader: Center(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 30.h),
-                  child: CircularProgressIndicator(color: MyColors.primary),
-                ),
-              ),
-              itemBuilder: (_, documentSnapshots, index) {
-                if (documentSnapshots.isEmpty) {
-                  return Container();
-                }
-                GamePlayerModel game = GamePlayerModel.toModel(
-                  documentSnapshots[index].data() as Map<String, dynamic>,
-                );
-
-                final Rx<bool?> isPaid = Rx<bool?>(null);
-                if (game.iamCoRider) {
-                  FirestoreServices.I
-                      .isRiderPayforCorider(widget.eventModel.id, game.roadName)
-                      .then((paid) {
-                        isPaid.value = paid;
-                      });
-                } else {
-                  isPaid.value = true;
-                }
-
-                Widget item = Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.18),
-                      border: Border.all(
-                        color: const Color(0xffFFFFFF).withOpacity(0.30),
-                        width: 1.2,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+                SizedBox(height: 12),
+                // Search bar
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.25),
+                      width: 1,
                     ),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          title: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: text_widget(
-                                  game.roadName.capitalize!,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(width: 2.w),
-                            ],
-                          ),
-                          contentPadding: EdgeInsets.only(
-                            left: 4.w,
-                            right: 4.w,
-                          ),
-                          subtitle: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              text_widget(
-                                game.userName.toLowerCase(),
-                                fontSize: 14.7.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white.withOpacity(0.60),
-                              ),
-                            ],
-                          ),
-                          trailing: Obx(
-                            () => GestureDetector(
-                              onTap: () async {
-                                if (game.currentStop == 0) {
-                                  if (!(game.iamCoRider &&
-                                          isPaid.value == false) &&
-                                      game.rank == "") {
-                                    game.approved = !game.approved;
-                                    await FirestoreServices.I.updateGamePlayer(
-                                      game,
-                                    );
-                                  }
-                                }
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                    decoration: InputDecoration(
+                      hintText: "Search by road name or real name...",
+                      hintStyle: TextStyle(
+                        color: Colors.white38,
+                        fontSize: 15.sp,
+                      ),
+                      prefixIcon: Icon(
+                        RemixIcons.search_line,
+                        color: Colors.white54,
+                      ),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? GestureDetector(
+                              onTap: () {
+                                _searchController.clear();
+                                setState(() => _searchQuery = "");
                               },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
+                              child: Icon(
+                                RemixIcons.close_line,
+                                color: Colors.white54,
+                              ),
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    onChanged: (value) {
+                      setState(() => _searchQuery = value.trim());
+                    },
+                  ),
+                ),
+                SizedBox(height: 12),
+                Expanded(
+                  child: PaginateFirestore(
+                    key: Key(
+                      "members:${currentUser.id}:${widget.type}:$_searchQuery",
+                    ),
+                    isLive: true,
+                    onEmpty: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 30.h),
+                        child: text_widget(
+                          "No Event Found",
+                          color: Colors.white,
+                          fontSize: 18.sp,
+                        ),
+                      ),
+                    ),
+                    initialLoader: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 30.h),
+                        child: CircularProgressIndicator(
+                          color: MyColors.primary,
+                        ),
+                      ),
+                    ),
+                    itemBuilder: (_, rawSnapshots, index) {
+                      if (rawSnapshots.isEmpty) {
+                        return Container();
+                      }
+                      // When searching, sort unapproved first then by roadName.
+                      // Default (no search) is already ordered by roadName from Firestore.
+                      final documentSnapshots = _searchQuery.isNotEmpty
+                          ? (List.of(rawSnapshots)
+                            ..sort((a, b) {
+                              final da = a.data() as Map<String, dynamic>;
+                              final db = b.data() as Map<String, dynamic>;
+                              final approvedA = (da['approved'] as bool?) ?? false;
+                              final approvedB = (db['approved'] as bool?) ?? false;
+                              if (approvedA != approvedB) {
+                                return approvedA ? 1 : -1;
+                              }
+                              final nameA = (da['roadName'] as String?) ?? '';
+                              final nameB = (db['roadName'] as String?) ?? '';
+                              return nameA.compareTo(nameB);
+                            }))
+                          : rawSnapshots;
+                      GamePlayerModel game = GamePlayerModel.toModel(
+                        documentSnapshots[index].data() as Map<String, dynamic>,
+                      );
+
+                      final Rx<bool?> isPaid = Rx<bool?>(null);
+                      if (game.iamCoRider) {
+                        FirestoreServices.I
+                            .isRiderPayforCorider(
+                              widget.eventModel.id,
+                              game.roadName,
+                            )
+                            .then((paid) {
+                              isPaid.value = paid;
+                            });
+                      } else {
+                        isPaid.value = true;
+                      }
+
+                      Widget item = Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.18),
+                            border: Border.all(
+                              color: const Color(0xffFFFFFF).withOpacity(0.30),
+                              width: 1.2,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: text_widget(
+                                        game.roadName.capitalize!,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(width: 2.w),
+                                  ],
                                 ),
-                                decoration: BoxDecoration(
-                                  color: game.approved
-                                      ? Colors.green
-                                      : game.iamCoRider && isPaid.value == false
-                                      ? Colors.grey.shade600
-                                      : Colors.red.shade300,
-                                  borderRadius: BorderRadius.circular(8),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 4,
-                                      offset: Offset(0, 2),
+                                contentPadding: EdgeInsets.only(
+                                  left: 4.w,
+                                  right: 4.w,
+                                ),
+                                subtitle: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    text_widget(
+                                      game.userName.toLowerCase(),
+                                      fontSize: 14.7.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white.withOpacity(0.60),
                                     ),
                                   ],
                                 ),
-                                child: isPaid.value == null
-                                    ? SizedBox(
-                                        height: 16,
-                                        width: 16,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 1,
-                                        ),
-                                      )
-                                    : Text(
-                                        game.rank == ""
-                                            ? game.currentStop > 0
-                                                  ? _resolveStopLabel(
-                                                      game,
-                                                      widget.eventModel,
-                                                    )
-                                                  : !game.approved
-                                                  ? (() {
-                                                      double total = 0.0;
-
-                                                      if (!game.iamCoRider) {
-                                                        total += widget
-                                                            .eventModel
-                                                            .joinFee;
-
-                                                        if (game.mycoRider) {
-                                                          total += widget
-                                                              .eventModel
-                                                              .coRiderFee;
-                                                        }
-
-                                                        if (game.changeCard) {
-                                                          total += widget
-                                                              .eventModel
-                                                              .changeCardFee;
-                                                        }
-
-                                                        if (game.mycoRider &&
-                                                            game.isExtraCardCorider) {
-                                                          total += widget
-                                                              .eventModel
-                                                              .changeCardFee;
-                                                        }
-                                                      }
-
-                                                      return total == 0
-                                                          ? "Not Paid \$0.00"
-                                                          : "Not Paid \$${total.toStringAsFixed(2)}";
-                                                    })()
-                                                  : "Paid"
-                                            : "${game.rank.capitalize}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14.7.sp,
-                                        ),
+                                trailing: Obx(
+                                  () => GestureDetector(
+                                    onTap: () async {
+                                      if (game.currentStop == 0) {
+                                        if (!(game.iamCoRider &&
+                                                isPaid.value == false) &&
+                                            game.rank == "") {
+                                          game.approved = !game.approved;
+                                          await FirestoreServices.I
+                                              .updateGamePlayer(game);
+                                        }
+                                      }
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 8,
                                       ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 1.w, right: 1.w),
-                          child: SizedBox(
-                            height: 9.h,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: List.generate(5, (index) {
-                                if (index < game.cards.length) {
-                                  final cardKey = game.cards[index];
-                                  return Expanded(
-                                    child: Image.asset(pokerCards[cardKey]),
-                                  );
-                                }
-                                return Expanded(
-                                  child: Image.asset(
-                                    pokerCards[0],
-                                    color: Colors.grey,
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                        ),
-                        if (game.mycoRider ||
-                            game.changeCard ||
-                            game.iamCoRider) ...[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 18.0,
-                              right: 18.0,
-                              bottom: 8.0,
-                              top: 8.0,
-                            ),
-                            child: Obx(
-                              () => isPaid.value == null
-                                  ? Center(
-                                      child: SizedBox(
-                                        height: 16,
-                                        width: 16,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 1,
-                                        ),
+                                      decoration: BoxDecoration(
+                                        color: game.approved
+                                            ? Colors.green
+                                            : game.iamCoRider &&
+                                                  isPaid.value == false
+                                            ? Colors.grey.shade600
+                                            : Colors.red.shade300,
+                                        borderRadius: BorderRadius.circular(8),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            blurRadius: 4,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
                                       ),
-                                    )
-                                  : Row(
-                                      children: [
-                                        RichText(
-                                          textAlign: TextAlign.start,
-                                          text: TextSpan(
-                                            style: TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 14.7.sp,
-                                              fontWeight: FontWeight.w400,
+                                      child: isPaid.value == null
+                                          ? SizedBox(
+                                              height: 16,
+                                              width: 16,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 1,
+                                              ),
+                                            )
+                                          : Text(
+                                              game.rank == ""
+                                                  ? game.currentStop > 0
+                                                        ? _resolveStopLabel(
+                                                            game,
+                                                            widget.eventModel,
+                                                          )
+                                                        : !game.approved
+                                                        ? (() {
+                                                            double total = 0.0;
+
+                                                            if (!game
+                                                                .iamCoRider) {
+                                                              total += widget
+                                                                  .eventModel
+                                                                  .joinFee;
+
+                                                              if (game
+                                                                  .mycoRider) {
+                                                                total += widget
+                                                                    .eventModel
+                                                                    .coRiderFee;
+                                                              }
+
+                                                              if (game
+                                                                  .changeCard) {
+                                                                total += widget
+                                                                    .eventModel
+                                                                    .changeCardFee;
+                                                              }
+
+                                                              if (game.mycoRider &&
+                                                                  game.isExtraCardCorider) {
+                                                                total += widget
+                                                                    .eventModel
+                                                                    .changeCardFee;
+                                                              }
+                                                            }
+
+                                                            return total == 0
+                                                                ? "Not Paid \$0.00"
+                                                                : "Not Paid \$${total.toStringAsFixed(2)}";
+                                                          })()
+                                                        : "Paid"
+                                                  : "${game.rank.capitalize}",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14.7.sp,
+                                              ),
                                             ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 1.w, right: 1.w),
+                                child: SizedBox(
+                                  height: 9.h,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: List.generate(5, (index) {
+                                      if (index < game.cards.length) {
+                                        final cardKey = game.cards[index];
+                                        return Expanded(
+                                          child: Image.asset(
+                                            pokerCards[cardKey],
+                                          ),
+                                        );
+                                      }
+                                      return Expanded(
+                                        child: Image.asset(
+                                          pokerCards[0],
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ),
+                              if (game.mycoRider ||
+                                  game.changeCard ||
+                                  game.iamCoRider) ...[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 18.0,
+                                    right: 18.0,
+                                    bottom: 8.0,
+                                    top: 8.0,
+                                  ),
+                                  child: Obx(
+                                    () => isPaid.value == null
+                                        ? Center(
+                                            child: SizedBox(
+                                              height: 16,
+                                              width: 16,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 1,
+                                              ),
+                                            ),
+                                          )
+                                        : Row(
                                             children: [
-                                              if (game.changeCard &&
-                                                  game.iamCoRider) ...[
-                                                TextSpan(
-                                                  text: "Co-rider with ",
-                                                ),
-                                                TextSpan(
-                                                  text: game
-                                                      .mycoRiderName
-                                                      .capitalizeFirst,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text:
-                                                      " and change card option.",
-                                                ),
-                                              ] else if (game.iamCoRider) ...[
-                                                TextSpan(
-                                                  text: "I am a co-rider of ",
-                                                ),
-                                                TextSpan(
-                                                  text: game
-                                                      .mycoRiderName
-                                                      .capitalizeFirst,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ] else if (game.mycoRider &&
-                                                  game.changeCard) ...[
-                                                const TextSpan(
-                                                  text:
-                                                      "Riding with Co-rider: ",
-                                                ),
-                                                TextSpan(
-                                                  text: game
-                                                      .mycoRiderName
-                                                      .capitalizeFirst,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                const TextSpan(
-                                                  text:
-                                                      " with change card option.",
-                                                ),
-                                              ] else if (game.mycoRider) ...[
-                                                const TextSpan(
-                                                  text:
-                                                      "Riding with Co-rider: ",
-                                                ),
-                                                TextSpan(
-                                                  text: game
-                                                      .mycoRiderName
-                                                      .capitalizeFirst,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                const TextSpan(text: "."),
-                                              ] else if (game.changeCard) ...[
-                                                const TextSpan(
-                                                  text:
-                                                      "Change card option included.",
-                                                ),
-                                              ],
-                                              if (game.iamCoRider &&
-                                                  isPaid.value == false) ...[
-                                                const TextSpan(
-                                                  text:
-                                                      "\nThe primary rider has not been",
-                                                ),
-                                                const TextSpan(
-                                                  text:
-                                                      " marked as paid/authorized by the organizer. ",
+                                              RichText(
+                                                textAlign: TextAlign.start,
+                                                text: TextSpan(
                                                   style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
+                                                    color: Colors.white70,
+                                                    fontSize: 14.7.sp,
+                                                    fontWeight: FontWeight.w400,
                                                   ),
+                                                  children: [
+                                                    if (game.changeCard &&
+                                                        game.iamCoRider) ...[
+                                                      TextSpan(
+                                                        text: "Co-rider with ",
+                                                      ),
+                                                      TextSpan(
+                                                        text: game
+                                                            .mycoRiderName
+                                                            .capitalizeFirst,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text:
+                                                            " and change card option.",
+                                                      ),
+                                                    ] else if (game
+                                                        .iamCoRider) ...[
+                                                      TextSpan(
+                                                        text:
+                                                            "I am a co-rider of ",
+                                                      ),
+                                                      TextSpan(
+                                                        text: game
+                                                            .mycoRiderName
+                                                            .capitalizeFirst,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ] else if (game.mycoRider &&
+                                                        game.changeCard) ...[
+                                                      const TextSpan(
+                                                        text:
+                                                            "Riding with Co-rider: ",
+                                                      ),
+                                                      TextSpan(
+                                                        text: game
+                                                            .mycoRiderName
+                                                            .capitalizeFirst,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                      const TextSpan(
+                                                        text:
+                                                            " with change card option.",
+                                                      ),
+                                                    ] else if (game
+                                                        .mycoRider) ...[
+                                                      const TextSpan(
+                                                        text:
+                                                            "Riding with Co-rider: ",
+                                                      ),
+                                                      TextSpan(
+                                                        text: game
+                                                            .mycoRiderName
+                                                            .capitalizeFirst,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                      const TextSpan(text: "."),
+                                                    ] else if (game
+                                                        .changeCard) ...[
+                                                      const TextSpan(
+                                                        text:
+                                                            "Change card option included.",
+                                                      ),
+                                                    ],
+                                                    if (game.iamCoRider &&
+                                                        isPaid.value ==
+                                                            false) ...[
+                                                      const TextSpan(
+                                                        text:
+                                                            "\nThe primary rider has not been",
+                                                      ),
+                                                      const TextSpan(
+                                                        text:
+                                                            " marked as paid/authorized by the organizer. ",
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                      const TextSpan(
+                                                        text:
+                                                            "Have the primary rider check in with the organizer at the starting location.",
+                                                      ),
+                                                    ],
+                                                  ],
                                                 ),
-                                                const TextSpan(
-                                                  text:
-                                                      "Have the primary rider check in with the organizer at the starting location.",
-                                                ),
-                                              ],
+                                              ),
                                             ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                            ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
+                        ),
+                      );
+                      return Column(
+                        children: [
+                          item,
+                          if ((index + 1) % 4 == 0)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: CustomAdInlineWidget(),
+                            ),
+                          if (index == documentSnapshots.length - 1)
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10, bottom: 20),
+                              child: CustomAdInlineWidget(),
+                            ),
                         ],
-                      ],
-                    ),
+                      );
+                    },
+                    query: widget.type == 0
+                        ? FirestoreServices.I.getGamePlayers(
+                            widget.eventModel.id,
+                            _searchQuery,
+                          )
+                        : FirestoreServices.I.getGamePlayersProgress(
+                            widget.eventModel.id,
+                            _searchQuery,
+                          ),
+                    itemBuilderType: PaginateBuilderType.listView,
                   ),
-                );
-                return Column(
-                  children: [
-                    item,
-                    if ((index + 1) % 4 == 0)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: CustomAdInlineWidget(),
-                      ),
-                    if (index == documentSnapshots.length - 1)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 20),
-                        child: CustomAdInlineWidget(),
-                      ),
-                  ],
-                );
-              },
-              query: widget.type == 0
-                  ? FirestoreServices.I.getGamePlayers(widget.eventModel.id, "")
-                  : FirestoreServices.I.getGamePlayersProgress(
-                      widget.eventModel.id,
-                      "",
-                    ),
-              itemBuilderType: PaginateBuilderType.listView,
+                ),
+              ],
             ),
           ),
         ),

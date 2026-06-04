@@ -440,6 +440,22 @@ class FirestoreServices {
     }
   }
 
+  Future<void> approveAllParticipants(String pokerId) async {
+    final batch = _instance.batch();
+    final snapshot = await _instance
+        .collection('events')
+        .doc(pokerId)
+        .collection('participants')
+        .where('approved', isEqualTo: false)
+        .get();
+    for (final doc in snapshot.docs) {
+      batch.update(doc.reference, {'approved': true});
+    }
+    if (snapshot.docs.isNotEmpty) {
+      await batch.commit();
+    }
+  }
+
   Future<bool> updateGamePlayer(GamePlayerModel game) async {
     try {
       await _instance

@@ -1,1 +1,0 @@
-CN=thepokerrunapp.com, OU=DD, O=Pokerrun Ltd., L=Kathmandu, S=Bagmati, C=US
