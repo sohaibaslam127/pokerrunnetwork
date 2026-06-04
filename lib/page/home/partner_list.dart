@@ -6,6 +6,7 @@ import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
+import 'package:pokerrunnetwork/page/home/qr_scanner_screen.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -125,6 +126,25 @@ class _PartnerListState extends State<PartnerList> {
               color: Colors.white.withOpacity(0.80),
               fontWeight: FontWeight.w600,
             ),
+            actions: widget.type == 0
+                ? [
+                    Padding(
+                      padding: EdgeInsets.only(right: 4.w, bottom: .4.h),
+                      child: onPress(
+                        ontap: () {
+                          Get.to(
+                            QrScannerScreen(eventModel: widget.eventModel),
+                          );
+                        },
+                        child: Icon(
+                          RemixIcons.qr_scan_2_line,
+                          color: MyColors.primary,
+                          size: 22.sp,
+                        ),
+                      ),
+                    ),
+                  ]
+                : null,
             centerTitle: false,
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(0),
@@ -274,12 +294,13 @@ class _PartnerListState extends State<PartnerList> {
                       // When searching, sort unapproved first then by roadName.
                       // Default (no search) is already ordered by roadName from Firestore.
                       final documentSnapshots = _searchQuery.isNotEmpty
-                          ? (List.of(rawSnapshots)
-                            ..sort((a, b) {
+                          ? (List.of(rawSnapshots)..sort((a, b) {
                               final da = a.data() as Map<String, dynamic>;
                               final db = b.data() as Map<String, dynamic>;
-                              final approvedA = (da['approved'] as bool?) ?? false;
-                              final approvedB = (db['approved'] as bool?) ?? false;
+                              final approvedA =
+                                  (da['approved'] as bool?) ?? false;
+                              final approvedB =
+                                  (db['approved'] as bool?) ?? false;
                               if (approvedA != approvedB) {
                                 return approvedA ? 1 : -1;
                               }
