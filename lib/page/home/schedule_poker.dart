@@ -14,6 +14,7 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'player_qr_screen.dart';
 
 class SchedulePokerN extends StatefulWidget {
   const SchedulePokerN({super.key});
@@ -438,61 +439,85 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                   ],
                 ),
               ),
-              onPress(
-                ontap: () async {
-                  if (click) return;
-                  click = true;
-                  currentGame.game.currentStop = 0;
-                  if (!currentGame.game.approved) {
-                    click = false;
-                    toast(
-                      context,
-                      "Check in",
-                      "Check in with organizer at starting point of event",
-                    );
-                  } else if (DateTime.now().compareTo(
-                        currentGame.latestEvent.eventDate,
-                      ) >=
-                      0) {
-                    if (await calculateDistance(
-                          currentGame
-                              .latestEvent
-                              .stops[currentGame.game.currentStop]
-                              .stopLocation
-                              .latitude,
-                          currentGame
-                              .latestEvent
-                              .stops[currentGame.game.currentStop]
-                              .stopLocation
-                              .longitude,
-                          currentUser.location.latitude,
-                          currentUser.location.longitude,
-                        ) <=
-                        miles) {
-                      currentGame.game.currentStop = 1;
-                      await FirestoreServices.I.updateGamePlayer(
-                        currentGame.game,
-                      );
-                      click = false;
-                      Get.off(GameView());
-                    } else {
-                      click = false;
-                      toast(
-                        context,
-                        "Check In",
-                        "Navigate to the starting location and check in with the organizer",
-                      );
-                    }
-                  } else {
-                    click = false;
-                    toast(
-                      context,
-                      "Poker Run",
-                      "Poker Run will start at ${DateFormat("d MMM yy, h:mm aaa").format(currentGame.latestEvent.eventDate)}",
-                    );
-                  }
-                },
-                child: Image.asset(OtherButtons.startYourPokerRun),
+              Row(
+                children: [
+                  if (!currentGame.game.approved)
+                    Container(
+                      height: 6.5.h,
+                      padding: EdgeInsets.only(left: 3.w),
+                      child: onPress(
+                        ontap: () {
+                          Get.to(
+                            PlayerQrScreen(
+                              eventId: currentGame.game.pokerId,
+                              userId: currentGame.game.userId,
+                              roadName: currentGame.game.roadName,
+                              eventName: currentGame.latestEvent.pokerName,
+                            ),
+                          );
+                        },
+                        child: Image.asset(OtherButtons.qrCode),
+                      ),
+                    ),
+                  Expanded(
+                    child: onPress(
+                      ontap: () async {
+                        if (click) return;
+                        click = true;
+                        currentGame.game.currentStop = 0;
+                        if (!currentGame.game.approved) {
+                          click = false;
+                          toast(
+                            context,
+                            "Check in",
+                            "Check in with organizer at starting point of event",
+                          );
+                        } else if (DateTime.now().compareTo(
+                              currentGame.latestEvent.eventDate,
+                            ) >=
+                            0) {
+                          if (await calculateDistance(
+                                currentGame
+                                    .latestEvent
+                                    .stops[currentGame.game.currentStop]
+                                    .stopLocation
+                                    .latitude,
+                                currentGame
+                                    .latestEvent
+                                    .stops[currentGame.game.currentStop]
+                                    .stopLocation
+                                    .longitude,
+                                currentUser.location.latitude,
+                                currentUser.location.longitude,
+                              ) <=
+                              miles) {
+                            currentGame.game.currentStop = 1;
+                            await FirestoreServices.I.updateGamePlayer(
+                              currentGame.game,
+                            );
+                            click = false;
+                            Get.off(GameView());
+                          } else {
+                            click = false;
+                            toast(
+                              context,
+                              "Check In",
+                              "Navigate to the starting location and check in with the organizer",
+                            );
+                          }
+                        } else {
+                          click = false;
+                          toast(
+                            context,
+                            "Poker Run",
+                            "Poker Run will start at ${DateFormat("d MMM yy, h:mm aaa").format(currentGame.latestEvent.eventDate)}",
+                          );
+                        }
+                      },
+                      child: Image.asset(OtherButtons.startYourPokerRun),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 4.h),
             ],

@@ -68,4 +68,5 @@ class OtherButtons {
       "assets/buttons/other/startyourpokerrun.png";
   static String updateProfile = "assets/buttons/other/updateprofile.png";
   static String no = "assets/buttons/other/no.png";
+  static String qrCode = "assets/icons/qr_code.png";
 }

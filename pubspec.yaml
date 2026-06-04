@@ -36,6 +36,7 @@ dependencies:
   easy_admob_ads_flutter: ^1.0.1
   shimmer_animation: ^2.2.2+1
   dio:
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:
