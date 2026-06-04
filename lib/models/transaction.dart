@@ -3,8 +3,6 @@ import 'package:pokerrunnetwork/config/supportFunctions.dart';
 
 class TransactionModel {
   String id = "";
-  String stripePaymentIntentClientSecret = "";
-  String stripeCustomerId = "";
   bool refund = false;
   double totalAmount = 0.0;
 
@@ -29,9 +27,6 @@ class TransactionModel {
   TransactionModel.toModel(Map<String, dynamic> jsonMap) {
     id = jsonMap['id'] ?? '';
     refund = jsonMap['refund'] ?? '';
-    stripePaymentIntentClientSecret =
-        jsonMap['stripePaymentIntentClientSecret'] ?? '';
-    stripeCustomerId = jsonMap['stripeCustomerId'] ?? '';
     totalAmount = (jsonMap['totalAmount'] ?? 0.0) + 0.0;
     eventId = jsonMap['eventId'] ?? '';
     eventCountryCode = jsonMap['eventCountryCode'] ?? 'US';
@@ -48,12 +43,10 @@ class TransactionModel {
     transactionStatus = jsonMap['transactionStatus'] ?? 0;
     date = jsonMap['date'].toDate();
   }
+
   Map<String, dynamic> toJSON() {
     Map<String, dynamic> jsonMap = <String, dynamic>{};
     jsonMap['id'] = id;
-    jsonMap['stripePaymentIntentClientSecret'] =
-        stripePaymentIntentClientSecret;
-    jsonMap['stripeCustomerId'] = stripeCustomerId;
     jsonMap['organizerId'] = organizerId;
     jsonMap['refund'] = refund;
     jsonMap['totalAmount'] = totalAmount;

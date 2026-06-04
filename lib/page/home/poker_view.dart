@@ -9,7 +9,6 @@ import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
-import 'package:pokerrunnetwork/models/transaction.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -554,29 +553,7 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
   Future<void> processPaymentAndJoin() async {
     Get.back();
     EasyLoading.show(status: "Processing", maskType: EasyLoadingMaskType.black);
-
-    TransactionModel tranModel = TransactionModel();
-    // bool success = await StripeServices.I.initPaymentSheet(
-    //   context,
-    //   tranModel,
-    //   currentUser.email,
-    //   widget.event.currency.currencyCode ?? 'usd',
-    //   serviceFee,
-    // );
-
-    // if (success) {
-    if (serviceFee != 0) {
-      tranModel.totalAmount = serviceFee;
-      tranModel.eventId = widget.event.id;
-      tranModel.eventName = widget.event.pokerName;
-      tranModel.organizerId = widget.event.ownerId;
-      tranModel.userId = currentUser.id;
-      await FirestoreServices.I.setTransaction(tranModel);
-    }
     await finalizeJoin();
-    // } else {
-    //   EasyLoading.dismiss();
-    // }
   }
 
   Future<void> joinEventDirectly() async {
