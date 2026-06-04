@@ -23,6 +23,7 @@ class EventModel {
   List<String> coManagers = [];
   List<String> coManagerNames = [];
   String ownerName = '', ownerImage = '';
+  bool autoApproved = false;
   String taxIdentificationNumber = "";
   DateTime eventDate = DateTime(1000);
   double changeCardFee = 0.00;
@@ -60,6 +61,7 @@ class EventModel {
     createdAt = jsonMap['createdAt'].toDate();
     coRiderFee = toDouble(jsonMap['coRiderFee']);
     coRider = jsonMap['coRider'];
+    autoApproved = jsonMap['autoApproved'] ?? false;
     ownerImage = jsonMap['ownerImage'];
     coManagers = List<String>.from(jsonMap['coManagers'] ?? []);
     coManagerNames = List<String>.from(jsonMap['coManagerNames'] ?? []);
@@ -94,6 +96,7 @@ class EventModel {
     jsonMap['coManagers'] = coManagers;
     jsonMap['coManagerNames'] = coManagerNames;
     jsonMap['cancelReason'] = cancelReason;
+    jsonMap['autoApproved'] = autoApproved;
     jsonMap['coRider'] = coRider;
     jsonMap['coRiderFee'] = toDouble(coRiderFee);
     jsonMap['pokerName'] = pokerName;

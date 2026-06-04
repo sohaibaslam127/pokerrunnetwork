@@ -215,7 +215,7 @@ class FirestoreServices {
         gamePlayer.currentLocation = currentUser.location;
         gamePlayer.changeCard = changeCard;
         gamePlayer.pokerId = post.id;
-        gamePlayer.approved = !needApproval;
+        gamePlayer.approved = !needApproval || post.autoApproved;
         gamePlayer.mycoRiderName = mycoRiderName;
         gamePlayer.mycoRider = mycoRider;
         gamePlayer.iamCoRider = iamcoRider;
