@@ -18,7 +18,6 @@ import 'package:pokerrunnetwork/services/authServices.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/services/locationsServices.dart';
 import 'package:pokerrunnetwork/services/remortConfig.dart';
-import 'package:pokerrunnetwork/services/stripeServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
@@ -231,7 +230,6 @@ class _SplashScreenState extends State<SplashScreen> {
     await FirestoreServices.I.init();
     await AuthServices.I.checkUser();
     LocationServices.I.getUserLocation();
-    StripeServices.I.init();
     return true;
   }
 

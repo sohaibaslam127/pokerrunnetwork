@@ -33,7 +33,6 @@ dependencies:
   readmore: ^3.0.0
   flutter_inappwebview: 6.1.5
   map_launcher: ^4.4.2
-  flutter_stripe:
   easy_admob_ads_flutter: ^1.0.1
   shimmer_animation: ^2.2.2+1
   dio:

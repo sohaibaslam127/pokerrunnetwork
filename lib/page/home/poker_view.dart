@@ -11,7 +11,6 @@ import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/models/transaction.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
-import 'package:pokerrunnetwork/services/stripeServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
@@ -557,28 +556,27 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
     EasyLoading.show(status: "Processing", maskType: EasyLoadingMaskType.black);
 
     TransactionModel tranModel = TransactionModel();
-    bool success = await StripeServices.I.initPaymentSheet(
-      context,
-      tranModel,
-      currentUser.email,
-      widget.event.currency.currencyCode ?? 'usd',
-      serviceFee,
-    );
+    // bool success = await StripeServices.I.initPaymentSheet(
+    //   context,
+    //   tranModel,
+    //   currentUser.email,
+    //   widget.event.currency.currencyCode ?? 'usd',
+    //   serviceFee,
+    // );
 
-    if (success) {
-      if (serviceFee != 0) {
-        tranModel.totalAmount = serviceFee;
-        tranModel.eventId = widget.event.id;
-        tranModel.eventName = widget.event.pokerName;
-        tranModel.organizerId = widget.event.ownerId;
-        tranModel.userId = currentUser.id;
-        await FirestoreServices.I.setTransaction(tranModel);
-      }
-
-      await finalizeJoin();
-    } else {
-      EasyLoading.dismiss();
+    // if (success) {
+    if (serviceFee != 0) {
+      tranModel.totalAmount = serviceFee;
+      tranModel.eventId = widget.event.id;
+      tranModel.eventName = widget.event.pokerName;
+      tranModel.organizerId = widget.event.ownerId;
+      tranModel.userId = currentUser.id;
+      await FirestoreServices.I.setTransaction(tranModel);
     }
+    await finalizeJoin();
+    // } else {
+    //   EasyLoading.dismiss();
+    // }
   }
 
   Future<void> joinEventDirectly() async {
