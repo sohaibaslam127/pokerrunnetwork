@@ -1,7 +1,7 @@
 name: pokerrunnetwork
 description: "PokerRun Network App"
 publish_to: 'none'
-version: 1.0.2+28
+version: 1.0.2+29
 
 environment:
   sdk: ^3.10.1

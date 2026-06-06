@@ -221,7 +221,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await FirestoreServices.I.init();
     await StripeServices.I.init();
     await AuthServices.I.checkUser();
-    await LocationServices.I.getUserLocation(context);
+    await LocationServices.I.getUserLocation();
     return true;
   }
 

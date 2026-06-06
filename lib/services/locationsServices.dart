@@ -3,12 +3,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:app_settings/app_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart' as location;
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
+import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
 
@@ -17,33 +18,59 @@ class LocationServices {
   static final LocationServices I = LocationServices._();
 
   final location.Location _location = location.Location();
-  StreamSubscription<location.LocationData>? _locationSubscription;
-
   bool _isInitializing = false;
 
-  /// Initializes location tracking.
-  ///
-  /// Features:
-  /// - Prevents multiple simultaneous initialization calls
-  /// - Handles service disabled state
-  /// - Handles permission denied and denied forever
-  /// - Updates Firestore only when user moves more than [miles]
-  /// - Cancels previous listeners before starting a new one
-  Future<void> getUserLocation(BuildContext context) async {
+  Future<void> getUserLocation() async {
     if (_isInitializing) return;
 
     _isInitializing = true;
 
     try {
-      final bool ready = await _ensureLocationEnabledAndPermitted(context);
-
-      if (!ready) {
-        await stopListening();
-        return;
+      bool serviceEnabled = await _location.serviceEnabled();
+      if (!serviceEnabled) {
+        serviceEnabled = await _location.requestService();
       }
 
-      // await _configureLocationSettings();
-      await _startListening();
+      location.PermissionStatus permission = await _location.hasPermission();
+      if (permission == location.PermissionStatus.denied) {
+        permission = await _location.requestPermission();
+      }
+
+      bool deviceLocationSuccess = false;
+
+      if (serviceEnabled &&
+          (permission == location.PermissionStatus.granted ||
+              permission == location.PermissionStatus.grantedLimited)) {
+        try {
+          final locationData = await _location.getLocation().timeout(
+            const Duration(seconds: 8),
+          );
+          final double? latitude = locationData.latitude;
+          final double? longitude = locationData.longitude;
+
+          if (latitude != null && longitude != null) {
+            currentUser.location = GeoPoint(latitude, longitude);
+            await FirestoreServices.I.updateLocation();
+            deviceLocationSuccess = true;
+          }
+        } catch (e, stackTrace) {
+          log(
+            'Device location fetch failed, falling back to IP geolocation',
+            error: e,
+            stackTrace: stackTrace,
+            name: 'LocationServices',
+          );
+        }
+      }
+
+      if (!deviceLocationSuccess) {
+        final internetLoc = await _getInternetLocation();
+        if (internetLoc != null) {
+          currentUser.location = internetLoc;
+          await FirestoreServices.I.updateLocation();
+        }
+        await _showPermissionDialog();
+      }
     } catch (e, stackTrace) {
       log(
         'Error in getUserLocation()',
@@ -56,162 +83,68 @@ class LocationServices {
     }
   }
 
-  /// Ensures:
-  /// - Location service is enabled
-  /// - Permission is granted
-  ///
-  /// Returns true if location can be accessed.
-  Future<bool> _ensureLocationEnabledAndPermitted(BuildContext context) async {
+  /// Attempts to fetch location using IP geolocation.
+  Future<GeoPoint?> _getInternetLocation() async {
     try {
-      // 1. Check if location service is enabled
-      bool serviceEnabled = await _location.serviceEnabled();
+      final dioInstance = dio.Dio();
+      dioInstance.options.connectTimeout = const Duration(seconds: 5);
+      dioInstance.options.receiveTimeout = const Duration(seconds: 5);
 
-      if (!serviceEnabled) {
-        serviceEnabled = await _location.requestService();
-
-        if (!serviceEnabled) {
-          await AppSettings.openAppSettings(type: AppSettingsType.location);
-
-          // Give user time to enable service
-          await Future.delayed(const Duration(seconds: 3));
-
-          serviceEnabled = await _location.serviceEnabled();
-
-          if (!serviceEnabled) {
-            return false;
+      final response = await dioInstance.get('https://ipapi.co/json/');
+      if (response.statusCode == 200 && response.data != null) {
+        final data = response.data;
+        final double lat = toDouble(data['latitude']);
+        final double lng = toDouble(data['longitude']);
+        if (lat != 0.0 || lng != 0.0) {
+          return GeoPoint(lat, lng);
+        }
+      }
+    } catch (_) {
+      // Fallback backup IP geolocation API
+      try {
+        final response = await dio.Dio().get('http://ip-api.com/json');
+        if (response.statusCode == 200 && response.data != null) {
+          final data = response.data;
+          final double lat = toDouble(data['lat']);
+          final double lng = toDouble(data['lon']);
+          if (lat != 0.0 || lng != 0.0) {
+            return GeoPoint(lat, lng);
           }
         }
-      }
-
-      // 2. Check permission
-      location.PermissionStatus permission = await _location.hasPermission();
-
-      // Handle denied
-      if (permission == location.PermissionStatus.denied) {
-        permission = await _location.requestPermission();
-      }
-
-      // Handle permanently denied / denied forever
-      if (permission == location.PermissionStatus.deniedForever ||
-          permission != location.PermissionStatus.granted) {
-        final bool granted = await _showPermissionDialog(context);
-        if (!granted) return false;
-
-        permission = await _location.hasPermission();
-
-        if (permission != location.PermissionStatus.granted) {
-          return false;
-        }
-      }
-
-      return true;
-    } on TimeoutException catch (e, stackTrace) {
-      log(
-        'Location request timed out',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'LocationServices',
-      );
-      return false;
-    }
-  }
-
-  /// Opens a dialog asking the user to enable permission in settings.
-  Future<bool> _showPermissionDialog(BuildContext context) async {
-    final completer = Completer<bool>();
-
-    showPopup(
-      context,
-      "Location access is required to continue. Please enable Location Services and grant location permission in Settings. The app will now close. Reopen it after enabling location.",
-      PopupActionsButtons.cancel,
-      PopupActionsButtons.yes,
-      () async {
-        if (!completer.isCompleted) {
-          completer.complete(false);
-        }
-        Get.back();
-        if (Platform.isAndroid) {
-          SystemNavigator.pop();
-        } else {
-          exit(0);
-        }
-      },
-      () async {
-        Get.back();
-
-        await AppSettings.openAppSettings(type: AppSettingsType.location);
-
-        if (!completer.isCompleted) {
-          completer.complete(true);
-        }
-
-        // Close the app so the user can reopen it after enabling location
-        if (Platform.isAndroid) {
-          SystemNavigator.pop();
-        } else {
-          exit(0);
-        }
-      },
-    );
-
-    return completer.future;
-  }
-
-  /// Starts listening to location changes.
-  Future<void> _startListening() async {
-    // Cancel existing subscription before starting a new one
-    await stopListening();
-
-    _locationSubscription = _location.onLocationChanged.listen(
-      _handleLocationUpdate,
-      onError: (error, stackTrace) {
+      } catch (e, stackTrace) {
         log(
-          'Location stream error',
-          error: error,
+          'Error getting location by internet (backup)',
+          error: e,
           stackTrace: stackTrace,
           name: 'LocationServices',
         );
+      }
+    }
+    return null;
+  }
+
+  /// Opens a dialog warning the user that location is needed to organize the event.
+  /// Does not close the app when cancelled.
+  Future<void> _showPermissionDialog() async {
+    if (Get.context == null) return;
+    showPopup(
+      Get.context!,
+      "You need the location to organized the event. Please enable location services and permissions.",
+      PopupActionsButtons.cancel,
+      PopupActionsButtons.enable,
+      () {
+        Get.back();
+      },
+      () async {
+        Get.back();
+        await AppSettings.openAppSettings(type: AppSettingsType.location);
       },
     );
   }
 
-  /// Handles incoming location updates.
-  Future<void> _handleLocationUpdate(location.LocationData locationData) async {
-    final double? latitude = locationData.latitude;
-    final double? longitude = locationData.longitude;
+  /// Dummy method for compatibility.
+  Future<void> stopListening() async {}
 
-    if (latitude == null || longitude == null) {
-      return;
-    }
-
-    final GeoPoint newLocation = GeoPoint(latitude, longitude);
-
-    // If user location is not initialized yet
-    if (currentUser.location.latitude == 0 &&
-        currentUser.location.longitude == 0) {
-      currentUser.location = newLocation;
-      await FirestoreServices.I.updateLocation();
-      return;
-    }
-    currentUser.location = newLocation;
-  }
-
-  /// Stops listening to location updates.
-  Future<void> stopListening() async {
-    try {
-      await _locationSubscription?.cancel();
-    } catch (e, stackTrace) {
-      log(
-        'Error stopping location listener',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'LocationServices',
-      );
-    } finally {
-      _locationSubscription = null;
-    }
-  }
-
-  /// Returns whether location tracking is currently active.
-  bool get isListening => _locationSubscription != null;
+  /// Dummy getter for compatibility.
+  bool get isListening => false;
 }
