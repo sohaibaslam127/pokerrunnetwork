@@ -122,7 +122,7 @@ class LocationServices {
 
     showPopup(
       Get.context!,
-      "Location access is required to continue. Please enable Location Services and grant location permission in Settings. The app will now close. Reopen it after enabling location.",
+      locationPermissionRequiredMsg,
       PopupActionsButtons.cancel,
       PopupActionsButtons.yes,
       () async {

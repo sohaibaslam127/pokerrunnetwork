@@ -101,3 +101,6 @@ List<String> pokerCards = [
   "assets/images/heart/king.png",
   "assets/images/heart/queen.png",
 ];
+
+const String locationPermissionRequiredMsg =
+    "Location access is required to join and play games. We need your location to verify your participation and record check-ins at game stops. Please enable Location Services and grant permission in Settings, then reopen the app.";
