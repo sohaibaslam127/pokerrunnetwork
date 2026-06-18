@@ -21,6 +21,7 @@ class EventModel {
   int status = 1;
   String ownerId = '';
   List<String> coManagers = [];
+  bool isShotgun = false; // is golf
   List<String> coManagerNames = [];
   String ownerName = '', ownerImage = '';
   bool autoApproved = false;
@@ -58,6 +59,7 @@ class EventModel {
       currency = CountryPickerUtils.getCountryByIsoCode('US');
     }
     ownerName = jsonMap['ownerName'];
+    isShotgun = jsonMap['isShotgun'] ?? false;
     createdAt = jsonMap['createdAt'].toDate();
     coRiderFee = toDouble(jsonMap['coRiderFee']);
     coRider = jsonMap['coRider'];
@@ -94,6 +96,7 @@ class EventModel {
     jsonMap['countryCode'] = countryCode;
     jsonMap['ownerImage'] = ownerImage;
     jsonMap['coManagers'] = coManagers;
+    jsonMap['isShotgun'] = isShotgun;
     jsonMap['coManagerNames'] = coManagerNames;
     jsonMap['cancelReason'] = cancelReason;
     jsonMap['autoApproved'] = autoApproved;
