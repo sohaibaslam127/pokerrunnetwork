@@ -4,6 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
+import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -86,58 +87,21 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     required String message,
     bool alreadyApproved = false,
   }) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        backgroundColor: const Color(0xff1a1a2e),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              success
-                  ? RemixIcons.checkbox_circle_fill
-                  : RemixIcons.close_circle_fill,
-              color: success
-                  ? (alreadyApproved ? Colors.amber : Colors.greenAccent)
-                  : Colors.redAccent,
-              size: 28.sp,
-            ),
-            SizedBox(height: 1.5.h),
-            text_widget(
-              message,
-              fontSize: 15.sp,
-              color: Colors.white,
-              textAlign: TextAlign.center,
-              fontWeight: FontWeight.w600,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back();
-              _lastResult = null;
-              setState(() => _processing = false);
-              _controller.start();
-            },
-            child: text_widget(
-              "Scan Next",
-              fontSize: 14.sp,
-              color: MyColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back();
-              Get.back();
-            },
-            child: text_widget("Done", fontSize: 14.sp, color: Colors.white54),
-          ),
-        ],
-      ),
+    CustomPopups.showScanResult(
+      context,
+      success: success,
+      message: message,
+      alreadyApproved: alreadyApproved,
+      onScanNext: () {
+        Get.back();
+        _lastResult = null;
+        setState(() => _processing = false);
+        _controller.start();
+      },
+      onDone: () {
+        Get.back();
+        Get.back();
+      },
     );
   }
 

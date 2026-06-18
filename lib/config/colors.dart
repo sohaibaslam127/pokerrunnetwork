@@ -8,6 +8,11 @@ class MyColors {
   static Color black = Color(0xff3C3C3C);
   static Color white = Colors.white70;
   static Color success = Colors.green;
+
+  // Custom Popup Colors
+  static Color dialogBgStart = const Color(0xff1e1e38);
+  static Color dialogBgEnd = const Color(0xff121224);
+  static Color goldButtonEnd = const Color(0xffcca210);
 }
 
 class PopupActionsButtons {
