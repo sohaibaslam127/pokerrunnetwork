@@ -315,7 +315,7 @@ class _GameViewState extends State<GameView> {
     _listenForGameCompletion();
     stopNumber = currentGame.game.currentStop;
 
-    if (_isFirstStopPhase) {
+    if (_isFirstStopPhase || currentGame.latestEvent.id == "") {
       return _buildLocatingView();
     }
 
@@ -628,21 +628,22 @@ class _GameViewState extends State<GameView> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(5.w),
-                  child: customButon(
-                    btnText: "See Map",
-                    onTap: () async {
-                      Get.to(
-                        RouteMapView(
-                          currentGame.latestEvent,
-                          routeSequence: currentGame.game.routeSequence,
-                        ),
-                      );
-                    },
-                    fontSize: 17,
+                if (currentGame.latestEvent.id != "")
+                  Padding(
+                    padding: EdgeInsets.all(5.w),
+                    child: customButon(
+                      btnText: "See Map",
+                      onTap: () async {
+                        Get.to(
+                          RouteMapView(
+                            currentGame.latestEvent,
+                            routeSequence: currentGame.game.routeSequence,
+                          ),
+                        );
+                      },
+                      fontSize: 17,
+                    ),
                   ),
-                ),
               ],
             ),
           ),

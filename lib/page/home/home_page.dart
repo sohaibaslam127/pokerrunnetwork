@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
-import 'package:pokerrunnetwork/models/gameData.dart';
 import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
 import 'package:pokerrunnetwork/page/home/completed_pokr.dart';
@@ -32,7 +31,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initializeGameData() async {
-    currentGame = GameData();
+    // NOTE: don't blank currentGame here. This runs the moment SchedulePokerN
+    // is replaced by GameView (Get.off completes the `await Get.to(...)`), so
+    // clearing it would leave GameView rendering an empty event for the 2-3s
+    // getCurrentGame() takes. getCurrentGame() reassigns it wholesale anyway.
     currentGame = await FirestoreServices.I.getCurrentGame();
     if (currentGame.game.currentStop > 0) {
       await Get.off(GameView());
