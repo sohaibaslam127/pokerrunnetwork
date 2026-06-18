@@ -105,8 +105,37 @@ class _RouteMapViewState extends State<RouteMapView> {
               p2.stopLocation.longitude,
             );
       segments.add(coords);
-      // First leg (Initial→first stop) and last leg (last stop→Final) = green
+      // Green = entry leg (Start→first stop) and exit leg (last stop→Final).
+      // Gold = the stop circuit in between.
       colors.add(i == 0 || i == totalSegments - 1 ? 'green' : 'gold');
+    }
+
+    // Shotgun, before the player picks their first stop (routeSequence empty):
+    // show the full circular loop by connecting the last stop (5th) back to
+    // the first stop (1st) — a loop between the stops only. The 5th→Final exit
+    // leg is already drawn above. Once the player has started (routeSequence
+    // set) the route is linear in their chosen play order, so no loop is drawn.
+    // Non-shotgun: never draws a loop.
+    if (widget.event.isShotgun &&
+        widget.routeSequence.isEmpty &&
+        _orderedStops.length >= 4) {
+      final p1 = _orderedStops[_orderedStops.length - 2];
+      final p2 = _orderedStops[1];
+      final coords = Platform.isIOS
+          ? await _fetchAppleRoute(
+              p1.stopLocation.latitude,
+              p1.stopLocation.longitude,
+              p2.stopLocation.latitude,
+              p2.stopLocation.longitude,
+            )
+          : await _fetchGoogleRoute(
+              p1.stopLocation.latitude,
+              p1.stopLocation.longitude,
+              p2.stopLocation.latitude,
+              p2.stopLocation.longitude,
+            );
+      segments.add(coords);
+      colors.add('gold');
     }
 
     if (mounted) {
@@ -237,12 +266,16 @@ class _RouteMapViewState extends State<RouteMapView> {
       final s = entry.value;
       final isStart = i == 0;
       final isEnd = i == _orderedStops.length - 1;
-      // Show the real stop number from the original stops list
+      // Shotgun: label by present position (travel order 1..5).
+      // Non-shotgun: label by the original/defined stop index (same as the
+      // present order, since the route is sequential).
       final actualIdx = widget.event.stops.indexOf(s);
       final label = isStart
           ? 'S'
           : isEnd
           ? 'F'
+          : widget.event.isShotgun
+          ? '$i'
           : '$actualIdx';
       return {
         'lat': s.stopLocation.latitude,

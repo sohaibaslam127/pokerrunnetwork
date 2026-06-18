@@ -492,6 +492,14 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                               ) <=
                               miles) {
                             currentGame.game.currentStop = 1;
+                            // Non-shotgun: fixed sequential route (start → 1 → 2
+                            // → 3 → 4 → 5 → final). Pre-filling routeSequence
+                            // skips the shotgun first-stop selection phase.
+                            // Shotgun leaves it empty so the player picks their
+                            // own first stop in GameView.
+                            if (!currentGame.latestEvent.isShotgun) {
+                              currentGame.game.routeSequence = [1, 2, 3, 4, 5];
+                            }
                             await FirestoreServices.I.updateGamePlayer(
                               currentGame.game,
                             );

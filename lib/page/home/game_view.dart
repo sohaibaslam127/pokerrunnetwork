@@ -230,7 +230,10 @@ class _GameViewState extends State<GameView> {
 
   // True only between leaving initial point and the user confirming their first stop.
   // currentStop may still be 0 if Firestore write from schedule_poker hasn't completed.
+  // Shotgun only — non-shotgun runs follow a fixed sequential route with no
+  // first-stop selection (routeSequence is pre-filled in schedule_poker).
   bool get _isFirstStopPhase =>
+      currentGame.latestEvent.isShotgun &&
       currentGame.game.routeSequence.isEmpty &&
       (currentGame.game.currentStop == 0 || currentGame.game.currentStop == 1);
 
@@ -976,7 +979,12 @@ class _GameViewState extends State<GameView> {
                     Expanded(
                       child: onPress(
                         ontap: () {
-                          if (stopNumber == 1) {
+                          // Shotgun stop 1: player is already at their chosen
+                          // first stop, so the button previews the route.
+                          // Non-shotgun stop 1: the first stop is a real
+                          // destination to navigate to from the start point.
+                          if (stopNumber == 1 &&
+                              currentGame.latestEvent.isShotgun) {
                             Get.to(
                               RouteMapView(
                                 currentGame.latestEvent,
@@ -997,7 +1005,9 @@ class _GameViewState extends State<GameView> {
                         },
                         child: Image.asset(
                           stopNumber == 1
-                              ? OtherButtons.previewRoute
+                              ? (currentGame.latestEvent.isShotgun
+                                    ? OtherButtons.previewRoute
+                                    : OtherButtons.navigate1)
                               : stopNumber == 2
                               ? OtherButtons.navigate2
                               : stopNumber == 3
