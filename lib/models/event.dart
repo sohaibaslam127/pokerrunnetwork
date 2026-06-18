@@ -154,7 +154,7 @@ class EventModel {
     model.ownerName = ownerName ?? this.ownerName;
     model.isShotgun = isShotgun ?? this.isShotgun;
     model.ownerImage = ownerImage ?? this.ownerImage;
-    model.autoApproved = autoApproved ?? this.autoApproved;
+    model.autoApproved = false;
     model.taxIdentificationNumber =
         taxIdentificationNumber ?? this.taxIdentificationNumber;
 
