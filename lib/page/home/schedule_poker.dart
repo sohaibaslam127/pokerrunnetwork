@@ -490,7 +490,7 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                                 currentUser.location.latitude,
                                 currentUser.location.longitude,
                               ) <=
-                              miles) {
+                              miles + 99) {
                             currentGame.game.currentStop = 1;
                             // Non-shotgun: fixed sequential route (start → 1 → 2
                             // → 3 → 4 → 5 → final). Pre-filling routeSequence
