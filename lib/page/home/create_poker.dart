@@ -7,8 +7,10 @@ import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/page/home/poker_route.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
+import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CreatePoker extends StatefulWidget {
@@ -67,6 +69,22 @@ class _CreatePokerState extends State<CreatePoker> {
     pokerRunCostController.dispose();
     coRiderCostController.dispose();
     additionalCostController.dispose();
+  }
+
+  void _showShotgunToggleWarning(BuildContext context, bool newValue) {
+    showPopup(
+      context,
+      "Are you really sure you want to change the mode of the applocation?",
+      PopupActionsButtons.no,
+      PopupActionsButtons.yes,
+      () => Get.back(),
+      () {
+        setState(() {
+          widget.eventModel.isShotgun = newValue;
+        });
+        Get.back();
+      },
+    );
   }
 
   @override
@@ -216,6 +234,62 @@ class _CreatePokerState extends State<CreatePoker> {
                             hintColor: Color(0xff868686),
                             pColor: MyColors.primary,
                           ),
+
+                          if (widget.eventModel.id.isNotEmpty) ...[
+                            SizedBox(height: 1.5.h),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                                vertical: 1.5.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: const Color(0xffEDF1F3),
+                                  width: 1.4,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        text_widget(
+                                          "Shotgun Start Mode",
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
+                                        ),
+                                        SizedBox(height: 0.5.h),
+                                        text_widget(
+                                          widget.eventModel.isShotgun
+                                              ? "Shotgun Start enabled"
+                                              : "Normal Route Start enabled",
+                                          fontSize: 14.5.sp,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Switch(
+                                    value: widget.eventModel.isShotgun,
+                                    activeColor: MyColors.primary,
+                                    inactiveThumbColor: Colors.grey.shade400,
+                                    inactiveTrackColor: Colors.grey.shade200,
+                                    onChanged: (val) {
+                                      _showShotgunToggleWarning(context, val);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
 
                           // SizedBox(height: 2.h),
                           // text_widget(

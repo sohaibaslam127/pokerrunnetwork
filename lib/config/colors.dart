@@ -13,6 +13,11 @@ class MyColors {
   static Color dialogBgStart = const Color(0xff1e1e38);
   static Color dialogBgEnd = const Color(0xff121224);
   static Color goldButtonEnd = const Color(0xffcca210);
+
+  // Custom Warning Note Colors
+  static Color warningBg = const Color(0xffFFFDE7);
+  static Color warningBorder = const Color(0xffFFF59D);
+  static Color warningText = const Color(0xffF57F17);
 }
 
 class PopupActionsButtons {
