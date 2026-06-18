@@ -45,7 +45,18 @@ class MyApp extends StatelessWidget {
       builder: (_, orientation, screenType) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(fontFamily: "Calibri"),
+          theme: ThemeData(
+            fontFamily: "Calibri",
+            appBarTheme: const AppBarTheme(
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark,
+                systemNavigationBarColor: Colors.black,
+                systemNavigationBarIconBrightness: Brightness.light,
+              ),
+            ),
+          ),
           defaultTransition: Transition.noTransition,
           home: SplashScreen(),
           builder: EasyLoading.init(),
