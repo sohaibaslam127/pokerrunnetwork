@@ -103,16 +103,18 @@ class _RouteMapViewState extends State<RouteMapView> {
               p2.stopLocation.longitude,
             );
       segments.add(coords);
-      if (widget.event.isShotgun) {
-        colors.add(i == 0 ? 'green' : 'gold');
-      } else {
-        colors.add(i == 0 || i == totalSegments - 1 ? 'green' : 'gold');
-      }
+      // Green = entry leg (Start→first stop) and exit leg (last stop→Final).
+      // Gold = the stop circuit in between.
+      colors.add(i == 0 || i == totalSegments - 1 ? 'green' : 'gold');
     }
 
-    if (widget.event.isShotgun) {
-      final p1 = _orderedStops.last;
-      final p2 = _orderedStops.first;
+    // Shotgun: close the stop loop by connecting the last stop (5th) back to
+    // the first stop (1st) — a loop between the stops only. The last stop's
+    // link to the Final destination is already drawn as the exit leg above.
+    // Non-shotgun: no loop is drawn.
+    if (widget.event.isShotgun && _orderedStops.length >= 4) {
+      final p1 = _orderedStops[_orderedStops.length - 2];
+      final p2 = _orderedStops[1];
       final coords = Platform.isIOS
           ? await _fetchAppleRoute(
               p1.stopLocation.latitude,
@@ -127,7 +129,7 @@ class _RouteMapViewState extends State<RouteMapView> {
               p2.stopLocation.longitude,
             );
       segments.add(coords);
-      colors.add('green');
+      colors.add('gold');
     }
 
     if (mounted) {
@@ -259,11 +261,16 @@ class _RouteMapViewState extends State<RouteMapView> {
       final s = entry.value;
       final isStart = i == 0;
       final isEnd = i == _orderedStops.length - 1;
+      // Shotgun: label by present position (travel order 1..5).
+      // Non-shotgun: label by the original/defined stop index (same as the
+      // present order, since the route is sequential).
       final actualIdx = widget.event.stops.indexOf(s);
       final label = isStart
           ? 'S'
           : isEnd
           ? 'F'
+          : widget.event.isShotgun
+          ? '$i'
           : '$actualIdx';
       return {
         'lat': s.stopLocation.latitude,
