@@ -203,6 +203,31 @@ class _GameViewState extends State<GameView> {
     return [...all.sublist(idx), ...all.sublist(0, idx)];
   }
 
+  Future<void> _showFirstStopConfirm(int lockStop) async {
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _SliderConfirmSheet(
+        onConfirmed: () async {
+          _picking = true;
+          try {
+            EasyLoading.show(status: "Processing...");
+            currentGame.game.routeSequence = _computeSequence(lockStop);
+            if (currentGame.game.currentStop == 0) {
+              currentGame.game.currentStop = 1;
+            }
+            await FirestoreServices.I.updateGamePlayer(currentGame.game);
+            EasyLoading.dismiss();
+          } finally {
+            _picking = false;
+          }
+          if (mounted) setState(() {});
+        },
+      ),
+    );
+  }
+
   // True only between leaving initial point and the user confirming their first stop.
   // currentStop may still be 0 if Firestore write from schedule_poker hasn't completed.
   bool get _isFirstStopPhase =>
@@ -588,20 +613,7 @@ class _GameViewState extends State<GameView> {
                                   if (_picking) return;
                                   final lockStop = _nearestInRadius;
                                   if (lockStop == null) return;
-                                  _picking = true;
-                                  try {
-                                    currentGame.game.routeSequence =
-                                        _computeSequence(lockStop);
-                                    if (currentGame.game.currentStop == 0) {
-                                      currentGame.game.currentStop = 1;
-                                    }
-                                    await FirestoreServices.I.updateGamePlayer(
-                                      currentGame.game,
-                                    );
-                                  } finally {
-                                    _picking = false;
-                                  }
-                                  if (mounted) setState(() {});
+                                  await _showFirstStopConfirm(lockStop);
                                 },
                                 fontSize: 17,
                               ),
@@ -1133,6 +1145,160 @@ class _PulsingLocationIconState extends State<_PulsingLocationIcon>
             ),
             child: Icon(Icons.location_pin, size: 30, color: MyColors.red),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SliderConfirmSheet extends StatefulWidget {
+  final Future<void> Function() onConfirmed;
+  const _SliderConfirmSheet({required this.onConfirmed});
+
+  @override
+  State<_SliderConfirmSheet> createState() => _SliderConfirmSheetState();
+}
+
+class _SliderConfirmSheetState extends State<_SliderConfirmSheet> {
+  double _dragPos = 0;
+  bool _confirmed = false;
+  static const double _thumbSize = 60;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [MyColors.secondaryDark, MyColors.black],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border.all(
+          color: MyColors.primary.withValues(alpha: 0.50),
+          width: 1.5,
+        ),
+      ),
+      padding: EdgeInsets.fromLTRB(5.w, 2.h, 5.w, 4.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 10.w,
+            height: 0.5.h,
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          SizedBox(height: 2.5.h),
+          Icon(
+            RemixIcons.map_pin_user_fill,
+            color: MyColors.primary,
+            size: 30.sp,
+          ),
+          SizedBox(height: 2.h),
+          text_widget(
+            "Are you sure that you are at the first Poker run stop after your designated shotgun start hole?",
+            fontSize: 17.sp,
+            color: Colors.white,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 4.h),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final maxDrag = constraints.maxWidth - _thumbSize;
+              return GestureDetector(
+                onHorizontalDragUpdate: (d) {
+                  if (_confirmed) return;
+                  setState(() {
+                    _dragPos = (_dragPos + d.delta.dx).clamp(0, maxDrag);
+                  });
+                  if (_dragPos >= maxDrag - 4) {
+                    _confirmed = true;
+                    Navigator.of(context).pop();
+                    widget.onConfirmed();
+                  }
+                },
+                onHorizontalDragEnd: (_) {
+                  if (!_confirmed) setState(() => _dragPos = 0);
+                },
+                child: Container(
+                  height: _thumbSize,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.07),
+                    borderRadius: BorderRadius.circular(_thumbSize / 2),
+                    border: Border.all(
+                      color: MyColors.primary.withValues(alpha: 0.25),
+                    ),
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.hardEdge,
+                    children: [
+                      Container(
+                        width: _dragPos + _thumbSize,
+                        decoration: BoxDecoration(
+                          color: MyColors.primary,
+                          borderRadius: BorderRadius.circular(_thumbSize / 2),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 16.w, right: 5.w),
+                        child: Center(
+                          child: text_widget(
+                            "Slide to confirm that I'm at 1st stop →",
+                            fontSize: 15.sp,
+                            color: MyColors.primary,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: _dragPos,
+                        top: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: _thumbSize,
+                          decoration: BoxDecoration(
+                            color: MyColors.primary,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: MyColors.primary.withValues(alpha: 0.45),
+                                blurRadius: 10,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.chevron_right,
+                            color: Colors.black87,
+                            size: 35,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          SizedBox(height: 3.h),
+          onPress(
+            ontap: () => Navigator.of(context).pop(),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white24, width: 1),
+                borderRadius: BorderRadius.circular(10.w),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 1.2.h, horizontal: 5.w),
+              child: text_widget(
+                "No, I am not at my 1st stop",
+                fontSize: 15.sp,
+                color: Colors.red,
+              ),
+            ),
+          ),
+          SizedBox(height: 0.5.h),
         ],
       ),
     );
