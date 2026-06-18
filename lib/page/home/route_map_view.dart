@@ -103,7 +103,31 @@ class _RouteMapViewState extends State<RouteMapView> {
               p2.stopLocation.longitude,
             );
       segments.add(coords);
-      colors.add(i == 0 || i == totalSegments - 1 ? 'green' : 'gold');
+      if (widget.event.isShotgun) {
+        colors.add(i == 0 ? 'green' : 'gold');
+      } else {
+        colors.add(i == 0 || i == totalSegments - 1 ? 'green' : 'gold');
+      }
+    }
+
+    if (widget.event.isShotgun) {
+      final p1 = _orderedStops.last;
+      final p2 = _orderedStops.first;
+      final coords = Platform.isIOS
+          ? await _fetchAppleRoute(
+              p1.stopLocation.latitude,
+              p1.stopLocation.longitude,
+              p2.stopLocation.latitude,
+              p2.stopLocation.longitude,
+            )
+          : await _fetchGoogleRoute(
+              p1.stopLocation.latitude,
+              p1.stopLocation.longitude,
+              p2.stopLocation.latitude,
+              p2.stopLocation.longitude,
+            );
+      segments.add(coords);
+      colors.add('green');
     }
 
     if (mounted) {

@@ -6,6 +6,7 @@ import 'package:pokerrunnetwork/page/home/create_poker.dart';
 import 'package:pokerrunnetwork/page/home/faq_page.dart';
 import 'package:pokerrunnetwork/page/home/pokerrun_list.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
+import 'package:pokerrunnetwork/widgets/pop_up.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -84,7 +85,23 @@ class _AffilateMenuPageState extends State<AffilateMenuPage> {
                             Expanded(
                               child: onPress(
                                 ontap: () {
-                                  Get.to(CreatePoker(EventModel()));
+                                  EventModel eventModel = EventModel();
+                                  showPopup(
+                                    context,
+                                    "Is this event for a shotgun start golf tournament?",
+                                    PopupActionsButtons.no,
+                                    PopupActionsButtons.yes,
+                                    () {
+                                      Get.back();
+                                      eventModel.isShotgun = false;
+                                      Get.to(CreatePoker(eventModel));
+                                    },
+                                    () {
+                                      Get.back();
+                                      eventModel.isShotgun = true;
+                                      Get.to(CreatePoker(eventModel));
+                                    },
+                                  );
                                 },
                                 child: Image.asset(
                                   MenuActionButtons.createPokerrun,

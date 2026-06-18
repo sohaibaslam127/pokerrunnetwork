@@ -22,6 +22,7 @@ class EventModel {
   int status = 1;
   String ownerId = '';
   List<String> coManagers = [];
+  bool isShotgun = false; // is golf
   List<String> coManagerNames = [];
   String ownerName = '', ownerImage = '';
   String taxIdentificationNumber = "";
@@ -61,6 +62,7 @@ class EventModel {
     ownerName = jsonMap['ownerName'];
     createdAt = jsonMap['createdAt'].toDate();
     autoApproved = jsonMap['autoApproved'] ?? false;
+    isShotgun = jsonMap['isShotgun'] ?? false;
     coRiderFee = toDouble(jsonMap['coRiderFee']);
     coRider = jsonMap['coRider'];
     ownerImage = jsonMap['ownerImage'];
@@ -96,6 +98,7 @@ class EventModel {
     jsonMap['ownerImage'] = ownerImage;
     jsonMap['coManagers'] = coManagers;
     jsonMap['coManagerNames'] = coManagerNames;
+    jsonMap['isShotgun'] = isShotgun;
     jsonMap['cancelReason'] = cancelReason;
     jsonMap['autoApproved'] = autoApproved;
     jsonMap['coRider'] = coRider;
@@ -132,6 +135,7 @@ class EventModel {
     String? countryCode,
     Country? currency,
     double? coRiderFee,
+    bool? isShotgun,
     String? pokerName,
     String? description,
     String? cancelReason,
@@ -148,6 +152,7 @@ class EventModel {
     model.status = status ?? this.status;
     model.ownerId = ownerId ?? this.ownerId;
     model.ownerName = ownerName ?? this.ownerName;
+    model.isShotgun = isShotgun ?? this.isShotgun;
     model.ownerImage = ownerImage ?? this.ownerImage;
     model.autoApproved = autoApproved ?? this.autoApproved;
     model.taxIdentificationNumber =
