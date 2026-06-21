@@ -82,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              "assets/background/lightbackground.jpg",
+              "assets/background/darkbackground.jpg",
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
