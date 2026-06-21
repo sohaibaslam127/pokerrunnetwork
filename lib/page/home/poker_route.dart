@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/models/event.dart';
 import 'package:pokerrunnetwork/page/home/poker_Stops.dart';
@@ -264,11 +265,13 @@ class _PokerRouteState extends State<PokerRoute> {
                     ),
                   ),
                 ),
-                SizedBox(height: 2.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: CustomAdInlineWidget(),
-                ),
+                if (enableAds) ...[
+                  SizedBox(height: 2.h),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    child: CustomAdInlineWidget(),
+                  ),
+                ],
               ],
             ),
           ),

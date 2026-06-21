@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:get/get.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
@@ -181,10 +182,12 @@ class _SettingPageState extends State<SettingPage> {
                 ),
               ),
               const Spacer(),
-              Padding(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 4.h),
-                child: CustomAdInlineWidget(),
-              ),
+
+              if (enableAds)
+                Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 4.h),
+                  child: CustomAdInlineWidget(),
+                ),
               SizedBox(height: 2.h),
             ],
           ),

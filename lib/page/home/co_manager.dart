@@ -88,7 +88,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
                     1;
 
                 // Last element is always an ad
-                if (index == totalItems - 1) {
+                if (index == totalItems - 1 && enableAds) {
                   return const Padding(
                     padding: EdgeInsets.only(top: 10),
                     child: CustomAdInlineWidget(),
@@ -96,7 +96,7 @@ class _CoManagerPageState extends State<CoManagerPage> {
                 }
 
                 // Every 4th element is an ad (index 3, 7, 11...)
-                if ((index + 1) % 4 == 0) {
+                if ((index + 1) % 4 == 0 && enableAds) {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: CustomAdInlineWidget(),
@@ -125,9 +125,11 @@ class _CoManagerPageState extends State<CoManagerPage> {
                     child: ListTile(
                       title: text_widget(
                         (dataIndex < widget.eventModel.coManagerNames.length
-                                ? widget.eventModel.coManagerNames[dataIndex]
-                                : "")
-                            .capitalize ??
+                                    ? widget
+                                          .eventModel
+                                          .coManagerNames[dataIndex]
+                                    : "")
+                                .capitalize ??
                             "",
                         fontSize: 16.5.sp,
                         fontWeight: FontWeight.bold,

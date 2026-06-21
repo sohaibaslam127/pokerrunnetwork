@@ -122,6 +122,7 @@ class _SingupPageState extends State<SingupPage> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: true,
           body: SafeArea(
             bottom: false,
             child: SingleChildScrollView(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:get/get.dart' hide SnackPosition;
 import 'package:intl/intl.dart';
@@ -93,7 +95,7 @@ class _CreatePokerState extends State<CreatePoker> {
       children: [
         Positioned.fill(
           child: Image.asset(
-            "assets/icons/bg.jpg",
+            "assets/background/darkbackground.jpg",
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -558,10 +560,11 @@ class _CreatePokerState extends State<CreatePoker> {
                   ),
                 ),
                 SizedBox(height: 2.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: CustomAdInlineWidget(),
-                ),
+                if (enableAds)
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    child: CustomAdInlineWidget(),
+                  ),
               ],
             ),
           ),

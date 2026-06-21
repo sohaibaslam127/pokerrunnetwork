@@ -296,10 +296,6 @@ class _ManagerPokerRun1State extends State<ManagerPokerRun> {
               ),
             ),
           ),
-          // bottomNavigationBar: Padding(
-          //   padding: EdgeInsets.only(left: 20, right: 20, bottom: 4.h),
-          //   child: const CustomAdInlineWidget(),
-          // ),
         ),
       ],
     );

@@ -210,7 +210,10 @@ class _SchedulePokerState extends State<PokerRunList> {
                                     SizedBox(width: 1.3.w),
                                     Expanded(
                                       child: text_widget(
-                                        eventModel.eventWinner?.roadName?.capitalizeFirst ??
+                                        eventModel
+                                                .eventWinner
+                                                ?.roadName
+                                                ?.capitalizeFirst ??
                                             "No One Join The Game",
                                         fontSize: 14.7.sp,
                                         maxline: 1,
@@ -248,7 +251,10 @@ class _SchedulePokerState extends State<PokerRunList> {
                                     ),
                                     SizedBox(width: 1.3.w),
                                     text_widget(
-                                      eventModel.eventWinner?.rank?.capitalize ??
+                                      eventModel
+                                              .eventWinner
+                                              ?.rank
+                                              ?.capitalize ??
                                           "",
                                       fontSize: 14.7.sp,
                                       fontWeight: FontWeight.w400,
@@ -269,7 +275,10 @@ class _SchedulePokerState extends State<PokerRunList> {
                                   children: List.generate(5, (index) {
                                     if (eventModel.eventWinner != null &&
                                         index <
-                                            eventModel.eventWinner!.cards.length) {
+                                            eventModel
+                                                .eventWinner!
+                                                .cards
+                                                .length) {
                                       final cardKey =
                                           eventModel.eventWinner!.cards[index];
                                       return Expanded(
@@ -373,12 +382,12 @@ class _SchedulePokerState extends State<PokerRunList> {
                 return Column(
                   children: [
                     item,
-                    if ((index + 1) % 4 == 0)
+                    if ((index + 1) % 4 == 0 && enableAds)
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: CustomAdInlineWidget(),
                       ),
-                    if (index == documentSnapshots.length - 1)
+                    if (index == documentSnapshots.length - 1 && enableAds)
                       const Padding(
                         padding: EdgeInsets.only(top: 10, bottom: 20),
                         child: CustomAdInlineWidget(),

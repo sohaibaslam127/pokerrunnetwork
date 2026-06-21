@@ -181,15 +181,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<bool> init() async {
     WidgetsFlutterBinding.ensureInitialized();
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.black,
-        systemNavigationBarIconBrightness: Brightness.light,
-      ),
-    );
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {

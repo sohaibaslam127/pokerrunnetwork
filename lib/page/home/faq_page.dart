@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -229,7 +230,8 @@ class _FaqPageState extends State<FaqPage> {
 
                           // Inject ad every 4th element (after 3 items)
                           if ((children.length) % 4 == 3 &&
-                              i != videos.length - 1) {
+                              i != videos.length - 1 &&
+                              enableAds) {
                             children.add(
                               const Padding(
                                 padding: EdgeInsets.symmetric(
@@ -331,7 +333,8 @@ class _FaqPageState extends State<FaqPage> {
 
                           // Inject ad every 4th element (after 3 items)
                           if ((children.length) % 4 == 3 &&
-                              i != faqs.length - 1) {
+                              i != faqs.length - 1 &&
+                              enableAds) {
                             children.add(
                               const Padding(
                                 padding: EdgeInsets.symmetric(
@@ -347,10 +350,14 @@ class _FaqPageState extends State<FaqPage> {
                       }(),
                     ],
                   ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                  child: CustomAdInlineWidget(),
-                ),
+                if (enableAds)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 10,
+                    ),
+                    child: CustomAdInlineWidget(),
+                  ),
                 SizedBox(height: 5.h),
               ],
             ),
