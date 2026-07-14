@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart' as location;
-import 'package:pokerrunnetwork/config/colors.dart';
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
@@ -116,26 +115,16 @@ class LocationServices {
     }
   }
 
-  /// Opens a dialog asking the user to enable permission in settings.
+  /// Explains why location access is needed, then always proceeds to the
+  /// Settings app so the user can grant it. The dialog cannot be dismissed
+  /// without proceeding.
   Future<bool> _showPermissionDialog() async {
     final completer = Completer<bool>();
 
-    showPopup(
+    showSingleActionPopup(
       Get.context!,
       locationPermissionRequiredMsg,
-      PopupActionsButtons.cancel,
-      PopupActionsButtons.yes,
-      () async {
-        if (!completer.isCompleted) {
-          completer.complete(false);
-        }
-        Get.back();
-        if (Platform.isAndroid) {
-          SystemNavigator.pop();
-        } else {
-          exit(0);
-        }
-      },
+      "Continue",
       () async {
         Get.back();
 

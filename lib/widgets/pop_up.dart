@@ -6,6 +6,63 @@ import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+/// Shows a non-dismissible informational popup with a single action button.
+///
+/// Used for messages that must always be followed through (e.g. explaining
+/// why a permission is needed) rather than offering the user a way to
+/// dismiss/delay without proceeding.
+Future<void> showSingleActionPopup(
+  BuildContext context,
+  String title,
+  String buttonText,
+  Function() buttonAction,
+) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) {
+      return PopScope(
+        canPop: false,
+        child: Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: 80.w,
+              padding: EdgeInsets.symmetric(vertical: 3.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: Text(
+                      title.capitalize!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 2.5.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    child: customButon(btnText: buttonText, onTap: buttonAction),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 void showPopup(
   BuildContext context,
   String title,
