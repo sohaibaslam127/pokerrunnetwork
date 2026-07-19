@@ -1,15 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
-import 'package:app_settings/app_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:location/location.dart' as location;
 import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/config/supportFunctions.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
-import 'package:pokerrunnetwork/widgets/pop_up.dart';
 
 class LocationServices {
   LocationServices._();
@@ -28,8 +23,8 @@ class LocationServices {
   /// - Handles permission denied and denied forever
   /// - Updates Firestore only when user moves more than [miles]
   /// - Cancels previous listeners before starting a new one
-  Future<void> getUserLocation() async {
-    if (_isInitializing) return;
+  Future<bool> getUserLocation() async {
+    if (_isInitializing) return false;
 
     _isInitializing = true;
 
@@ -38,11 +33,12 @@ class LocationServices {
 
       if (!ready) {
         await stopListening();
-        return;
+        return false;
       }
 
       await _configureLocationSettings();
       await _startListening();
+      return true;
     } catch (e, stackTrace) {
       log(
         'Error in getUserLocation()',
@@ -50,6 +46,7 @@ class LocationServices {
         stackTrace: stackTrace,
         name: 'LocationServices',
       );
+      return false;
     } finally {
       _isInitializing = false;
     }
@@ -69,16 +66,7 @@ class LocationServices {
         serviceEnabled = await _location.requestService();
 
         if (!serviceEnabled) {
-          await AppSettings.openAppSettings(type: AppSettingsType.location);
-
-          // Give user time to enable service
-          await Future.delayed(const Duration(seconds: 3));
-
-          serviceEnabled = await _location.serviceEnabled();
-
-          if (!serviceEnabled) {
-            return false;
-          }
+          return false;
         }
       }
 
@@ -90,20 +78,13 @@ class LocationServices {
         permission = await _location.requestPermission();
       }
 
-      // Handle permanently denied / denied forever
-      if (permission == location.PermissionStatus.deniedForever ||
-          permission != location.PermissionStatus.granted) {
-        final bool granted = await _showPermissionDialog();
-        if (!granted) return false;
-
-        permission = await _location.hasPermission();
-
-        if (permission != location.PermissionStatus.granted) {
-          return false;
-        }
+      // Handle permanently denied / denied forever / grantedLimited
+      if (permission == location.PermissionStatus.granted ||
+          permission == location.PermissionStatus.grantedLimited) {
+        return true;
       }
 
-      return true;
+      return false;
     } on TimeoutException catch (e, stackTrace) {
       log(
         'Location request timed out',
@@ -113,37 +94,6 @@ class LocationServices {
       );
       return false;
     }
-  }
-
-  /// Explains why location access is needed, then always proceeds to the
-  /// Settings app so the user can grant it. The dialog cannot be dismissed
-  /// without proceeding.
-  Future<bool> _showPermissionDialog() async {
-    final completer = Completer<bool>();
-
-    showSingleActionPopup(
-      Get.context!,
-      locationPermissionRequiredMsg,
-      "Continue",
-      () async {
-        Get.back();
-
-        await AppSettings.openAppSettings(type: AppSettingsType.location);
-
-        if (!completer.isCompleted) {
-          completer.complete(true);
-        }
-
-        // Close the app so the user can reopen it after enabling location
-        if (Platform.isAndroid) {
-          SystemNavigator.pop();
-        } else {
-          exit(0);
-        }
-      },
-    );
-
-    return completer.future;
   }
 
   /// Configures location tracking settings.

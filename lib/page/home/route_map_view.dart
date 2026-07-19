@@ -239,7 +239,7 @@ class _RouteMapViewState extends State<RouteMapView> {
     if (permission == PermissionStatus.denied) {
       permission = await loc.requestPermission();
     }
-    if (permission != PermissionStatus.granted) return;
+    if (permission != PermissionStatus.granted && permission != PermissionStatus.grantedLimited) return;
 
     await loc.changeSettings(accuracy: LocationAccuracy.high, interval: 3000);
 

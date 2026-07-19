@@ -1,7 +1,7 @@
 name: pokerrunnetwork
 description: "PokerRun Player App"
 publish_to: 'none'
-version: 1.0.4+32
+version: 1.0.4+33
 
 environment:
   sdk: ^3.10.1
@@ -23,8 +23,8 @@ dependencies:
   paginate_firestore:
   firebase_core: ^4.3.0
   country_currency_pickers: ^3.0.0
-  location: ^8.0.1
-  app_settings: ^7.0.0
+  location: ^10.0.0
+  app_settings: ^8.0.0
   image_picker: ^1.2.1
   snackify: ^1.2.4
   youtube_player_flutter: ^10.0.1

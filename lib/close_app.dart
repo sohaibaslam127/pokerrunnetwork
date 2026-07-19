@@ -10,27 +10,29 @@ import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CloseApp extends StatelessWidget {
-  const CloseApp(this.title, this.message, {super.key, this.onRetry});
+  const CloseApp(this.title, this.message, {super.key, this.onRetry, this.onSettings});
 
   final String title;
   final String message;
   final VoidCallback? onRetry;
+  final VoidCallback? onSettings;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.secondaryDark,
-      body: Center(child: _NoInternetDialog(title, message, onRetry: onRetry)),
+      body: Center(child: _NoInternetDialog(title, message, onRetry: onRetry, onSettings: onSettings)),
     );
   }
 }
 
 class _NoInternetDialog extends StatelessWidget {
-  const _NoInternetDialog(this.title, this.message, {this.onRetry});
+  const _NoInternetDialog(this.title, this.message, {this.onRetry, this.onSettings});
 
   final String title;
   final String message;
   final VoidCallback? onRetry;
+  final VoidCallback? onSettings;
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +43,25 @@ class _NoInternetDialog extends StatelessWidget {
       actions: [
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.redAccent,
+            backgroundColor: onSettings != null ? MyColors.secondary : Colors.redAccent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          onPressed: () {
-            if (Platform.isAndroid) {
-              SystemNavigator.pop();
-              SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-            } else if (Platform.isIOS) {
-              exit(0);
+          onPressed: () async {
+            if (onSettings != null) {
+              onSettings!();
+            } else {
+              if (Platform.isAndroid) {
+                SystemNavigator.pop();
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              } else if (Platform.isIOS) {
+                exit(0);
+              }
             }
           },
           child: text_widget(
-            "Close App",
+            onSettings != null ? "Settings" : "Close App",
             color: Colors.white,
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
