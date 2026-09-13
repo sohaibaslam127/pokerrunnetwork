@@ -48,7 +48,11 @@ void toast(BuildContext context, String title, String message, {int type = 3}) {
 Future<void> launchMyUrl(String url) async {
   final Uri uri = Uri.parse(url);
   try {
-    await launchUrl(uri, mode: LaunchMode.platformDefault);
+    if (url.startsWith('tel:') || url.startsWith('mailto:')) {
+      await launchUrl(uri);
+    } else {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   } catch (e) {
     debugPrint("Error launching URL: $e");
   }

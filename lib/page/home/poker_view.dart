@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -16,6 +15,7 @@ import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:pokerrunnetwork/page/home/route_map_view.dart';
+import 'package:pokerrunnetwork/page/legal/rules_and_legal_page.dart';
 
 class PokerDetailsView extends StatefulWidget {
   final EventModel event;
@@ -100,6 +100,32 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
+            actions: [
+              onPress(
+                ontap: () => Get.to(
+                  () => const RulesAndLegalPage(initialTab: LegalTab.rules),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(right: 3.w),
+                  child: Row(
+                    children: [
+                      Icon(
+                        RemixIcons.trophy_line,
+                        color: MyColors.primary,
+                        size: 15.sp,
+                      ),
+                      SizedBox(width: 1.w),
+                      text_widget(
+                        "Rules",
+                        color: MyColors.primary,
+                        fontSize: 13.5.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(0),
               child: Container(height: 2, color: Colors.white12),
@@ -677,32 +703,6 @@ class _PokerDetailsViewState extends State<PokerDetailsView> {
       ),
     );
   }
-}
-
-Widget _buildPriceRow(String label, String price, {bool isBold = false}) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Expanded(
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
-            color: Colors.black87,
-          ),
-        ),
-      ),
-      Text(
-        price,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      ),
-    ],
-  );
 }
 
 class DottedLinePainter extends CustomPainter {

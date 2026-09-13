@@ -12,6 +12,7 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:pokerrunnetwork/page/legal/rules_and_legal_page.dart';
 
 class SingupPage extends StatefulWidget {
   const SingupPage({super.key});
@@ -233,10 +234,9 @@ class _SingupPageState extends State<SingupPage> {
                               pColor: MyColors.primary,
                               isSuffix: true,
                             ),
-                            SizedBox(height: 2.h),
+                            SizedBox(height: 1.h),
                             Row(
                               children: [
-                                Spacer(),
                                 CustomCheckBox(
                                   value: shouldCheck,
                                   shouldShowBorder: true,
@@ -251,34 +251,88 @@ class _SingupPageState extends State<SingupPage> {
                                     });
                                   },
                                 ),
-                                RichText(
-                                  text: TextSpan(
-                                    text: 'I Accept  ',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: MyColors.black,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text: 'Terms & Conditions',
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            launchMyUrl(
-                                              'https://thepokerrunapp.com/contact-us%2Fprivacy-policy',
-                                            );
-                                          },
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: MyColors.secondary,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
-                                        ),
+                                Expanded(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: 'I Accept ',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: MyColors.black,
+                                        fontWeight: FontWeight.w400,
                                       ),
-                                    ],
+                                      children: [
+                                        TextSpan(
+                                          text: 'Terms',
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Get.to(
+                                                () => const RulesAndLegalPage(
+                                                  initialTab: LegalTab.terms,
+                                                ),
+                                              );
+                                            },
+                                          style: TextStyle(
+                                            fontSize: 13.5,
+                                            color: MyColors.secondary,
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ', ',
+                                          style: TextStyle(
+                                            fontSize: 13.5,
+                                            color: MyColors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Privacy',
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Get.to(
+                                                () => const RulesAndLegalPage(
+                                                  initialTab: LegalTab.privacy,
+                                                ),
+                                              );
+                                            },
+                                          style: TextStyle(
+                                            fontSize: 13.5,
+                                            color: MyColors.secondary,
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' and ',
+                                          style: TextStyle(
+                                            fontSize: 13.5,
+                                            color: MyColors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Rules',
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Get.to(
+                                                () => const RulesAndLegalPage(
+                                                  initialTab: LegalTab.rules,
+                                                ),
+                                              );
+                                            },
+                                          style: TextStyle(
+                                            fontSize: 13.5,
+                                            color: MyColors.secondary,
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                Spacer(),
                               ],
                             ),
                             SizedBox(height: 1.h),

@@ -12,6 +12,7 @@ import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_field.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:pokerrunnetwork/page/legal/rules_and_legal_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -52,6 +53,98 @@ class _LoginPageState extends State<LoginPage> {
     emailContoller.dispose();
     passwordContoller.dispose();
     super.dispose();
+  }
+
+  void showAboutUsDialog() {
+    Get.defaultDialog(
+      title: "About The Poker Run App",
+      titleStyle: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 16.sp,
+      ),
+      backgroundColor: const Color(0xff1e1e1e),
+      contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("assets/icons/logo.png", height: 6.h),
+          SizedBox(height: 1.5.h),
+          text_widget(
+            "The Poker Run App makes the organization & execution of a Poker Run fast and easy for participants and organizers alike.",
+            color: Colors.white70,
+            fontSize: 13.5.sp,
+            textAlign: TextAlign.center,
+            maxline: 4,
+          ),
+          SizedBox(height: 1.5.h),
+          Container(
+            padding: EdgeInsets.all(1.h),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.white12),
+            ),
+            child: text_widget(
+              "Apple Inc. is not a sponsor of, and is not involved in any manner with, any contest or games in this app.",
+              color: Colors.white60,
+              fontSize: 11.5.sp,
+              textAlign: TextAlign.center,
+              maxline: 3,
+            ),
+          ),
+          SizedBox(height: 1.5.h),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 2.w,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                  Get.to(() => const RulesAndLegalPage(initialTab: LegalTab.rules));
+                },
+                child: text_widget(
+                  "Official Rules",
+                  color: MyColors.primary,
+                  fontSize: 13.5.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                  Get.to(() => const RulesAndLegalPage(initialTab: LegalTab.terms));
+                },
+                child: text_widget(
+                  "Terms",
+                  color: MyColors.secondary,
+                  fontSize: 13.5.sp,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                  Get.to(() => const RulesAndLegalPage(initialTab: LegalTab.privacy));
+                },
+                child: text_widget(
+                  "Privacy",
+                  color: MyColors.secondary,
+                  fontSize: 13.5.sp,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      confirm: TextButton(
+        onPressed: () => Get.back(),
+        child: text_widget(
+          "Close",
+          color: MyColors.primary,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
   }
 
   @override
@@ -190,9 +283,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 2.h),
                   Center(
                     child: onPress(
-                      ontap: () {
-                        launchMyUrl('https://thepokerrunapp.com');
-                      },
+                      ontap: showAboutUsDialog,
                       child: Container(
                         width: 32.w,
                         height: 4.7.h,

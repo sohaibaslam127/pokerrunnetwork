@@ -14,6 +14,7 @@ import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:remixicon/remixicon.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
+import 'package:pokerrunnetwork/page/legal/rules_and_legal_page.dart';
 
 class CompletedPokr extends StatefulWidget {
   const CompletedPokr({super.key});
@@ -140,6 +141,32 @@ class _FindPokerState extends State<CompletedPokr> {
               fontWeight: FontWeight.w600,
             ),
             centerTitle: false,
+            actions: [
+              onPress(
+                ontap: () => Get.to(
+                  () => const RulesAndLegalPage(initialTab: LegalTab.rules),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(right: 3.w),
+                  child: Row(
+                    children: [
+                      Icon(
+                        RemixIcons.trophy_line,
+                        color: MyColors.primary,
+                        size: 15.sp,
+                      ),
+                      SizedBox(width: 1.w),
+                      text_widget(
+                        "Rules",
+                        color: MyColors.primary,
+                        fontSize: 13.5.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(0),
               child: Container(height: 2, color: Colors.white12),
