@@ -210,7 +210,7 @@ class _RulesAndLegalPageState extends State<RulesAndLegalPage> {
         ),
         _buildSubHeader("2. How It Works"),
         _buildParagraph(
-          "A Poker Run is an event of chance and navigation where participants travel along a designated route containing multiple checkpoints (stops):\n"
+          "A Poker Run is an event of skill and navigation where participants travel along a designated route containing multiple checkpoints (stops):\n"
           "• At each checkpoint, participants check in using the app (via QR code or GPS verification) to receive a playing card from a standard virtual 52-card deck.\n"
           "• Participants must complete all required stops to assemble a complete five-card poker hand.\n"
           "• Additional cards or card replacements may be purchased if permitted by the individual event organizer rules.",
