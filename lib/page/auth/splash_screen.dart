@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'package:app_settings/app_settings.dart';
 import 'package:easy_admob_ads_flutter/easy_admob_ads_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -222,21 +221,12 @@ class _SplashScreenState extends State<SplashScreen> {
     _initializeAds();
     await FirestoreServices.I.init();
     await AuthServices.I.checkUser();
-    final bool locationReady = await LocationServices.I.getUserLocation();
-    if (!locationReady) {
-      Get.offAll(
-        CloseApp(
-          "Location Permission Required",
-          locationPermissionRequiredMsg,
-          onRetry: () {
-            Get.offAll(() => const SplashScreen());
-          },
-          onSettings: () async {
-            await AppSettings.openAppSettings(type: AppSettingsType.location);
-          },
-        ),
-      );
-      return false;
+    // Attempt to initialize location in the background if permitted,
+    // but never block app launch if location is disabled or denied.
+    try {
+      await LocationServices.I.getUserLocation();
+    } catch (e) {
+      log('Location initialization skipped or denied on splash: $e');
     }
     return true;
   }

@@ -9,6 +9,7 @@ import 'package:pokerrunnetwork/models/gamePlayerModel.dart';
 import 'package:pokerrunnetwork/page/home/active_poker_run.dart';
 import 'package:pokerrunnetwork/page/home/game_view.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
+import 'package:pokerrunnetwork/services/locationsServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
@@ -291,38 +292,88 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                           Row(
                             children: [
                               // Distance badge
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 3.w,
-                                  vertical: 0.8.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: MyColors.secondary.withValues(
-                                    alpha: 0.15,
+                              onPress(
+                                ontap: () async {
+                                  final isLocationMissing = distance >= 9990 ||
+                                      (currentUser.location.latitude == 0 &&
+                                          currentUser.location.longitude == 0);
+                                  if (isLocationMissing) {
+                                    final ok = await LocationServices.I
+                                        .getUserLocation();
+                                    if (!ok && mounted) {
+                                      showLocationRequiredDialog(
+                                        context,
+                                        onQrCheckIn: () {
+                                          Get.to(
+                                            PlayerQrScreen(
+                                              eventId: currentGame.game.pokerId,
+                                              userId: currentGame.game.userId,
+                                              roadName:
+                                                  currentGame.game.roadName,
+                                              eventName: currentGame
+                                                  .latestEvent
+                                                  .pokerName,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    } else if (mounted) {
+                                      calculateDistance(
+                                        currentUser.location.latitude,
+                                        currentUser.location.longitude,
+                                        currentGame.latestEvent.stops[0]
+                                            .stopLocation.latitude,
+                                        currentGame.latestEvent.stops[0]
+                                            .stopLocation.longitude,
+                                      ).then((val) {
+                                        if (mounted) {
+                                          setState(() => distance = val);
+                                        }
+                                      });
+                                    }
+                                  }
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 3.w,
+                                    vertical: 0.8.h,
                                   ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: MyColors.primary.withValues(
-                                      alpha: 0.5,
+                                  decoration: BoxDecoration(
+                                    color: MyColors.secondary.withValues(
+                                      alpha: 0.15,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: MyColors.primary.withValues(
+                                        alpha: 0.5,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      RemixIcons.route_line,
-                                      color: MyColors.secondary,
-                                      size: 14.sp,
-                                    ),
-                                    SizedBox(width: 1.5.w),
-                                    text_widget(
-                                      "${distance.toStringAsFixed(2)} mi away",
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: MyColors.secondary,
-                                    ),
-                                  ],
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        RemixIcons.route_line,
+                                        color: MyColors.secondary,
+                                        size: 14.sp,
+                                      ),
+                                      SizedBox(width: 1.5.w),
+                                      text_widget(
+                                        distance >= 9990 ||
+                                                (currentUser.location.latitude ==
+                                                        0 &&
+                                                    currentUser
+                                                            .location
+                                                            .longitude ==
+                                                        0)
+                                            ? "Location required"
+                                            : "${distance.toStringAsFixed(2)} mi away",
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: MyColors.secondary,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               const Spacer(),
@@ -476,6 +527,31 @@ class _SchedulePokerNState extends State<SchedulePokerN> {
                               currentGame.latestEvent.eventDate,
                             ) >=
                             0) {
+                          if (currentUser.location.latitude == 0.0 &&
+                              currentUser.location.longitude == 0.0) {
+                            await LocationServices.I.getUserLocation();
+                          }
+                          if (currentUser.location.latitude == 0.0 &&
+                              currentUser.location.longitude == 0.0) {
+                            click = false;
+                            if (mounted) {
+                              showLocationRequiredDialog(
+                                context,
+                                onQrCheckIn: () {
+                                  Get.to(
+                                    PlayerQrScreen(
+                                      eventId: currentGame.game.pokerId,
+                                      userId: currentGame.game.userId,
+                                      roadName: currentGame.game.roadName,
+                                      eventName:
+                                          currentGame.latestEvent.pokerName,
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                            return;
+                          }
                           if (await calculateDistance(
                                 currentGame
                                     .latestEvent

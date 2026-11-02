@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,6 +8,7 @@ import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:pokerrunnetwork/config/colors.dart';
+import 'package:pokerrunnetwork/config/global.dart';
 import 'package:pokerrunnetwork/services/locationsServices.dart';
 import 'package:pokerrunnetwork/widgets/txt_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -140,6 +142,14 @@ Future<double> calculateDistance(
 ) async {
   if (lat1 == 0 || lon1 == 0) {
     await LocationServices.I.getUserLocation();
+    if (currentUser.location.latitude != 0 ||
+        currentUser.location.longitude != 0) {
+      lat1 = currentUser.location.latitude;
+      lon1 = currentUser.location.longitude;
+    }
+  }
+  if (lat1 == 0 && lon1 == 0) {
+    return 99999.0;
   }
   const double p = 0.017453292519943295;
   final c = cos;
@@ -242,12 +252,16 @@ Future<void> openMaps(
     toast(context, "No Maps", "Install a map app from a store");
     return;
   }
+  final bool hasOrigin = originLat != 0.0 || originLng != 0.0;
+  final originCoords = hasOrigin ? Coords(originLat, originLng) : null;
+  final originLabel = hasOrigin ? originName : null;
+
   if (availableMaps.length == 1) {
     await availableMaps.first.showDirections(
       destination: Coords(destinationLat, destinationLng),
       destinationTitle: destinationName,
-      origin: Coords(originLat, originLng),
-      originTitle: originName,
+      origin: originCoords,
+      originTitle: originLabel,
       directionsMode: DirectionsMode.walking,
     );
     return;
@@ -263,11 +277,12 @@ Future<void> openMaps(
                 color: MyColors.black,
                 child: CupertinoActionSheetAction(
                   onPressed: () async {
+                    Navigator.pop(context);
                     await e.showDirections(
                       destination: Coords(destinationLat, destinationLng),
                       destinationTitle: destinationName,
-                      origin: Coords(originLat, originLng),
-                      originTitle: originName,
+                      origin: originCoords,
+                      originTitle: originLabel,
                       directionsMode: DirectionsMode.walking,
                     );
                   },
@@ -300,6 +315,77 @@ Future<void> openMaps(
           ),
         ),
       ),
+    ),
+  );
+}
+
+Future<void> showLocationRequiredDialog(
+  BuildContext context, {
+  String title = "Location Access Needed",
+  String message =
+      "Location is required to verify your check-in at game stops. Please enable Location Services in Settings, or use Organizer QR code check-in.",
+  VoidCallback? onQrCheckIn,
+}) async {
+  await showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: MyColors.secondaryDark,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: text_widget(
+        title,
+        color: Colors.white,
+        fontSize: 18.sp,
+        fontWeight: FontWeight.bold,
+      ),
+      content: text_widget(
+        message,
+        color: Colors.white.withValues(alpha: 0.85),
+        fontSize: 14.5.sp,
+        height: 1.4,
+      ),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      actions: [
+        if (onQrCheckIn != null)
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              onQrCheckIn();
+            },
+            child: text_widget(
+              "QR Check-in",
+              color: MyColors.primary,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: text_widget(
+            "Cancel",
+            color: Colors.white54,
+            fontSize: 14.sp,
+          ),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: MyColors.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          onPressed: () async {
+            Navigator.pop(ctx);
+            await AppSettings.openAppSettings(type: AppSettingsType.location);
+          },
+          child: text_widget(
+            "Settings",
+            color: Colors.black,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     ),
   );
 }

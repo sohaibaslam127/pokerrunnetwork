@@ -16,6 +16,7 @@ import 'package:pokerrunnetwork/page/home/home_page.dart';
 import 'package:pokerrunnetwork/page/home/route_map_view.dart';
 import 'package:pokerrunnetwork/page/home/stop_view.dart';
 import 'package:pokerrunnetwork/services/firestoreServices.dart';
+import 'package:pokerrunnetwork/services/locationsServices.dart';
 import 'package:pokerrunnetwork/widgets/custom_ad_widget.dart';
 import 'package:pokerrunnetwork/widgets/custom_button.dart';
 import 'package:pokerrunnetwork/widgets/pop_up.dart';
@@ -259,12 +260,10 @@ class _GameViewState extends State<GameView> {
   // Fires off parallel distance calculations to all 5 intermediate stops.
   void _refreshAllDistances() {
     if (_calculatingAllDistances) return;
-    // GPS hasn't fixed yet — retry in 2 s instead of calculating from (0,0)
+    // If location is not available, don't calculate from (0,0).
+    // The proximityTimer will retry once location becomes available.
     if (currentUser.location.latitude == 0.0 &&
         currentUser.location.longitude == 0.0) {
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted && _isFirstStopPhase) _refreshAllDistances();
-      });
       return;
     }
     _calculatingAllDistances = true;
@@ -487,6 +486,50 @@ class _GameViewState extends State<GameView> {
                         textAlign: TextAlign.center,
                         height: 1.55,
                       ),
+                      if (currentUser.location.latitude == 0.0 &&
+                          currentUser.location.longitude == 0.0) ...[
+                        SizedBox(height: 2.h),
+                        onPress(
+                          ontap: () async {
+                            final ok =
+                                await LocationServices.I.getUserLocation();
+                            if (!mounted) return;
+                            if (!ok) {
+                              showLocationRequiredDialog(context);
+                            } else {
+                              _refreshAllDistances();
+                              setState(() {});
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 4.w,
+                              vertical: 1.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white12,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.white24),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  RemixIcons.map_pin_line,
+                                  color: MyColors.primary,
+                                  size: 15.sp,
+                                ),
+                                SizedBox(width: 2.w),
+                                text_widget(
+                                  "Enable Location to detect stops",
+                                  color: Colors.white,
+                                  fontSize: 13.sp,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                       // ── Stop card — only when within 0.062 mi ─────────────────
                       if (stop != null && dist != null) ...[
                         SizedBox(height: 3.h),
@@ -922,49 +965,82 @@ class _GameViewState extends State<GameView> {
                               ),
                             ),
                             SizedBox(width: 3.w),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 3.w,
-                                vertical: 0.8.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: distance < miles
-                                    ? Colors.green.withValues(alpha: 0.20)
-                                    : MyColors.secondary.withValues(
-                                        alpha: 0.18,
-                                      ),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: distance < miles
-                                      ? Colors.green.withValues(alpha: 0.75)
-                                      : MyColors.red.withValues(alpha: 0.75),
+                            onPress(
+                              ontap: () async {
+                                final isMissing =
+                                    (currentUser.location.latitude == 0.0 &&
+                                        currentUser.location.longitude ==
+                                            0.0) ||
+                                    distance >= 9990;
+                                if (isMissing) {
+                                  final ok = await LocationServices.I
+                                      .getUserLocation();
+                                  if (!ok && mounted) {
+                                    showLocationRequiredDialog(context);
+                                  } else if (mounted) {
+                                    calculateDistance(
+                                      currentUser.location.latitude,
+                                      currentUser.location.longitude,
+                                      stopsModel.stopLocation.latitude,
+                                      stopsModel.stopLocation.longitude,
+                                    ).then((val) {
+                                      if (mounted) {
+                                        setState(() => distance = val);
+                                      }
+                                    });
+                                  }
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 3.w,
+                                  vertical: 0.8.h,
                                 ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  text_widget(
-                                    distance.toStringAsFixed(2),
-                                    textAlign: TextAlign.center,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
+                                decoration: BoxDecoration(
+                                  color: distance < miles
+                                      ? Colors.green.withValues(alpha: 0.20)
+                                      : MyColors.secondary.withValues(
+                                          alpha: 0.18,
+                                        ),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
                                     color: distance < miles
-                                        ? Colors.greenAccent
-                                        : MyColors.secondary,
+                                        ? Colors.green.withValues(alpha: 0.75)
+                                        : MyColors.red.withValues(alpha: 0.75),
                                   ),
-                                  text_widget(
-                                    "miles",
-                                    textAlign: TextAlign.center,
-                                    fontSize: 12.5.sp,
-                                    color: distance < miles
-                                        ? Colors.greenAccent.withValues(
-                                            alpha: 0.75,
-                                          )
-                                        : MyColors.secondary.withValues(
-                                            alpha: 0.75,
-                                          ),
-                                  ),
-                                ],
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    text_widget(
+                                      currentUser.location.latitude == 0.0 &&
+                                              currentUser.location.longitude ==
+                                                  0.0
+                                          ? "--"
+                                          : distance >= 9990
+                                          ? "--"
+                                          : distance.toStringAsFixed(2),
+                                      textAlign: TextAlign.center,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: distance < miles
+                                          ? Colors.greenAccent
+                                          : MyColors.secondary,
+                                    ),
+                                    text_widget(
+                                      "miles",
+                                      textAlign: TextAlign.center,
+                                      fontSize: 12.5.sp,
+                                      color: distance < miles
+                                          ? Colors.greenAccent.withValues(
+                                              alpha: 0.75,
+                                            )
+                                          : MyColors.secondary.withValues(
+                                              alpha: 0.75,
+                                            ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -1024,6 +1100,16 @@ class _GameViewState extends State<GameView> {
                     Expanded(
                       child: onPress(
                         ontap: () async {
+                          if (currentUser.location.latitude == 0.0 &&
+                              currentUser.location.longitude == 0.0) {
+                            await LocationServices.I.getUserLocation();
+                          }
+                          if (!mounted) return;
+                          if (currentUser.location.latitude == 0.0 &&
+                              currentUser.location.longitude == 0.0) {
+                            showLocationRequiredDialog(context);
+                            return;
+                          }
                           if (distance < miles) {
                             if (currentGame.game.currentStop != 6) {
                               randomCard();
