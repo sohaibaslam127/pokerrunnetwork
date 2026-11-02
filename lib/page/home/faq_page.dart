@@ -22,6 +22,7 @@ class _FaqPageState extends State<FaqPage> {
   List<Map<String, dynamic>> faqs = [];
   List<bool> faqExpanded = [];
   bool isFaqs = true;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -29,17 +30,33 @@ class _FaqPageState extends State<FaqPage> {
     getHelp();
   }
 
-  Future<void> getHelp() async {
-    EasyLoading.show();
-    final faqResult = await FirestoreServices.I.getFaqs();
+  @override
+  void dispose() {
     EasyLoading.dismiss();
-    final videoResult = await FirestoreServices.I.getVideos();
+    super.dispose();
+  }
 
-    setState(() {
-      faqs = faqResult;
-      videos = videoResult;
-      faqExpanded = List.generate(faqs.length, (_) => false);
-    });
+  Future<void> getHelp() async {
+    try {
+      final results = await Future.wait([
+        FirestoreServices.I.getFaqs(),
+        FirestoreServices.I.getVideos(),
+      ]);
+      if (!mounted) return;
+      setState(() {
+        faqs = results[0];
+        videos = results[1];
+        faqExpanded = List.generate(faqs.length, (_) => false);
+        isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 
   void playYoutubeVideo(BuildContext context, String url) {
@@ -68,6 +85,34 @@ class _FaqPageState extends State<FaqPage> {
         ),
       ),
     ).then((_) => controller.close());
+  }
+
+  Widget _buildLoadingIndicator(String label) {
+    return Padding(
+      padding: EdgeInsets.only(top: 25.h),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 36,
+              width: 36,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.5,
+                color: MyColors.primary,
+              ),
+            ),
+            SizedBox(height: 2.h),
+            text_widget(
+              label,
+              color: Colors.white70,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -134,24 +179,38 @@ class _FaqPageState extends State<FaqPage> {
 
                 /// ---------------- VIDEOS ----------------
                 if (!isFaqs)
-                  Column(
-                    children: [
-                      if (videos.isEmpty) ...[
-                        text_widget("No Video available."),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CustomAdInlineWidget(
-                            widgetKey: Key("video_empty_ad_1"),
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CustomAdInlineWidget(
-                            widgetKey: Key("video_empty_ad_2"),
-                          ),
-                        ),
-                      ],
+                  isLoading
+                      ? _buildLoadingIndicator("Loading Videos...")
+                      : Column(
+                          children: [
+                            if (videos.isEmpty) ...[
+                              Padding(
+                                padding: EdgeInsets.only(top: 25.h),
+                                child: text_widget(
+                                  "No Video available.",
+                                  color: Colors.white38,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                ),
+                                child: CustomAdInlineWidget(
+                                  widgetKey: Key("video_empty_ad_1"),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                ),
+                                child: CustomAdInlineWidget(
+                                  widgetKey: Key("video_empty_ad_2"),
+                                ),
+                              ),
+                            ],
                       ...List.generate(videos.length, (index) {
                         final videoId = YoutubePlayerController.convertUrlToId(
                           videos[index]['link'],
@@ -260,32 +319,38 @@ class _FaqPageState extends State<FaqPage> {
 
                 /// ---------------- FAQS ----------------
                 if (isFaqs)
-                  Column(
-                    children: [
-                      if (faqs.isEmpty) ...[
-                        Padding(
-                          padding: EdgeInsets.only(top: 32.h),
-                          child: text_widget(
-                            "NO FAQS AVAILABLE",
-                            color: Colors.white38,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CustomAdInlineWidget(
-                            widgetKey: Key("faq_empty_ad_1"),
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CustomAdInlineWidget(
-                            widgetKey: Key("faq_empty_ad_2"),
-                          ),
-                        ),
-                      ],
+                  isLoading
+                      ? _buildLoadingIndicator("Loading FAQ’s...")
+                      : Column(
+                          children: [
+                            if (faqs.isEmpty) ...[
+                              Padding(
+                                padding: EdgeInsets.only(top: 25.h),
+                                child: text_widget(
+                                  "NO FAQS AVAILABLE",
+                                  color: Colors.white38,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                ),
+                                child: CustomAdInlineWidget(
+                                  widgetKey: Key("faq_empty_ad_1"),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                ),
+                                child: CustomAdInlineWidget(
+                                  widgetKey: Key("faq_empty_ad_2"),
+                                ),
+                              ),
+                            ],
                       ...List.generate(faqs.length, (index) {
                         return Column(
                           children: [
