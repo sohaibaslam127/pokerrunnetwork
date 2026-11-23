@@ -23,8 +23,8 @@ dependencies:
   paginate_firestore:
   firebase_core: ^4.3.0
   country_currency_pickers: ^3.0.0
-  location: ^10.0.0
-  app_settings: ^8.0.0
+  location: ^10.2.0
+  app_settings: ^8.0.3
   image_picker: ^1.2.1
   snackify: ^1.2.4
   youtube_player_flutter: ^10.0.1
