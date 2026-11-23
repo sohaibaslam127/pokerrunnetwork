@@ -1,7 +1,7 @@
 name: pokerrunnetwork
 description: "PokerRun Network App"
 publish_to: 'none'
-version: 1.0.3+28
+version: 1.0.4+32
 
 environment:
   sdk: ^3.10.1
@@ -44,6 +44,9 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   icons_launcher: ^3.0.3
+
+dependency_overrides:
+  http: ^1.2.2
 
 icons_launcher:
   image_path: "assets/logo/appicon.jpg"
