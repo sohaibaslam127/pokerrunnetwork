@@ -1,15 +1,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.techbolic.pokerplayer"> <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.techbolic.pokerplayer">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
+    <!-- Remove foreground service permissions injected by the location library -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" tools:node="remove" />
 
     <application 
         android:label="Poker Run Player" 
         android:name="${applicationName}" 
         android:icon="@mipmap/ic_launcher">
+
+        <!-- Remove foreground service component from location plugin -->
+        <service
+            android:name="com.lyokone.location.FlutterLocationService"
+            tools:node="remove" />
 
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBe5djPy8Cpm6fZMl14cmjw4ZewHtKFPI0" />
         <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-2555335650225733~9455106236" />
